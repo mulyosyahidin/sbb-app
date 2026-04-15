@@ -63,6 +63,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '532302998895',
     projectId: 'sarana-bahagia-berkah',
     storageBucket: 'sarana-bahagia-berkah.firebasestorage.app',
+    androidClientId: '532302998895-41m80s1335llc2p1inhjq7tb2j37223e.apps.googleusercontent.com',
+    iosClientId: '532302998895-1f8lrg4v905gkpdb8g6kolf692jo9ism.apps.googleusercontent.com',
     iosBundleId: 'com.saranabahagiaberkah.app',
   );
+
 }

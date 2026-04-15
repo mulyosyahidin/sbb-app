@@ -3,7 +3,7 @@ name: Build & Distribute Android (APK)
 on:
   push:
     branches:
-      - development
+      - mvp
   workflow_dispatch:
 
 jobs:
