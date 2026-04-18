@@ -50,7 +50,7 @@ jobs:
 
       - name: Build Release APK
         run: |
-          flutter build apk --release
+          flutter build apk --release --dart-define=API_BASE_URL=${{ vars.API_BASE_URL }}/api
 
       - name: Distribute to Firebase App Distribution
         run: |
