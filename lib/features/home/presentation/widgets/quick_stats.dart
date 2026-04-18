@@ -21,7 +21,7 @@ class QuickStats extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primary.withOpacity(0.3),
+                  color: AppColors.primary.withValues(alpha: 0.3),
                   blurRadius: 12,
                   offset: const Offset(0, 6),
                 ),
@@ -36,7 +36,7 @@ class QuickStats extends StatelessWidget {
                 Text(
                   'Total Profit',
                   style: AppTextStyles.label(
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white.withValues(alpha: 0.9),
                     fontSize: 11,
                   ),
                 ),
@@ -61,7 +61,7 @@ class QuickStats extends StatelessWidget {
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                  color: AppColors.primary.withOpacity(0.3), width: 2),
+                  color: AppColors.primary.withValues(alpha: 0.3), width: 2),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

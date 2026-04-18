@@ -94,7 +94,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
                 decoration: BoxDecoration(
                   color: _currentPage == index
                       ? Colors.white
-                      : Colors.white.withOpacity(0.5),
+                      : Colors.white.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(3),
                 ),
               ),

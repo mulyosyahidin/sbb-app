@@ -64,7 +64,7 @@ class HomePage extends StatelessWidget {
                 height: 150,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.primaryLight.withOpacity(0.2),
+                  color: AppColors.primaryLight.withValues(alpha: 0.2),
                 ),
               ),
             ),
@@ -76,7 +76,7 @@ class HomePage extends StatelessWidget {
                 height: 100,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(0.1),
+                  color: Colors.white.withValues(alpha: 0.1),
                 ),
               ),
             ),

@@ -14,7 +14,7 @@ class HomeBottomNav extends StatelessWidget {
         color: colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 20,
             offset: const Offset(0, -4),
           ),
@@ -25,7 +25,7 @@ class HomeBottomNav extends StatelessWidget {
         onTap: (index) {},
         backgroundColor: Colors.transparent,
         selectedItemColor: AppColors.primary,
-        unselectedItemColor: colorScheme.onSurfaceVariant.withOpacity(0.6),
+        unselectedItemColor: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
         selectedLabelStyle:
             const TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
         unselectedLabelStyle:

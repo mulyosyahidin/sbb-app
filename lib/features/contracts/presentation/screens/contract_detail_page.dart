@@ -15,15 +15,12 @@ class ContractDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
 
     // Dummy data for the specific contract
     const mitraName = "Budi Santoso";
     const cattleType = "Sapi Limousin";
     const cattleCount = 5;
-    const purchasePrice = 15000000;
-    const totalCapital = cattleCount * purchasePrice;
     const startDate = "12 April 2026";
     const endDate = "12 April 2027";
     const monthlyProfitSharing = 750000;
@@ -146,7 +143,7 @@ class ContractDetailPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -178,9 +175,9 @@ class ContractDetailPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: color.withOpacity(0.2)),
+              border: Border.all(color: color.withValues(alpha: 0.2)),
             ),
             child: Text(
               status,
@@ -213,7 +210,7 @@ class ContractDetailPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: theme.dividerColor.withOpacity(0.05)),
+        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.05)),
       ),
       child: Column(
         children: items.map((item) {
@@ -255,10 +252,10 @@ class ContractDetailPage extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 12),
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: isPaid ? AppColors.primary.withOpacity(0.05) : theme.cardColor,
+            color: isPaid ? AppColors.primary.withValues(alpha: 0.05) : theme.cardColor,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: isPaid ? AppColors.primary.withOpacity(0.1) : theme.dividerColor.withOpacity(0.1),
+              color: isPaid ? AppColors.primary.withValues(alpha: 0.1) : theme.dividerColor.withValues(alpha: 0.1),
             ),
           ),
           child: Row(
@@ -267,7 +264,7 @@ class ContractDetailPage extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: isPaid ? AppColors.primary : theme.dividerColor.withOpacity(0.1),
+                  color: isPaid ? AppColors.primary : theme.dividerColor.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(

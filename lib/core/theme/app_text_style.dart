@@ -23,12 +23,12 @@ class AppTextStyles {
         letterSpacing: 0.4,
       );
 
-  static TextStyle body({Color? color, double? fontSize, FontWeight? fontWeight}) =>
+  static TextStyle body({Color? color, double? fontSize, double? letterSpacing, FontWeight? fontWeight}) =>
       GoogleFonts.lexend(
         fontSize: fontSize ?? 14,
         fontWeight: fontWeight ?? FontWeight.w400,
         color: color,
-        letterSpacing: 0.1,
+        letterSpacing: letterSpacing ?? 0.1,
       );
 
   // Label: for small text or badges

@@ -110,7 +110,7 @@ class HomeMenuCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: (menu['color'] as Color).withOpacity(0.2),
+                color: (menu['color'] as Color).withValues(alpha: 0.2),
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),
