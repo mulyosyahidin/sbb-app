@@ -115,6 +115,7 @@ class AuthSessionController extends _$AuthSessionController {
   }
 
   Future<void> logout() async {
+    state = const AsyncLoading();
     final tokenStorage = ref.read(tokenStorageProvider);
     final device = await tokenStorage.getDevice();
 

@@ -1,12 +1,17 @@
+import 'package:app/features/home/application/home_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:app/core/theme/app_theme.dart';
 import 'package:app/core/theme/app_text_style.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeHeader extends StatelessWidget {
+class HomeHeader extends ConsumerWidget {
   const HomeHeader({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final homeData = ref.watch(fetchHomeDataProvider).value;
+    final userName = homeData?.user?.name ?? 'User';
+
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 60, 20, 24),
       decoration: const BoxDecoration(
@@ -85,18 +90,22 @@ class HomeHeader extends StatelessWidget {
                         children: [
                           _buildBadge('MITRA', AppColors.primaryLight),
                           const SizedBox(width: 6),
-                          _buildBadge('KONSULTAN',
-                              Colors.white.withValues(alpha: 0.2)),
+                          _buildBadge(
+                              'KONSULTAN', Colors.white.withValues(alpha: 0.2)),
                         ],
                       ),
                       const SizedBox(height: 6),
-                      Text('Halo, Andi Wiyanto!',
+                      Text('Halo, $userName!',
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
                           style: AppTextStyles.body(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 16)),
                       const SizedBox(height: 2),
-                      Text('2 sapi aktif · semua sehat hari ini',
+                      Text('2 sapi dimiliki',
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
                           style: AppTextStyles.label(
                               color: AppColors.primaryContainer,
                               fontWeight: FontWeight.normal,

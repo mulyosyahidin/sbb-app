@@ -1,10 +1,15 @@
 import 'package:app/app/navigation_keys.dart';
+import 'package:app/app/presentation/navigation_layout.dart';
 import 'package:app/core/auth/application/auth_session_controller.dart';
 import 'package:app/core/utils/logger_util.dart';
+import 'package:app/features/account/presentation/screens/account_page.dart';
 import 'package:app/features/auth/login/presentation/screens/login_page.dart';
 import 'package:app/features/auth/register/presentation/screens/register_page.dart';
+import 'package:app/features/contract/presentation/screens/contract_page.dart';
+import 'package:app/features/gallery/presentation/screens/gallery_page.dart';
 import 'package:app/features/home/presentation/screens/home_page.dart';
 import 'package:app/features/home_guest/presentation/screens/home_guest_page.dart';
+import 'package:app/features/profit/presentation/screens/profit_page.dart';
 import 'package:app/features/splash/presentation/screens/splash_page.dart';
 import 'package:app/features/welcome/presentation/screens/welcome_page.dart';
 import 'package:flutter/material.dart';
@@ -19,8 +24,21 @@ class Routes {
   static const welcome = "/welcome";
   static const login = "/login";
   static const register = "/register";
+  static const homeGate = "/home-gate";
   static const home = "/home";
+  static const contract = "/contract";
+  static const profit = "/profit";
+  static const gallery = "/gallery";
+  static const account = "/account";
   static const homeGuest = "/home-guest";
+
+  static const authenticatedRoutes = [
+    home,
+    contract,
+    profit,
+    gallery,
+    account,
+  ];
 }
 
 @riverpod
@@ -49,12 +67,57 @@ GoRouter router(Ref ref) {
         builder: (context, state) => const RegisterPage(),
       ),
       GoRoute(
-        path: Routes.home,
-        builder: (context, state) => const HomePage(),
-      ),
-      GoRoute(
         path: Routes.homeGuest,
         builder: (context, state) => const HomeGuestPage(),
+      ),
+
+      // AUTHENTICATED TABS
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return NavigationLayout(navigationShell: navigationShell);
+        },
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.home,
+                builder: (context, state) => const HomePage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.contract,
+                builder: (context, state) => const ContractPage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.profit,
+                builder: (context, state) => const ProfitPage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.gallery,
+                builder: (context, state) => const GalleryPage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.account,
+                builder: (context, state) => const AccountPage(),
+              ),
+            ],
+          ),
+        ],
       ),
     ],
     redirect: notifier.redirect,
@@ -76,12 +139,10 @@ class RouterNotifier extends ChangeNotifier {
     final session = _ref.read(authSessionControllerProvider);
     final location = state.matchedLocation;
 
-    // Is on splash page if location is splash route
     final isOnSplashPage = location == Routes.splash;
 
-    // While session is loading, always stay on or go to splash
     if (session.isLoading) {
-      return isOnSplashPage ? null : Routes.splash;
+      return null;
     }
 
     final isAuthenticated = session.maybeWhen(
@@ -89,9 +150,9 @@ class RouterNotifier extends ChangeNotifier {
       orElse: () => false,
     );
 
-    LoggerUtil.info("Redirect Check: location=$location, authenticated=$isAuthenticated");
+    LoggerUtil.info(
+        "Redirect Check: location=$location, authenticated=$isAuthenticated");
 
-    // Case: Logged in users trying to access auth pages (splash, welcome, login, register)
     if (isAuthenticated) {
       if (isOnSplashPage ||
           location == Routes.welcome ||
@@ -102,15 +163,12 @@ class RouterNotifier extends ChangeNotifier {
       }
     }
 
-    // Case: Unauthenticated users
     if (!isAuthenticated) {
-      // If they are on splash, take them to welcome
       if (isOnSplashPage) {
         return Routes.welcome;
       }
 
-      // If they are trying to access protected pages (like home), take them to welcome/login
-      if (location == Routes.home) {
+      if (Routes.authenticatedRoutes.contains(location)) {
         return Routes.welcome;
       }
     }
