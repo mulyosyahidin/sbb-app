@@ -113,7 +113,7 @@ class WelcomePage extends StatelessWidget {
                     label: 'Mulai Sekarang',
                     backgroundColor: Colors.white,
                     foregroundColor: AppColors.primaryDark,
-                    onPressed: () {},
+                    onPressed: () => context.push(Routes.homeGuest),
                   ),
                 ),
                 const SizedBox(height: 24),

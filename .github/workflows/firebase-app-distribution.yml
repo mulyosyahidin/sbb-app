@@ -69,7 +69,7 @@ jobs:
           firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
             --app "${{ vars.FIREBASE_APP_ID }}" \
             --groups "${{ vars.FIREBASE_TESTER_GROUP }}" \
-            --release-notes "Branch: ${{ github.ref_name }} | Build SHA ${{ github.sha }} - Automated distribution via GitHub Actions | $COMMIT_MSG | ($NOW)"
+            --release-notes "Branch: ${{ github.ref_name }} | $COMMIT_MSG | $NOW | SHA: ${{ github.sha }}"
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4

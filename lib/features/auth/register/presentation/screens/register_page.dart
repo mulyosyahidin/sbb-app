@@ -144,10 +144,13 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                         Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.surface,
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.5),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withValues(alpha: 0.1),
                               width: 2,
                             ),
                             boxShadow: [
@@ -191,9 +194,9 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                         SizedBox(height: height * 0.35),
                         Expanded(
                           child: Container(
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.vertical(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.surface,
+                              borderRadius: const BorderRadius.vertical(
                                 top: Radius.circular(30),
                               ),
                             ),
@@ -203,7 +206,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                               children: [
                                 AppTextField(
                                   controller: _nameController,
-                                  label: 'NAMA LENGKAP',
+                                  label: 'NAMA',
                                   hint: 'Masukkan nama sesuai KTP',
                                   prefixIcon: const Icon(Icons.badge_outlined,
                                       size: 20),
@@ -246,7 +249,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
 
                                 AppTextPassword(
                                   controller: _passwordConfirmController,
-                                  label: 'PASSWORD CONFIRMATION',
+                                  label: 'KONFIRMASI PASSWORD',
                                   hint: 'Ulangi password Anda',
                                   prefixIcon: const Icon(
                                       Icons.lock_reset_outlined,
@@ -269,19 +272,23 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    const Text(
+                                    Text(
                                       'Sudah punya akun? ',
                                       style: TextStyle(
-                                        color: AppColors.textSecondaryLight,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurfaceVariant,
                                         fontSize: 14,
                                       ),
                                     ),
                                     GestureDetector(
-                                      onTap: () => Navigator.pop(context),
-                                      child: const Text(
+                                      onTap: () => context.push(Routes.login),
+                                      child: Text(
                                         'Masuk',
                                         style: TextStyle(
-                                          color: AppColors.primaryDark,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
                                         ),

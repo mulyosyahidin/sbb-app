@@ -17,23 +17,25 @@ class GoogleLoginButton extends StatelessWidget {
       onPressed: isLoading ? null : onPressed,
       style: OutlinedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 12),
-        side: BorderSide(color: Colors.grey[300]!),
+        side: BorderSide(color: Theme.of(context).colorScheme.outline),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        backgroundColor: Colors.white,
-        disabledBackgroundColor: Colors.grey[50],
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        disabledBackgroundColor:
+            Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (isLoading)
-            const SizedBox(
+            SizedBox(
               height: 20,
               width: 20,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
+                valueColor: AlwaysStoppedAnimation<Color>(
+                    Theme.of(context).colorScheme.onSurfaceVariant),
               ),
             )
           else
@@ -46,7 +48,9 @@ class GoogleLoginButton extends StatelessWidget {
           Text(
             isLoading ? 'Mohon tunggu...' : 'Masuk dengan Google',
             style: TextStyle(
-              color: isLoading ? Colors.grey : Colors.black87,
+              color: isLoading
+                  ? Theme.of(context).colorScheme.onSurfaceVariant
+                  : Theme.of(context).colorScheme.onSurface,
               fontSize: 15,
               fontWeight: FontWeight.w600,
             ),

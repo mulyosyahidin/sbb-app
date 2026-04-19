@@ -4,6 +4,7 @@ import 'package:app/core/utils/logger_util.dart';
 import 'package:app/features/auth/login/presentation/screens/login_page.dart';
 import 'package:app/features/auth/register/presentation/screens/register_page.dart';
 import 'package:app/features/home/presentation/screens/home_page.dart';
+import 'package:app/features/home_guest/presentation/screens/home_guest_page.dart';
 import 'package:app/features/splash/presentation/screens/splash_page.dart';
 import 'package:app/features/welcome/presentation/screens/welcome_page.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,7 @@ class Routes {
   static const login = "/login";
   static const register = "/register";
   static const home = "/home";
+  static const homeGuest = "/home-guest";
 }
 
 @riverpod
@@ -49,6 +51,10 @@ GoRouter router(Ref ref) {
       GoRoute(
         path: Routes.home,
         builder: (context, state) => const HomePage(),
+      ),
+      GoRoute(
+        path: Routes.homeGuest,
+        builder: (context, state) => const HomeGuestPage(),
       ),
     ],
     redirect: notifier.redirect,
@@ -87,7 +93,11 @@ class RouterNotifier extends ChangeNotifier {
 
     // Case: Logged in users trying to access auth pages (splash, welcome, login, register)
     if (isAuthenticated) {
-      if (isOnSplashPage || location == Routes.welcome || location == Routes.login || location == Routes.register) {
+      if (isOnSplashPage ||
+          location == Routes.welcome ||
+          location == Routes.login ||
+          location == Routes.register ||
+          location == Routes.homeGuest) {
         return Routes.home;
       }
     }

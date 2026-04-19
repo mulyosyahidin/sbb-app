@@ -1,4 +1,5 @@
 import 'package:app/app/app_router.dart';
+import 'package:app/core/auth/application/auth_session_controller.dart';
 import 'package:app/core/errors/api_exception.dart';
 import 'package:app/core/theme/app_theme.dart';
 import 'package:app/core/utils/toast_util.dart';
@@ -69,14 +70,17 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       } else if (next is AsyncData &&
           !next.isLoading &&
           previous is AsyncLoading) {
-        ToastUtil.showSuccess(
-          context,
-          title: 'Berhasil',
-          description: 'Selamat datang kembali!',
-        );
+        final authSession = ref.read(authSessionControllerProvider).value;
+        if (authSession?.isAuthenticated ?? false) {
+          ToastUtil.showSuccess(
+            context,
+            title: 'Berhasil',
+            description: 'Selamat datang kembali!',
+          );
 
-        // Redirect to Home
-        context.go(Routes.home);
+          // Redirect to Home
+          context.go(Routes.home);
+        }
       }
     });
 
@@ -121,10 +125,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.surface,
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.5),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withValues(alpha: 0.1),
                               width: 2,
                             ),
                             boxShadow: [
@@ -143,7 +150,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         ),
                         const SizedBox(height: 16),
                         const Text(
-                          'Mulyo Bahagia',
+                          'Sarana Bahagia Berkah',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 24,
@@ -176,9 +183,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         SizedBox(height: height * 0.4),
                         Expanded(
                           child: Container(
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.vertical(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.surface,
+                              borderRadius: const BorderRadius.vertical(
                                 top: Radius.circular(30),
                               ),
                             ),
@@ -213,10 +220,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                     onPressed: () {
                                       // TODO: Forgot password
                                     },
-                                    child: const Text(
+                                    child: Text(
                                       'Lupa Password?',
                                       style: TextStyle(
-                                        color: AppColors.primary,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
                                         fontWeight: FontWeight.w600,
                                         fontSize: 13,
                                       ),
@@ -254,20 +263,24 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    const Text(
+                                    Text(
                                       'Belum punya akun? ',
                                       style: TextStyle(
-                                        color: AppColors.textSecondaryLight,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurfaceVariant,
                                         fontSize: 14,
                                       ),
                                     ),
                                     GestureDetector(
                                       onTap: () =>
                                           context.push(Routes.register),
-                                      child: const Text(
+                                      child: Text(
                                         'Daftar sekarang',
                                         style: TextStyle(
-                                          color: AppColors.primaryDark,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -294,19 +307,23 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Widget _buildDivider() {
     return Row(
       children: [
-        Expanded(child: Divider(color: Colors.grey[300])),
+        Expanded(
+            child:
+                Divider(color: Theme.of(context).colorScheme.outlineVariant)),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Text(
             'Atau masuk dengan',
             style: TextStyle(
-              color: Colors.grey[500],
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
               fontSize: 12,
               fontWeight: FontWeight.w500,
             ),
           ),
         ),
-        Expanded(child: Divider(color: Colors.grey[300])),
+        Expanded(
+            child:
+                Divider(color: Theme.of(context).colorScheme.outlineVariant)),
       ],
     );
   }
