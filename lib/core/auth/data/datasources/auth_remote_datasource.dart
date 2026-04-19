@@ -5,17 +5,23 @@ import 'package:app/core/models/api_response_dto.dart';
 import 'package:app/core/networks/dio_client.dart';
 import 'package:app/core/utils/logger_util.dart';
 import 'package:dio/dio.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_remote_datasource.g.dart';
 
-class AuthRemoteDatasource {
+abstract class AuthRemoteDatasource {
+  Future<RefreshAccessTokenResponseDto> refreshToken(String accessToken);
+  Future<GetMeResponseDto> getMe();
+  Future<void> logout(String deviceId);
+}
+
+class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
   final Dio _dio;
 
-  AuthRemoteDatasource(this._dio);
+  AuthRemoteDatasourceImpl(this._dio);
 
+  @override
   Future<RefreshAccessTokenResponseDto> refreshToken(String accessToken) async {
     const endpoint = ApiEndpoint.refreshToken;
     RefreshAccessTokenResponseDto? dto;
@@ -25,23 +31,21 @@ class AuthRemoteDatasource {
 
       final response = await _dio.post(endpoint);
 
+      if (response.data is! Map<String, dynamic>) {
+        throw const FormatException("Invalid response format");
+      }
+
       dto = RefreshAccessTokenResponseDto.fromJson(response.data);
-    }on DioException catch (e, stackTrace) {
+    } on DioException catch (e) {
       LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
 
-      FirebaseCrashlytics.instance.recordError(e, stackTrace,
-          reason: 'AuthRemoteDatasource.refreshToken (DioException)');
-
-      if (e.response?.data != null) {
+      if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
         dto = RefreshAccessTokenResponseDto.fromJson(e.response!.data);
       } else {
         rethrow;
       }
-    } catch (e, stackTrace) {
+    } catch (e) {
       LoggerUtil.error("Unexpected error on endpoint $endpoint: $e");
-
-      FirebaseCrashlytics.instance.recordError(e, stackTrace,
-          reason: 'RegisterRemoteDataSource.register (Unexpected)');
       rethrow;
     }
 
@@ -52,6 +56,7 @@ class AuthRemoteDatasource {
     return dto;
   }
 
+  @override
   Future<GetMeResponseDto> getMe() async {
     const endpoint = ApiEndpoint.getMe;
     GetMeResponseDto? dto;
@@ -61,23 +66,21 @@ class AuthRemoteDatasource {
 
       final response = await _dio.get(endpoint);
 
+      if (response.data is! Map<String, dynamic>) {
+        throw const FormatException("Invalid response format");
+      }
+
       dto = GetMeResponseDto.fromJson(response.data);
-    } on DioException catch (e, stackTrace) {
+    } on DioException catch (e) {
       LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
 
-      FirebaseCrashlytics.instance.recordError(e, stackTrace,
-          reason: 'AuthRemoteDatasource.getMe (DioException)');
-
-      if (e.response?.data != null) {
+      if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
         dto = GetMeResponseDto.fromJson(e.response!.data);
       } else {
         rethrow;
       }
-    } catch (e, stackTrace) {
+    } catch (e) {
       LoggerUtil.error("Unexpected error on endpoint $endpoint: $e");
-
-      FirebaseCrashlytics.instance.recordError(e, stackTrace,
-          reason: 'AuthRemoteDatasource.getMe (Unexpected)');
       rethrow;
     }
 
@@ -88,6 +91,7 @@ class AuthRemoteDatasource {
     return dto;
   }
 
+  @override
   Future<void> logout(String deviceId) async {
     const endpoint = ApiEndpoint.logout;
 
@@ -98,6 +102,10 @@ class AuthRemoteDatasource {
         'device_id': deviceId,
       });
 
+      if (response.data is! Map<String, dynamic>) {
+        throw const FormatException("Invalid response format");
+      }
+
       final dto = ApiResponseDto<void>.fromJson(
         response.data,
         (_) {},
@@ -106,17 +114,11 @@ class AuthRemoteDatasource {
       if (!dto.success) {
         throw dto.toException();
       }
-    } on DioException catch (e, stackTrace) {
+    } on DioException catch (e) {
       LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
-
-      FirebaseCrashlytics.instance.recordError(e, stackTrace,
-          reason: 'AuthRemoteDatasource.logout (DioException)');
       rethrow;
-    } catch (e, stackTrace) {
+    } catch (e) {
       LoggerUtil.error("Unexpected error on endpoint $endpoint: $e");
-
-      FirebaseCrashlytics.instance.recordError(e, stackTrace,
-          reason: 'AuthRemoteDatasource.logout (Unexpected)');
       rethrow;
     }
   }
@@ -124,5 +126,5 @@ class AuthRemoteDatasource {
 
 @riverpod
 AuthRemoteDatasource authRemoteDatasource(Ref ref) {
-  return AuthRemoteDatasource(ref.watch(dioProvider));
+  return AuthRemoteDatasourceImpl(ref.watch(dioProvider));
 }

@@ -53,26 +53,26 @@ class RegisterController extends _$RegisterController {
 
       final result = await _repository.register(registerRequestDto);
 
-      if (result.isFailure) {
-        throw result.error!;
-      }
+      return result.fold(
+        (failure) => throw failure,
+        (registerUser) async {
+          final User user = UserMapper.toEntity(registerUser.userDto);
+          final UserDevice userDevice =
+              UserDeviceMapper.toEntity(registerUser.userDeviceDto);
 
-      final registerUser = result.value!;
+          final tokenStorage = ref.read(tokenStorageProvider);
+          await tokenStorage.saveUser(user);
+          await tokenStorage.saveAccessToken(registerUser.accessToken);
+          await tokenStorage.saveDevice(userDevice);
 
-      final User user = UserMapper.toEntity(registerUser.userDto);
-      final UserDevice userDevice = UserDeviceMapper.toEntity(registerUser.userDeviceDto);
-
-      final tokenStorage = ref.read(tokenStorageProvider);
-      await tokenStorage.saveUser(user);
-      await tokenStorage.saveAccessToken(registerUser.accessToken);
-      await tokenStorage.saveDevice(userDevice);
-
-      ref.read(authSessionControllerProvider.notifier).updateSession(
-            AuthSession.authenticated(
-              registerUser.accessToken,
-              user,
-            ),
-          );
+          ref.read(authSessionControllerProvider.notifier).updateSession(
+                AuthSession.authenticated(
+                  registerUser.accessToken,
+                  user,
+                ),
+              );
+        },
+      );
     });
   }
 }

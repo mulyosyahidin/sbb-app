@@ -6,4 +6,8 @@ class ApiEndpoint {
   static const String refreshToken = '/auth/refresh-access-token';
   static const String getMe = '/auth/me';
   static const String logout = '/auth/logout';
+
+  // User
+  static const String updateProfilePicture = '/user/update-profile-picture';
+  static const String updateProfile = '/user/update-profile';
 }

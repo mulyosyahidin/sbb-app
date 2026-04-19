@@ -1,9 +1,9 @@
 import 'package:app/core/theme/app_text_style.dart';
 import 'package:app/core/theme/app_theme.dart';
-import 'package:app/features/account/presentation/widgets/account_header.dart';
-import 'package:app/features/account/presentation/widgets/account_menu_list.dart';
-import 'package:app/features/account/presentation/widgets/account_stats_row.dart';
-import 'package:app/features/account/presentation/widgets/consultant_panel.dart';
+import 'package:app/features/account/summary/presentation/widgets/account_header.dart';
+import 'package:app/features/account/summary/presentation/widgets/account_menu_list.dart';
+import 'package:app/features/account/summary/presentation/widgets/account_stats_row.dart';
+import 'package:app/features/account/summary/presentation/widgets/consultant_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

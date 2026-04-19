@@ -17,6 +17,7 @@ class AppTextField extends StatelessWidget {
   final ValueChanged<String>? onFieldSubmitted;
   final String? errorText;
   final bool obscureText;
+  final bool enabled;
 
   const AppTextField({
     super.key,
@@ -34,6 +35,7 @@ class AppTextField extends StatelessWidget {
     this.onFieldSubmitted,
     this.errorText,
     this.obscureText = false,
+    this.enabled = true,
   });
 
   @override
@@ -53,6 +55,7 @@ class AppTextField extends StatelessWidget {
         const SizedBox(height: 8),
         TextFormField(
           controller: controller,
+          enabled: enabled,
           validator: validator,
           keyboardType: keyboardType,
           textCapitalization: textCapitalization,

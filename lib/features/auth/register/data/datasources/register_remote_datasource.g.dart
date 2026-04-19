@@ -7,7 +7,7 @@ part of 'register_remote_datasource.dart';
 // **************************************************************************
 
 String _$registerRemoteDatasourceHash() =>
-    r'53a85a128fead4d65557d8e8c037b0a1ae2ed53b';
+    r'e230bd632f0bf7aa909683baa29f1877281da8e2';
 
 /// See also [registerRemoteDatasource].
 @ProviderFor(registerRemoteDatasource)

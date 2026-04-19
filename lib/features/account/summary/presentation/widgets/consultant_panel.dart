@@ -21,17 +21,21 @@ class ConsultantPanel extends StatelessWidget {
               children: [
                 Text(
                   'Mitra yang kamu rekrut',
-                  style: AppTextStyles.body(color: Colors.white, fontWeight: FontWeight.bold),
+                  style: AppTextStyles.body(
+                      color: Colors.white, fontWeight: FontWeight.bold),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     '5 aktif',
-                    style: AppTextStyles.label(color: Colors.white.withValues(alpha: 0.9), letterSpacing: 0),
+                    style: AppTextStyles.label(
+                        color: Colors.white.withValues(alpha: 0.9),
+                        letterSpacing: 0),
                   ),
                 ),
               ],
@@ -44,6 +48,7 @@ class ConsultantPanel extends StatelessWidget {
               borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
             ),
             child: GridView.count(
+              padding: EdgeInsets.zero,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               crossAxisCount: 2,
@@ -76,12 +81,17 @@ class ConsultantPanel extends StatelessWidget {
         children: [
           Text(
             name,
-            style: AppTextStyles.body(fontWeight: FontWeight.bold, fontSize: 13),
+            style:
+                AppTextStyles.body(fontWeight: FontWeight.bold, fontSize: 13),
           ),
           const SizedBox(height: 2),
           Text(
             status,
-            style: AppTextStyles.label(color: AppColors.textSecondaryLight, fontSize: 10, letterSpacing: 0, fontWeight: FontWeight.normal),
+            style: AppTextStyles.label(
+                color: AppColors.textSecondaryLight,
+                fontSize: 10,
+                letterSpacing: 0,
+                fontWeight: FontWeight.normal),
           ),
           const Spacer(),
           Text(

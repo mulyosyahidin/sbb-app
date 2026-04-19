@@ -1,9 +1,12 @@
+import 'package:app/core/errors/api_exception.dart';
+import 'package:app/core/errors/data_exception.dart';
+import 'package:app/core/errors/failure.dart';
 import 'package:app/core/utils/error_util.dart';
-import 'package:app/core/utils/result.dart';
 import 'package:app/features/auth/register/data/datasources/register_remote_datasource.dart';
 import 'package:app/features/auth/register/data/dto/requests/register_request_dto.dart';
 import 'package:app/features/auth/register/data/dto/responses/register_response_dto.dart';
 import 'package:app/features/auth/register/domain/repositories/register_repository.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -14,16 +17,27 @@ class RegisterRepositoryImpl implements RegisterRepository {
 
   RegisterRepositoryImpl(this._registerRemoteDatasource);
 
-  @override
-  Future<Result<RegisterResponseData>> register(RegisterRequestDto registerRequestDto) async {
-    try {
-      final response = await _registerRemoteDatasource.register(registerRequestDto);
+  Failure _mapExceptionToFailure(Object e, String reason) {
+    final handled = ErrorUtil.handleRepositoryException(e, reason);
+    if (handled is ApiException) {
+      return ValidationFailure(handled.message, errors: handled.errors);
+    }
+    if (handled is DataException) {
+      return ServerFailure(handled.message, code: handled.code);
+    }
+    return ServerFailure(handled.toString());
+  }
 
-      return Result.success(response.data!);
+  @override
+  Future<Either<Failure, RegisterResponseData>> register(
+      RegisterRequestDto registerRequestDto) async {
+    try {
+      final response =
+          await _registerRemoteDatasource.register(registerRequestDto);
+
+      return Right(response.data!);
     } catch (e) {
-      final handledError = ErrorUtil.handleRepositoryException(e, 'RegisterRepositoryImpl');
-      
-      return Result.failure(handledError as Exception);
+      return Left(_mapExceptionToFailure(e, 'RegisterRepositoryImpl'));
     }
   }
 }

@@ -20,6 +20,7 @@ mixin _$UserDto {
   String get email;
   String? get avatarUrl;
   String? get phoneNumber;
+  String? get driver;
   DateTime get createdAt;
   DateTime get updatedAt;
 
@@ -45,6 +46,7 @@ mixin _$UserDto {
                 other.avatarUrl == avatarUrl) &&
             (identical(other.phoneNumber, phoneNumber) ||
                 other.phoneNumber == phoneNumber) &&
+            (identical(other.driver, driver) || other.driver == driver) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -54,11 +56,11 @@ mixin _$UserDto {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, name, email, avatarUrl,
-      phoneNumber, createdAt, updatedAt);
+      phoneNumber, driver, createdAt, updatedAt);
 
   @override
   String toString() {
-    return 'UserDto(id: $id, name: $name, email: $email, avatarUrl: $avatarUrl, phoneNumber: $phoneNumber, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'UserDto(id: $id, name: $name, email: $email, avatarUrl: $avatarUrl, phoneNumber: $phoneNumber, driver: $driver, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }
 
@@ -73,6 +75,7 @@ abstract mixin class $UserDtoCopyWith<$Res> {
       String email,
       String? avatarUrl,
       String? phoneNumber,
+      String? driver,
       DateTime createdAt,
       DateTime updatedAt});
 }
@@ -94,6 +97,7 @@ class _$UserDtoCopyWithImpl<$Res> implements $UserDtoCopyWith<$Res> {
     Object? email = null,
     Object? avatarUrl = freezed,
     Object? phoneNumber = freezed,
+    Object? driver = freezed,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -118,6 +122,10 @@ class _$UserDtoCopyWithImpl<$Res> implements $UserDtoCopyWith<$Res> {
           ? _self.phoneNumber
           : phoneNumber // ignore: cast_nullable_to_non_nullable
               as String?,
+      driver: freezed == driver
+          ? _self.driver
+          : driver // ignore: cast_nullable_to_non_nullable
+              as String?,
       createdAt: null == createdAt
           ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -139,6 +147,7 @@ class _UserDto implements UserDto {
       required this.email,
       this.avatarUrl,
       this.phoneNumber,
+      this.driver,
       required this.createdAt,
       required this.updatedAt});
   factory _UserDto.fromJson(Map<String, dynamic> json) =>
@@ -154,6 +163,8 @@ class _UserDto implements UserDto {
   final String? avatarUrl;
   @override
   final String? phoneNumber;
+  @override
+  final String? driver;
   @override
   final DateTime createdAt;
   @override
@@ -186,6 +197,7 @@ class _UserDto implements UserDto {
                 other.avatarUrl == avatarUrl) &&
             (identical(other.phoneNumber, phoneNumber) ||
                 other.phoneNumber == phoneNumber) &&
+            (identical(other.driver, driver) || other.driver == driver) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -195,11 +207,11 @@ class _UserDto implements UserDto {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, name, email, avatarUrl,
-      phoneNumber, createdAt, updatedAt);
+      phoneNumber, driver, createdAt, updatedAt);
 
   @override
   String toString() {
-    return 'UserDto(id: $id, name: $name, email: $email, avatarUrl: $avatarUrl, phoneNumber: $phoneNumber, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'UserDto(id: $id, name: $name, email: $email, avatarUrl: $avatarUrl, phoneNumber: $phoneNumber, driver: $driver, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }
 
@@ -215,6 +227,7 @@ abstract mixin class _$UserDtoCopyWith<$Res> implements $UserDtoCopyWith<$Res> {
       String email,
       String? avatarUrl,
       String? phoneNumber,
+      String? driver,
       DateTime createdAt,
       DateTime updatedAt});
 }
@@ -236,6 +249,7 @@ class __$UserDtoCopyWithImpl<$Res> implements _$UserDtoCopyWith<$Res> {
     Object? email = null,
     Object? avatarUrl = freezed,
     Object? phoneNumber = freezed,
+    Object? driver = freezed,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -259,6 +273,10 @@ class __$UserDtoCopyWithImpl<$Res> implements _$UserDtoCopyWith<$Res> {
       phoneNumber: freezed == phoneNumber
           ? _self.phoneNumber
           : phoneNumber // ignore: cast_nullable_to_non_nullable
+              as String?,
+      driver: freezed == driver
+          ? _self.driver
+          : driver // ignore: cast_nullable_to_non_nullable
               as String?,
       createdAt: null == createdAt
           ? _self.createdAt

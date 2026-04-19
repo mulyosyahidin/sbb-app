@@ -11,6 +11,7 @@ abstract class UserDto with _$UserDto {
     required String email,
     String? avatarUrl,
     String? phoneNumber,
+    String? driver,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) = _UserDto;

@@ -1,10 +1,13 @@
+import 'package:app/core/errors/api_exception.dart';
+import 'package:app/core/errors/data_exception.dart';
+import 'package:app/core/errors/failure.dart';
 import 'package:app/core/utils/error_util.dart';
-import 'package:app/core/utils/result.dart';
 import 'package:app/features/auth/login/data/datasources/login_remote_datasource.dart';
 import 'package:app/features/auth/login/data/dto/requests/google_login_request_dto.dart';
 import 'package:app/features/auth/login/data/dto/requests/login_request_dto.dart';
 import 'package:app/features/auth/login/data/dto/responses/login_response_dto.dart';
 import 'package:app/features/auth/login/domain/repositories/login_repository.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -15,30 +18,38 @@ class LoginRepositoryImpl implements LoginRepository {
 
   LoginRepositoryImpl(this._loginRemoteDatasource);
 
+  Failure _mapExceptionToFailure(Object e, String reason) {
+    final handled = ErrorUtil.handleRepositoryException(e, reason);
+    if (handled is ApiException) {
+      return ValidationFailure(handled.message, errors: handled.errors);
+    }
+    if (handled is DataException) {
+      return ServerFailure(handled.message, code: handled.code);
+    }
+    return ServerFailure(handled.toString());
+  }
+
   @override
-  Future<Result<LoginResponseData>> login(LoginRequestDto dto) async {
+  Future<Either<Failure, LoginResponseData>> login(LoginRequestDto dto) async {
     try {
       final response = await _loginRemoteDatasource.login(dto);
 
-      return Result.success(response.data as LoginResponseData);
+      return Right(response.data as LoginResponseData);
     } catch (e) {
-      final handledError =
-          ErrorUtil.handleRepositoryException(e, 'LoginRepositoryImpl');
-      return Result.failure(handledError as Exception);
+      return Left(_mapExceptionToFailure(e, 'LoginRepositoryImpl.login'));
     }
   }
 
   @override
-  Future<Result<LoginResponseData>> loginWithGoogle(
+  Future<Either<Failure, LoginResponseData>> loginWithGoogle(
       GoogleLoginRequestDto dto) async {
     try {
       final response = await _loginRemoteDatasource.loginWithGoogle(dto);
 
-      return Result.success(response.data as LoginResponseData);
+      return Right(response.data as LoginResponseData);
     } catch (e) {
-      final handledError =
-          ErrorUtil.handleRepositoryException(e, 'LoginRepositoryImpl.loginWithGoogle');
-      return Result.failure(handledError as Exception);
+      return Left(
+          _mapExceptionToFailure(e, 'LoginRepositoryImpl.loginWithGoogle'));
     }
   }
 }

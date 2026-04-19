@@ -51,11 +51,12 @@ class LoginController extends _$LoginController {
 
       final result = await _repository.login(loginRequestDto);
 
-      if (result.isFailure) {
-        throw result.error!;
-      }
-
-      await _handleLoginSuccess(result.value!);
+      return result.fold(
+        (failure) => throw failure,
+        (data) async {
+          await _handleLoginSuccess(data);
+        },
+      );
     });
   }
 
@@ -93,12 +94,13 @@ class LoginController extends _$LoginController {
       // 3. Hit backend
       final result = await _repository.loginWithGoogle(googleLoginRequestDto);
 
-      if (result.isFailure) {
-        throw result.error!;
-      }
-
-      // 4. Handle success
-      await _handleLoginSuccess(result.value!);
+      return result.fold(
+        (failure) => throw failure,
+        (data) async {
+          // 4. Handle success
+          await _handleLoginSuccess(data);
+        },
+      );
     });
   }
 

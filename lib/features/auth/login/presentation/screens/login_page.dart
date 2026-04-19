@@ -1,6 +1,6 @@
 import 'package:app/app/app_router.dart';
 import 'package:app/core/auth/application/auth_session_controller.dart';
-import 'package:app/core/errors/api_exception.dart';
+import 'package:app/core/errors/failure.dart';
 import 'package:app/core/theme/app_theme.dart';
 import 'package:app/core/utils/toast_util.dart';
 import 'package:app/features/auth/login/application/login_controller.dart';
@@ -56,14 +56,25 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     ref.listen(loginControllerProvider, (previous, next) {
       if (next is AsyncError) {
         final error = next.error;
-        if (error is ApiException && error.errors != null) {
+        if (error is ValidationFailure) {
           setState(() {
-            _fieldErrors = error.errors!;
+            _fieldErrors = error.errors ?? {};
           });
-        } else {
+          ToastUtil.showError(
+            context,
+            title: 'Terjadi kesalahan',
+            description: error.message,
+          );
+        } else if (error is Failure) {
           ToastUtil.showError(
             context,
             title: 'Gagal Masuk',
+            description: error.message,
+          );
+        } else {
+          ToastUtil.showError(
+            context,
+            title: 'Terjadi kesalahan',
             description: error.toString(),
           );
         }

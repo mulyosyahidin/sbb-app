@@ -9,6 +9,7 @@ class UserMapper {
       email: dto.email,
       avatarUrl: dto.avatarUrl,
       phoneNumber: dto.phoneNumber,
+      driver: dto.driver,
       createdAt: dto.createdAt,
       updatedAt: dto.updatedAt,
     );
@@ -21,6 +22,7 @@ class UserMapper {
       email: user.email,
       avatarUrl: user.avatarUrl,
       phoneNumber: user.phoneNumber,
+      driver: user.driver,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     );

@@ -2,7 +2,8 @@ import 'package:app/app/navigation_keys.dart';
 import 'package:app/app/presentation/navigation_layout.dart';
 import 'package:app/core/auth/application/auth_session_controller.dart';
 import 'package:app/core/utils/logger_util.dart';
-import 'package:app/features/account/presentation/screens/account_page.dart';
+import 'package:app/features/account/summary/presentation/screens/account_page.dart';
+import 'package:app/features/account/edit_profile/presentation/screens/edit_profile_page.dart';
 import 'package:app/features/auth/login/presentation/screens/login_page.dart';
 import 'package:app/features/auth/register/presentation/screens/register_page.dart';
 import 'package:app/features/contract/presentation/screens/contract_page.dart';
@@ -30,6 +31,7 @@ class Routes {
   static const profit = "/profit";
   static const gallery = "/gallery";
   static const account = "/account";
+  static const editProfile = "/edit-profile";
   static const homeGuest = "/home-guest";
 
   static const authenticatedRoutes = [
@@ -38,6 +40,7 @@ class Routes {
     profit,
     gallery,
     account,
+    editProfile,
   ];
 }
 
@@ -69,6 +72,10 @@ GoRouter router(Ref ref) {
       GoRoute(
         path: Routes.homeGuest,
         builder: (context, state) => const HomeGuestPage(),
+      ),
+      GoRoute(
+        path: Routes.editProfile,
+        builder: (context, state) => const EditProfilePage(),
       ),
 
       // AUTHENTICATED TABS

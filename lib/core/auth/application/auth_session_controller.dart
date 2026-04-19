@@ -29,6 +29,16 @@ class AuthSession {
   }
 
   bool get isAuthenticated => accessToken != null && user != null;
+
+  AuthSession copyWith({
+    String? accessToken,
+    User? user,
+  }) {
+    return AuthSession(
+      accessToken: accessToken ?? this.accessToken,
+      user: user ?? this.user,
+    );
+  }
 }
 
 @riverpod
@@ -131,5 +141,12 @@ class AuthSessionController extends _$AuthSessionController {
   void updateSession(AuthSession session) {
     state = AsyncData(session);
     LoggerUtil.info("AuthSession: Session updated manually.");
+  }
+
+  void updateUser(User user) {
+    state.whenData((session) {
+      state = AsyncData(session.copyWith(user: user));
+    });
+    LoggerUtil.info("AuthSession: User updated manually.");
   }
 }

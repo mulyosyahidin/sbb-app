@@ -5,17 +5,22 @@ import 'package:app/features/auth/login/data/dto/requests/google_login_request_d
 import 'package:app/features/auth/login/data/dto/requests/login_request_dto.dart';
 import 'package:app/features/auth/login/data/dto/responses/login_response_dto.dart';
 import 'package:dio/dio.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'login_remote_datasource.g.dart';
 
-class LoginRemoteDatasource {
+abstract class LoginRemoteDatasource {
+  Future<LoginResponseDto> login(LoginRequestDto dto);
+  Future<LoginResponseDto> loginWithGoogle(GoogleLoginRequestDto dto);
+}
+
+class LoginRemoteDatasourceImpl implements LoginRemoteDatasource {
   final Dio _dio;
 
-  LoginRemoteDatasource(this._dio);
+  LoginRemoteDatasourceImpl(this._dio);
 
+  @override
   Future<LoginResponseDto> login(LoginRequestDto dto) async {
     const endpoint = ApiEndpoint.login;
     LoginResponseDto? responseDto;
@@ -25,23 +30,21 @@ class LoginRemoteDatasource {
 
       final response = await _dio.post(endpoint, data: dto.toJson());
 
+      if (response.data is! Map<String, dynamic>) {
+        throw const FormatException("Invalid response format");
+      }
+
       responseDto = LoginResponseDto.fromJson(response.data);
-    } on DioException catch (e, stackTrace) {
+    } on DioException catch (e) {
       LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
 
-      FirebaseCrashlytics.instance.recordError(e, stackTrace,
-          reason: 'LoginRemoteDatasource.login (DioException)');
-
-      if (e.response?.data != null) {
+      if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
         responseDto = LoginResponseDto.fromJson(e.response!.data);
       } else {
         rethrow;
       }
-    } catch (e, stackTrace) {
+    } catch (e) {
       LoggerUtil.error("Unexpected error on endpoint $endpoint: $e");
-
-      FirebaseCrashlytics.instance.recordError(e, stackTrace,
-          reason: 'LoginRemoteDatasource.login (Unexpected)');
       rethrow;
     }
 
@@ -52,6 +55,7 @@ class LoginRemoteDatasource {
     return responseDto;
   }
 
+  @override
   Future<LoginResponseDto> loginWithGoogle(GoogleLoginRequestDto dto) async {
     const endpoint = ApiEndpoint.googleLogin;
     LoginResponseDto? responseDto;
@@ -61,23 +65,21 @@ class LoginRemoteDatasource {
 
       final response = await _dio.post(endpoint, data: dto.toJson());
 
+      if (response.data is! Map<String, dynamic>) {
+        throw const FormatException("Invalid response format");
+      }
+
       responseDto = LoginResponseDto.fromJson(response.data);
-    } on DioException catch (e, stackTrace) {
+    } on DioException catch (e) {
       LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
 
-      FirebaseCrashlytics.instance.recordError(e, stackTrace,
-          reason: 'LoginRemoteDatasource.loginWithGoogle (DioException)');
-
-      if (e.response?.data != null) {
+      if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
         responseDto = LoginResponseDto.fromJson(e.response!.data);
       } else {
         rethrow;
       }
-    } catch (e, stackTrace) {
+    } catch (e) {
       LoggerUtil.error("Unexpected error on endpoint $endpoint: $e");
-
-      FirebaseCrashlytics.instance.recordError(e, stackTrace,
-          reason: 'LoginRemoteDatasource.loginWithGoogle (Unexpected)');
       rethrow;
     }
 
@@ -91,5 +93,5 @@ class LoginRemoteDatasource {
 
 @riverpod
 LoginRemoteDatasource loginRemoteDatasource(Ref ref) {
-  return LoginRemoteDatasource(ref.watch(dioProvider));
+  return LoginRemoteDatasourceImpl(ref.watch(dioProvider));
 }

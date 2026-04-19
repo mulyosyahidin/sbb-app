@@ -1,8 +1,10 @@
+import 'package:app/app/app_router.dart';
 import 'package:app/core/auth/application/auth_session_controller.dart';
 import 'package:app/core/theme/app_text_style.dart';
 import 'package:app/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class AccountMenuList extends ConsumerWidget {
   const AccountMenuList({super.key});
@@ -14,7 +16,13 @@ class AccountMenuList extends ConsumerWidget {
 
     return Column(
       children: [
-        _buildMenuItem(Icons.person, 'Edit Profil', const Color(0xFFF0F7F4), const Color(0xFF468432)),
+        _buildMenuItem(
+          Icons.person,
+          'Edit Profil',
+          const Color(0xFFF0F7F4),
+          const Color(0xFF468432),
+          onTap: () => context.push(Routes.editProfile),
+        ),
         _buildMenuItem(Icons.account_balance, 'Rekening Bank', const Color(0xFFF0F4F7), const Color(0xFF325B84)),
         _buildMenuItem(Icons.notifications, 'Notifikasi', const Color(0xFFFFF8F0), const Color(0xFF846432)),
         _buildMenuItem(Icons.security, 'Keamanan & Password', const Color(0xFFF4F0F7), const Color(0xFF5B3284)),
