@@ -3,6 +3,7 @@ import 'package:app/core/errors/api_exception.dart';
 import 'package:app/core/theme/app_theme.dart';
 import 'package:app/core/utils/toast_util.dart';
 import 'package:app/features/auth/login/application/login_controller.dart';
+import 'package:app/features/auth/login/presentation/widgets/google_login_button.dart';
 import 'package:app/shared/forms/app_text_field.dart';
 import 'package:app/shared/forms/app_text_password.dart';
 import 'package:app/shared/widgets/primary_button.dart';
@@ -232,6 +233,20 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                   onPressed: isLoading ? null : _handleLogin,
                                 ),
 
+                                const SizedBox(height: 24),
+                                _buildDivider(),
+                                const SizedBox(height: 24),
+
+                                // GOOGLE LOGIN BUTTON
+                                GoogleLoginButton(
+                                  isLoading: isLoading,
+                                  onPressed: () {
+                                    ref
+                                        .read(loginControllerProvider.notifier)
+                                        .loginWithGoogle();
+                                  },
+                                ),
+
                                 const Spacer(),
                                 const SizedBox(height: 24),
 
@@ -273,6 +288,26 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           );
         },
       ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Row(
+      children: [
+        Expanded(child: Divider(color: Colors.grey[300])),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            'Atau masuk dengan',
+            style: TextStyle(
+              color: Colors.grey[500],
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+        Expanded(child: Divider(color: Colors.grey[300])),
+      ],
     );
   }
 }

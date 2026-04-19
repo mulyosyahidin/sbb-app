@@ -1,6 +1,7 @@
 import 'package:app/core/utils/error_util.dart';
 import 'package:app/core/utils/result.dart';
 import 'package:app/features/auth/login/data/datasources/login_remote_datasource.dart';
+import 'package:app/features/auth/login/data/dto/requests/google_login_request_dto.dart';
 import 'package:app/features/auth/login/data/dto/requests/login_request_dto.dart';
 import 'package:app/features/auth/login/data/dto/responses/login_response_dto.dart';
 import 'package:app/features/auth/login/domain/repositories/login_repository.dart';
@@ -23,6 +24,20 @@ class LoginRepositoryImpl implements LoginRepository {
     } catch (e) {
       final handledError =
           ErrorUtil.handleRepositoryException(e, 'LoginRepositoryImpl');
+      return Result.failure(handledError as Exception);
+    }
+  }
+
+  @override
+  Future<Result<LoginResponseData>> loginWithGoogle(
+      GoogleLoginRequestDto dto) async {
+    try {
+      final response = await _loginRemoteDatasource.loginWithGoogle(dto);
+
+      return Result.success(response.data as LoginResponseData);
+    } catch (e) {
+      final handledError =
+          ErrorUtil.handleRepositoryException(e, 'LoginRepositoryImpl.loginWithGoogle');
       return Result.failure(handledError as Exception);
     }
   }

@@ -9,6 +9,7 @@ abstract class UserDto with _$UserDto {
     required String id,
     required String name,
     required String email,
+    String? avatarUrl,
     String? phoneNumber,
     required DateTime createdAt,
     required DateTime updatedAt,

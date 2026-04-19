@@ -7,7 +7,10 @@ import 'package:app/core/domain/entities/user_device.dart';
 import 'package:app/core/services/device_info_service.dart';
 import 'package:app/core/services/fcm_service.dart';
 import 'package:app/core/utils/logger_util.dart';
+import 'package:app/features/auth/login/application/google_login_service.dart';
+import 'package:app/features/auth/login/data/dto/requests/google_login_request_dto.dart';
 import 'package:app/features/auth/login/data/dto/requests/login_request_dto.dart';
+import 'package:app/features/auth/login/data/dto/responses/login_response_dto.dart';
 import 'package:app/features/auth/login/data/repositories/login_repository_impl.dart';
 import 'package:app/features/auth/login/domain/repositories/login_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -52,27 +55,73 @@ class LoginController extends _$LoginController {
         throw result.error!;
       }
 
-      final loginResponse = result.value!;
-
-      // Map DTOs to Entities
-      final User user = UserMapper.toEntity(loginResponse.userDto);
-      final UserDevice device = UserDeviceMapper.toEntity(loginResponse.userDeviceDto);
-
-      // Save to storage
-      final tokenStorage = ref.read(tokenStorageProvider);
-      await tokenStorage.saveUser(user);
-      await tokenStorage.saveAccessToken(loginResponse.accessToken);
-      await tokenStorage.saveDevice(device);
-
-      // Sync session state
-      ref.read(authSessionControllerProvider.notifier).updateSession(
-            AuthSession.authenticated(
-              loginResponse.accessToken,
-              user,
-            ),
-          );
-
-      LoggerUtil.info('Login success: ${user.email}');
+      await _handleLoginSuccess(result.value!);
     });
+  }
+
+  Future<void> loginWithGoogle() async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      // 1. Google Sign In to get ID Token
+      final idToken =
+          await ref.read(googleLoginServiceProvider).signInWithGoogle();
+
+      if (idToken == null) {
+        // User cancelled login
+        return;
+      }
+
+      // 2. Gather device info
+      final fcmToken = await ref.read(fetchFcmTokenProvider.future);
+      final deviceId = await ref.read(fetchDeviceIdProvider.future);
+      final details = await ref.read(fetchDeviceDetailsProvider.future);
+
+      if (fcmToken == null || deviceId == null) {
+        throw Exception('Failed to get required device information');
+      }
+
+      final googleLoginRequestDto = GoogleLoginRequestDto(
+        idToken: idToken,
+        fcmToken: fcmToken,
+        deviceId: deviceId,
+        deviceBrand: details['brand'] ?? 'Unknown',
+        deviceModel: details['model'] ?? 'Unknown',
+        osBuildId: details['os_build_id'] ?? 'Unknown',
+        osVersion: details['os_version'] ?? 'Unknown',
+      );
+
+      // 3. Hit backend
+      final result = await _repository.loginWithGoogle(googleLoginRequestDto);
+
+      if (result.isFailure) {
+        throw result.error!;
+      }
+
+      // 4. Handle success
+      await _handleLoginSuccess(result.value!);
+    });
+  }
+
+  Future<void> _handleLoginSuccess(LoginResponseData loginResponse) async {
+    // Map DTOs to Entities
+    final User user = UserMapper.toEntity(loginResponse.userDto);
+    final UserDevice device =
+        UserDeviceMapper.toEntity(loginResponse.userDeviceDto);
+
+    // Save to storage
+    final tokenStorage = ref.read(tokenStorageProvider);
+    await tokenStorage.saveUser(user);
+    await tokenStorage.saveAccessToken(loginResponse.accessToken);
+    await tokenStorage.saveDevice(device);
+
+    // Sync session state
+    ref.read(authSessionControllerProvider.notifier).updateSession(
+          AuthSession.authenticated(
+            loginResponse.accessToken,
+            user,
+          ),
+        );
+
+    LoggerUtil.info('Login success: ${user.email}');
   }
 }

@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - mvp
+      - development
   workflow_dispatch:
 
 jobs:
@@ -50,7 +51,9 @@ jobs:
 
       - name: Build Release APK
         run: |
-          flutter build apk --release --dart-define=API_BASE_URL=${{ vars.API_BASE_URL }}/api
+          flutter build apk --release \
+            --dart-define=API_BASE_URL=${{ vars.API_BASE_URL }}/api \
+            --dart-define=GOOGLE_SERVER_CLIENT_ID=${{ vars.GOOGLE_SERVER_CLIENT_ID }}
 
       - name: Distribute to Firebase App Distribution
         run: |
@@ -66,7 +69,7 @@ jobs:
           firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
             --app "${{ vars.FIREBASE_APP_ID }}" \
             --groups "${{ vars.FIREBASE_TESTER_GROUP }}" \
-            --release-notes "Build SHA ${{ github.sha }} - Automated distribution via GitHub Actions | $COMMIT_MSG | ($NOW)"
+            --release-notes "Branch: ${{ github.ref_name }} | Build SHA ${{ github.sha }} - Automated distribution via GitHub Actions | $COMMIT_MSG | ($NOW)"
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4

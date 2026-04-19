@@ -1,26 +1,29 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'login_controller.dart';
+part of 'google_login_service.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$loginControllerHash() => r'2dc37d5a2bd0293fad75243945da57302a6f4a0f';
+String _$googleLoginServiceHash() =>
+    r'1d7c3f06948bc27e1ceeb5ab1a4a0a031f7b3861';
 
-/// See also [LoginController].
-@ProviderFor(LoginController)
-final loginControllerProvider =
-    AutoDisposeAsyncNotifierProvider<LoginController, void>.internal(
-  LoginController.new,
-  name: r'loginControllerProvider',
+/// See also [googleLoginService].
+@ProviderFor(googleLoginService)
+final googleLoginServiceProvider =
+    AutoDisposeProvider<GoogleLoginService>.internal(
+  googleLoginService,
+  name: r'googleLoginServiceProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$loginControllerHash,
+      : _$googleLoginServiceHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$LoginController = AutoDisposeAsyncNotifier<void>;
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef GoogleLoginServiceRef = AutoDisposeProviderRef<GoogleLoginService>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

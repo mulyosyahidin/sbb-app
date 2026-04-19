@@ -1,5 +1,6 @@
 import 'package:app/core/auth/application/auth_session_controller.dart';
 import 'package:app/features/home/application/home_providers.dart';
+import 'package:app/shared/widgets/app_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -87,10 +88,20 @@ class HomePage extends ConsumerWidget {
       ),
       child: Column(
         children: [
-          const CircleAvatar(
-            radius: 35,
-            backgroundColor: Colors.blueAccent,
-            child: Icon(Icons.person, size: 40, color: Colors.white),
+          AppNetworkImage(
+            imageUrl: data.user?.avatarUrl,
+            width: 70,
+            height: 70,
+            borderRadius: 35,
+            errorWidget: Container(
+              width: 70,
+              height: 70,
+              decoration: const BoxDecoration(
+                color: Colors.blueAccent,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.person, size: 40, color: Colors.white),
+            ),
           ),
           const SizedBox(height: 16),
           Text(

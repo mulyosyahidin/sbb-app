@@ -18,6 +18,7 @@ mixin _$UserDto {
   String get id;
   String get name;
   String get email;
+  String? get avatarUrl;
   String? get phoneNumber;
   DateTime get createdAt;
   DateTime get updatedAt;
@@ -40,6 +41,8 @@ mixin _$UserDto {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.email, email) || other.email == email) &&
+            (identical(other.avatarUrl, avatarUrl) ||
+                other.avatarUrl == avatarUrl) &&
             (identical(other.phoneNumber, phoneNumber) ||
                 other.phoneNumber == phoneNumber) &&
             (identical(other.createdAt, createdAt) ||
@@ -50,12 +53,12 @@ mixin _$UserDto {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, name, email, phoneNumber, createdAt, updatedAt);
+  int get hashCode => Object.hash(runtimeType, id, name, email, avatarUrl,
+      phoneNumber, createdAt, updatedAt);
 
   @override
   String toString() {
-    return 'UserDto(id: $id, name: $name, email: $email, phoneNumber: $phoneNumber, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'UserDto(id: $id, name: $name, email: $email, avatarUrl: $avatarUrl, phoneNumber: $phoneNumber, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }
 
@@ -68,6 +71,7 @@ abstract mixin class $UserDtoCopyWith<$Res> {
       {String id,
       String name,
       String email,
+      String? avatarUrl,
       String? phoneNumber,
       DateTime createdAt,
       DateTime updatedAt});
@@ -88,6 +92,7 @@ class _$UserDtoCopyWithImpl<$Res> implements $UserDtoCopyWith<$Res> {
     Object? id = null,
     Object? name = null,
     Object? email = null,
+    Object? avatarUrl = freezed,
     Object? phoneNumber = freezed,
     Object? createdAt = null,
     Object? updatedAt = null,
@@ -105,6 +110,10 @@ class _$UserDtoCopyWithImpl<$Res> implements $UserDtoCopyWith<$Res> {
           ? _self.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
+      avatarUrl: freezed == avatarUrl
+          ? _self.avatarUrl
+          : avatarUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
       phoneNumber: freezed == phoneNumber
           ? _self.phoneNumber
           : phoneNumber // ignore: cast_nullable_to_non_nullable
@@ -128,6 +137,7 @@ class _UserDto implements UserDto {
       {required this.id,
       required this.name,
       required this.email,
+      this.avatarUrl,
       this.phoneNumber,
       required this.createdAt,
       required this.updatedAt});
@@ -140,6 +150,8 @@ class _UserDto implements UserDto {
   final String name;
   @override
   final String email;
+  @override
+  final String? avatarUrl;
   @override
   final String? phoneNumber;
   @override
@@ -170,6 +182,8 @@ class _UserDto implements UserDto {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.email, email) || other.email == email) &&
+            (identical(other.avatarUrl, avatarUrl) ||
+                other.avatarUrl == avatarUrl) &&
             (identical(other.phoneNumber, phoneNumber) ||
                 other.phoneNumber == phoneNumber) &&
             (identical(other.createdAt, createdAt) ||
@@ -180,12 +194,12 @@ class _UserDto implements UserDto {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, name, email, phoneNumber, createdAt, updatedAt);
+  int get hashCode => Object.hash(runtimeType, id, name, email, avatarUrl,
+      phoneNumber, createdAt, updatedAt);
 
   @override
   String toString() {
-    return 'UserDto(id: $id, name: $name, email: $email, phoneNumber: $phoneNumber, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'UserDto(id: $id, name: $name, email: $email, avatarUrl: $avatarUrl, phoneNumber: $phoneNumber, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }
 
@@ -199,6 +213,7 @@ abstract mixin class _$UserDtoCopyWith<$Res> implements $UserDtoCopyWith<$Res> {
       {String id,
       String name,
       String email,
+      String? avatarUrl,
       String? phoneNumber,
       DateTime createdAt,
       DateTime updatedAt});
@@ -219,6 +234,7 @@ class __$UserDtoCopyWithImpl<$Res> implements _$UserDtoCopyWith<$Res> {
     Object? id = null,
     Object? name = null,
     Object? email = null,
+    Object? avatarUrl = freezed,
     Object? phoneNumber = freezed,
     Object? createdAt = null,
     Object? updatedAt = null,
@@ -236,6 +252,10 @@ class __$UserDtoCopyWithImpl<$Res> implements _$UserDtoCopyWith<$Res> {
           ? _self.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
+      avatarUrl: freezed == avatarUrl
+          ? _self.avatarUrl
+          : avatarUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
       phoneNumber: freezed == phoneNumber
           ? _self.phoneNumber
           : phoneNumber // ignore: cast_nullable_to_non_nullable

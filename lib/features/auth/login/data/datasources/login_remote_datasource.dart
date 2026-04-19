@@ -1,6 +1,7 @@
 import 'package:app/core/config/api_endpoint.dart';
 import 'package:app/core/networks/dio_client.dart';
 import 'package:app/core/utils/logger_util.dart';
+import 'package:app/features/auth/login/data/dto/requests/google_login_request_dto.dart';
 import 'package:app/features/auth/login/data/dto/requests/login_request_dto.dart';
 import 'package:app/features/auth/login/data/dto/responses/login_response_dto.dart';
 import 'package:dio/dio.dart';
@@ -41,6 +42,42 @@ class LoginRemoteDatasource {
 
       FirebaseCrashlytics.instance.recordError(e, stackTrace,
           reason: 'LoginRemoteDatasource.login (Unexpected)');
+      rethrow;
+    }
+
+    if (!responseDto.success) {
+      throw responseDto.toException();
+    }
+
+    return responseDto;
+  }
+
+  Future<LoginResponseDto> loginWithGoogle(GoogleLoginRequestDto dto) async {
+    const endpoint = ApiEndpoint.googleLogin;
+    LoginResponseDto? responseDto;
+
+    try {
+      LoggerUtil.api("POST", endpoint, data: dto.toJson());
+
+      final response = await _dio.post(endpoint, data: dto.toJson());
+
+      responseDto = LoginResponseDto.fromJson(response.data);
+    } on DioException catch (e, stackTrace) {
+      LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
+
+      FirebaseCrashlytics.instance.recordError(e, stackTrace,
+          reason: 'LoginRemoteDatasource.loginWithGoogle (DioException)');
+
+      if (e.response?.data != null) {
+        responseDto = LoginResponseDto.fromJson(e.response!.data);
+      } else {
+        rethrow;
+      }
+    } catch (e, stackTrace) {
+      LoggerUtil.error("Unexpected error on endpoint $endpoint: $e");
+
+      FirebaseCrashlytics.instance.recordError(e, stackTrace,
+          reason: 'LoginRemoteDatasource.loginWithGoogle (Unexpected)');
       rethrow;
     }
 

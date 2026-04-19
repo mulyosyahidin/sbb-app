@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:app/app/app_router.dart';
+import 'package:app/core/config/env.dart';
 import 'package:app/core/services/fcm_service.dart';
 import 'package:app/core/services/notification_service.dart';
 import 'package:app/core/theme/app_theme.dart';
@@ -8,10 +9,14 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await GoogleSignIn.instance.initialize(
+    serverClientId: Env.googleServerClientId,
+  );
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
