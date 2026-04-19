@@ -1,4 +1,5 @@
 import 'package:app/core/auth/application/token_storage.dart';
+import 'package:app/core/auth/data/mappers/user_mapper.dart';
 import 'package:app/core/auth/data/repositories/auth_repository_impl.dart';
 import 'package:app/core/auth/domain/entities/user.dart';
 import 'package:app/core/auth/domain/repositories/auth_repository.dart';
@@ -61,11 +62,12 @@ class AuthSessionController extends _$AuthSessionController {
       }
 
       LoggerUtil.success("AuthSession: User verified from NETWORK.");
-      final user = getMe.value!;
+      final userValue = getMe.value!;
+      final User userEntity = UserMapper.toEntity(userValue.userDto);
 
-      await tokenStorage.saveUser(user);
+      await tokenStorage.saveUser(userEntity);
 
-      return AuthSession.authenticated(accessToken, user);
+      return AuthSession.authenticated(accessToken, userEntity);
     } on DioException catch (e, stackTrace) {
       final statusCode = e.response?.statusCode;
 
@@ -114,6 +116,12 @@ class AuthSessionController extends _$AuthSessionController {
 
   Future<void> logout() async {
     final tokenStorage = ref.read(tokenStorageProvider);
+    final device = await tokenStorage.getDevice();
+
+    if (device != null) {
+      await _authRepository.logout(device.id);
+    }
+
     await tokenStorage.clearAll();
     state = AsyncData(AuthSession.unauthenticated());
     LoggerUtil.info("AuthSession: User logged out and session cleared.");

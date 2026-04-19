@@ -1,6 +1,7 @@
 import 'package:app/core/auth/data/dtos/responses/get_me_response_dto.dart';
 import 'package:app/core/auth/data/dtos/responses/refresh_access_token_response_dto.dart';
 import 'package:app/core/config/api_endpoint.dart';
+import 'package:app/core/models/api_response_dto.dart';
 import 'package:app/core/networks/dio_client.dart';
 import 'package:app/core/utils/logger_util.dart';
 import 'package:dio/dio.dart';
@@ -85,6 +86,39 @@ class AuthRemoteDatasource {
     }
 
     return dto;
+  }
+
+  Future<void> logout(String deviceId) async {
+    const endpoint = ApiEndpoint.logout;
+
+    try {
+      LoggerUtil.api("POST", endpoint);
+
+      final response = await _dio.post(endpoint, data: {
+        'device_id': deviceId,
+      });
+
+      final dto = ApiResponseDto<void>.fromJson(
+        response.data,
+        (_) {},
+      );
+
+      if (!dto.success) {
+        throw dto.toException();
+      }
+    } on DioException catch (e, stackTrace) {
+      LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
+
+      FirebaseCrashlytics.instance.recordError(e, stackTrace,
+          reason: 'AuthRemoteDatasource.logout (DioException)');
+      rethrow;
+    } catch (e, stackTrace) {
+      LoggerUtil.error("Unexpected error on endpoint $endpoint: $e");
+
+      FirebaseCrashlytics.instance.recordError(e, stackTrace,
+          reason: 'AuthRemoteDatasource.logout (Unexpected)');
+      rethrow;
+    }
   }
 }
 

@@ -12,6 +12,6 @@ class AuthMapper {
   }
 
   static User toUser(GetMeResponseData data) {
-    return UserMapper.toEntity(data.user);
+    return UserMapper.toEntity(data.userDto);
   }
 }

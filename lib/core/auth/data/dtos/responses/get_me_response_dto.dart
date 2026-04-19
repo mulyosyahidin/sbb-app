@@ -2,13 +2,13 @@ import 'package:app/core/auth/data/dtos/user_dto.dart';
 import 'package:app/core/models/api_response_dto.dart';
 
 class GetMeResponseData {
-  final UserDto user;
+  final UserDto userDto;
 
-  GetMeResponseData({required this.user});
+  GetMeResponseData({required this.userDto});
 
   factory GetMeResponseData.fromJson(Map<String, dynamic> json) {
     return GetMeResponseData(
-      user: UserDto.fromJson(json['user']),
+      userDto: UserDto.fromJson(json['user']),
     );
   }
 }

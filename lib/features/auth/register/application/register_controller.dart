@@ -1,5 +1,9 @@
 import 'package:app/core/auth/application/auth_session_controller.dart';
 import 'package:app/core/auth/application/token_storage.dart';
+import 'package:app/core/auth/data/mappers/user_mapper.dart';
+import 'package:app/core/auth/domain/entities/user.dart';
+import 'package:app/core/data/mappers/user_device_mapper.dart';
+import 'package:app/core/domain/entities/user_device.dart';
 import 'package:app/core/services/device_info_service.dart';
 import 'package:app/core/services/fcm_service.dart';
 import 'package:app/features/auth/register/data/dto/requests/register_request_dto.dart';
@@ -55,15 +59,18 @@ class RegisterController extends _$RegisterController {
 
       final registerUser = result.value!;
 
+      final User user = UserMapper.toEntity(registerUser.userDto);
+      final UserDevice userDevice = UserDeviceMapper.toEntity(registerUser.userDeviceDto);
+
       final tokenStorage = ref.read(tokenStorageProvider);
-      await tokenStorage.saveUser(registerUser.user);
+      await tokenStorage.saveUser(user);
       await tokenStorage.saveAccessToken(registerUser.accessToken);
-      await tokenStorage.saveDevice(registerUser.userDevice);
+      await tokenStorage.saveDevice(userDevice);
 
       ref.read(authSessionControllerProvider.notifier).updateSession(
             AuthSession.authenticated(
               registerUser.accessToken,
-              registerUser.user,
+              user,
             ),
           );
     });

@@ -1,23 +1,87 @@
 import 'package:app/app/app_router.dart';
+import 'package:app/core/errors/api_exception.dart';
 import 'package:app/core/theme/app_theme.dart';
-import 'package:app/features/auth/login/presentation/widgets/google_icon.dart';
+import 'package:app/core/utils/toast_util.dart';
+import 'package:app/features/auth/login/application/login_controller.dart';
 import 'package:app/shared/forms/app_text_field.dart';
 import 'package:app/shared/forms/app_text_password.dart';
 import 'package:app/shared/widgets/primary_button.dart';
-import 'package:app/shared/widgets/secondary_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  ConsumerState<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends ConsumerState<LoginPage> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  Map<String, String> _fieldErrors = {};
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _handleLogin() {
+    setState(() => _fieldErrors = {});
+
+    // Basic validation
+    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+      ToastUtil.showError(
+        context,
+        title: 'Gagal',
+        description: 'Email dan Password wajib diisi',
+      );
+      return;
+    }
+
+    ref.read(loginControllerProvider.notifier).login(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
+    ref.listen(loginControllerProvider, (previous, next) {
+      if (next is AsyncError) {
+        final error = next.error;
+        if (error is ApiException && error.errors != null) {
+          setState(() {
+            _fieldErrors = error.errors!;
+          });
+        } else {
+          ToastUtil.showError(
+            context,
+            title: 'Gagal Masuk',
+            description: error.toString(),
+          );
+        }
+      } else if (next is AsyncData &&
+          !next.isLoading &&
+          previous is AsyncLoading) {
+        ToastUtil.showSuccess(
+          context,
+          title: 'Berhasil',
+          description: 'Selamat datang kembali!',
+        );
+
+        // Redirect to Home
+        context.go(Routes.home);
+      }
+    });
+
+    final loginState = ref.watch(loginControllerProvider);
+    final isLoading = loginState is AsyncLoading;
+
     return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -72,17 +136,25 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           child: Image.asset(
                             'assets/icons/logo.png',
-                            height: 50,
-                            width: 50,
+                            height: 40,
+                            width: 40,
                           ),
                         ),
                         const SizedBox(height: 16),
                         const Text(
-                          'Sarana Bahagia Berkah',
+                          'Mulyo Bahagia',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                        Text(
+                          'Silakan masuk ke akun Anda',
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.7),
+                            fontSize: 14,
                           ),
                         ),
                       ],
@@ -100,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: IntrinsicHeight(
                     child: Column(
                       children: [
-                        SizedBox(height: height * 0.38),
+                        SizedBox(height: height * 0.4),
                         Expanded(
                           child: Container(
                             decoration: const BoxDecoration(
@@ -113,60 +185,51 @@ class _LoginPageState extends State<LoginPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
+                                const SizedBox(height: 8),
                                 AppTextField(
-                                  label: 'NOMOR HP / EMAIL',
-                                  hint: 'Masukkan nomor HP atau email',
-                                  prefixIcon: const Icon(Icons.person_outline,
+                                  controller: _emailController,
+                                  label: 'EMAIL ATAU NO. HP',
+                                  hint: 'Masukkan email atau nomor HP',
+                                  prefixIcon: const Icon(Icons.email_outlined,
                                       size: 20),
                                   keyboardType: TextInputType.emailAddress,
+                                  errorText: _fieldErrors['email'],
                                 ),
                                 const SizedBox(height: 20),
 
-                                // PASSWORD
                                 AppTextPassword(
+                                  controller: _passwordController,
                                   label: 'PASSWORD',
-                                  hint: 'Masukkan password',
+                                  hint: 'Masukkan password Anda',
                                   prefixIcon:
                                       const Icon(Icons.lock_outline, size: 20),
+                                  errorText: _fieldErrors['password'],
                                 ),
-                                const SizedBox(height: 24),
 
-                                // MASUK BUTTON
-                                PrimaryButton(
-                                  label: 'Masuk',
-                                  onPressed: () {},
-                                ),
-                                const SizedBox(height: 32),
-
-                                // DIVIDER
-                                Row(
-                                  children: [
-                                    Expanded(
-                                        child: Divider(
-                                            color: Colors.grey.shade300)),
-                                    const Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 16),
-                                      child: Text(
-                                        'atau masuk dengan',
-                                        style: TextStyle(
-                                          color: AppColors.textSecondaryLight,
-                                          fontSize: 12,
-                                        ),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: TextButton(
+                                    onPressed: () {
+                                      // TODO: Forgot password
+                                    },
+                                    child: const Text(
+                                      'Lupa Password?',
+                                      style: TextStyle(
+                                        color: AppColors.primary,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 13,
                                       ),
                                     ),
-                                    Expanded(
-                                        child: Divider(
-                                            color: Colors.grey.shade300)),
-                                  ],
+                                  ),
                                 ),
-                                const SizedBox(height: 24),
 
-                                // GOOGLE LOGIN BUTTON
-                                SecondaryButton(
-                                  label: 'Masuk dengan Google',
-                                  icon: const GoogleIcon(),
-                                  onPressed: () {},
+                                const SizedBox(height: 16),
+
+                                // LOGIN BUTTON
+                                PrimaryButton(
+                                  label: 'Masuk Sekarang',
+                                  isLoading: isLoading,
+                                  onPressed: isLoading ? null : _handleLogin,
                                 ),
 
                                 const Spacer(),
@@ -184,7 +247,8 @@ class _LoginPageState extends State<LoginPage> {
                                       ),
                                     ),
                                     GestureDetector(
-                                      onTap: () => context.push(Routes.register),
+                                      onTap: () =>
+                                          context.push(Routes.register),
                                       child: const Text(
                                         'Daftar sekarang',
                                         style: TextStyle(
