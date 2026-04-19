@@ -1,10 +1,12 @@
+import 'package:app/app/app_router.dart';
 import 'package:app/core/theme/app_theme.dart';
-import 'package:app/features/login/presentation/widgets/google_icon.dart';
+import 'package:app/features/auth/login/presentation/widgets/google_icon.dart';
 import 'package:app/shared/forms/app_text_field.dart';
 import 'package:app/shared/forms/app_text_password.dart';
 import 'package:app/shared/widgets/primary_button.dart';
 import 'package:app/shared/widgets/secondary_button.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -182,7 +184,7 @@ class _LoginPageState extends State<LoginPage> {
                                       ),
                                     ),
                                     GestureDetector(
-                                      onTap: () {},
+                                      onTap: () => context.push(Routes.register),
                                       child: const Text(
                                         'Daftar sekarang',
                                         style: TextStyle(

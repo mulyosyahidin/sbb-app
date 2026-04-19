@@ -1,4 +1,5 @@
 import 'package:app/core/config/env.dart';
+import 'package:app/core/networks/auth_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -17,6 +18,7 @@ class DioClient {
       ),
     );
 
+    dio.interceptors.add(ref.read(authInterceptorProvider));
     dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
 
     return dio;
