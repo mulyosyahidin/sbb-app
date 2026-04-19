@@ -62,22 +62,24 @@ class AuthSessionController extends _$AuthSessionController {
 
       final getMe = await _authRepository.getMe();
 
-      if (getMe.isFailure) {
-        LoggerUtil.warning(
-          "AuthSession: Invalid token or network error. Clearing session.",
-        );
+      return await getMe.fold(
+        (failure) async {
+          LoggerUtil.warning(
+            "AuthSession: Invalid token or error (${failure.message}). Clearing session.",
+          );
 
-        await tokenStorage.clearAll();
-        return AuthSession.unauthenticated();
-      }
+          await tokenStorage.clearAll();
+          return AuthSession.unauthenticated();
+        },
+        (userValue) async {
+          LoggerUtil.success("AuthSession: User verified from NETWORK.");
+          final User userEntity = UserMapper.toEntity(userValue.userDto);
 
-      LoggerUtil.success("AuthSession: User verified from NETWORK.");
-      final userValue = getMe.value!;
-      final User userEntity = UserMapper.toEntity(userValue.userDto);
+          await tokenStorage.saveUser(userEntity);
 
-      await tokenStorage.saveUser(userEntity);
-
-      return AuthSession.authenticated(accessToken, userEntity);
+          return AuthSession.authenticated(accessToken, userEntity);
+        },
+      );
     } on DioException catch (e, stackTrace) {
       final statusCode = e.response?.statusCode;
 

@@ -12,6 +12,10 @@ import 'package:app/features/home/presentation/screens/home_page.dart';
 import 'package:app/features/home_guest/presentation/screens/home_guest_page.dart';
 import 'package:app/features/profit/presentation/screens/profit_page.dart';
 import 'package:app/features/account/edit_password/presentation/screens/edit_password_page.dart';
+import 'package:app/features/account/bank_accounts/presentation/screens/bank_accounts_page.dart';
+import 'package:app/features/account/bank_accounts/presentation/screens/bank_account_create_page.dart';
+import 'package:app/features/account/bank_accounts/presentation/screens/bank_account_edit_page.dart';
+import 'package:app/features/account/bank_accounts/domain/entities/bank_account.dart';
 import 'package:app/features/splash/presentation/screens/splash_page.dart';
 import 'package:app/features/welcome/presentation/screens/welcome_page.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +38,9 @@ class Routes {
   static const account = "/account";
   static const editProfile = "/edit-profile";
   static const editPassword = "/edit-password";
+  static const bankAccounts = "/bank-accounts";
+  static const bankAccountCreate = "/bank-accounts/create";
+  static const bankAccountEdit = "/bank-accounts/edit";
   static const homeGuest = "/home-guest";
 
   static const authenticatedRoutes = [
@@ -44,6 +51,9 @@ class Routes {
     account,
     editProfile,
     editPassword,
+    bankAccounts,
+    bankAccountCreate,
+    bankAccountEdit,
   ];
 }
 
@@ -83,6 +93,21 @@ GoRouter router(Ref ref) {
       GoRoute(
         path: Routes.editPassword,
         builder: (context, state) => const EditPasswordPage(),
+      ),
+      GoRoute(
+        path: Routes.bankAccounts,
+        builder: (context, state) => const BankAccountsPage(),
+      ),
+      GoRoute(
+        path: Routes.bankAccountCreate,
+        builder: (context, state) => const BankAccountCreatePage(),
+      ),
+      GoRoute(
+        path: Routes.bankAccountEdit,
+        builder: (context, state) {
+          final account = state.extra as BankAccount;
+          return BankAccountEditPage(account: account);
+        },
       ),
 
       // AUTHENTICATED TABS

@@ -40,11 +40,14 @@ class LoggerUtil {
     }
   }
 
-  static void api(String method, String path, {Object? data}) {
+  static void api(String method, String path, {Object? data, Object? queryParameters}) {
     if (kDebugMode) {
       print('$_magenta[API]$_reset $method $path');
       if (data != null) {
         print('$_magenta[DATA]$_reset $data');
+      }
+      if (queryParameters != null) {
+        print('$_magenta[QUERY_PARAMETERS]$_reset $queryParameters');
       }
     }
   }

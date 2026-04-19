@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:app/core/theme/app_theme.dart';
 import 'package:app/core/theme/app_text_style.dart';
 import 'package:app/features/home/presentation/widgets/home_banner.dart';
 import 'package:app/features/home/presentation/widgets/home_header.dart';
@@ -13,8 +12,9 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,14 +33,14 @@ class HomePage extends ConsumerWidget {
                   Text('Menu Utama',
                       style: AppTextStyles.title(
                           fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimaryLight)),
+                          color: colorScheme.onSurface)),
                   const SizedBox(height: 16),
                   const HomeMenuGrid(),
                   const SizedBox(height: 24),
                   Text('Aktivitas Terbaru',
                       style: AppTextStyles.title(
                           fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimaryLight)),
+                          color: colorScheme.onSurface)),
                   const SizedBox(height: 16),
                   const HomeRecentActivities(),
                   const SizedBox(height: 24),

@@ -1,5 +1,4 @@
 import 'package:app/core/theme/app_text_style.dart';
-import 'package:app/core/theme/app_theme.dart';
 import 'package:app/features/account/summary/presentation/widgets/account_header.dart';
 import 'package:app/features/account/summary/presentation/widgets/account_menu_list.dart';
 import 'package:app/features/account/summary/presentation/widgets/account_stats_row.dart';
@@ -13,7 +12,6 @@ class AccountPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -26,11 +24,11 @@ class AccountPage extends ConsumerWidget {
                   const SizedBox(height: 16),
                   const AccountStatsRow(),
                   const SizedBox(height: 24),
-                  _buildSectionTitle('Panel Konsultan'),
+                  _buildSectionTitle(context, 'Panel Konsultan'),
                   const SizedBox(height: 12),
                   const ConsultantPanel(),
                   const SizedBox(height: 24),
-                  _buildSectionTitle('Pengaturan Akun'),
+                  _buildSectionTitle(context, 'Pengaturan Akun'),
                   const SizedBox(height: 12),
                   const AccountMenuList(),
                   const SizedBox(height: 40),
@@ -43,10 +41,14 @@ class AccountPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(BuildContext context, String title) {
     return Text(
       title,
-      style: AppTextStyles.title(fontWeight: FontWeight.bold, fontSize: 18),
+      style: AppTextStyles.title(
+        fontWeight: FontWeight.bold,
+        fontSize: 18,
+        color: Theme.of(context).colorScheme.onSurface,
+      ),
     );
   }
 }

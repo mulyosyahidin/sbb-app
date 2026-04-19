@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:app/core/theme/app_theme.dart';
+import 'package:flutter/material.dart';
 import 'package:app/core/theme/app_text_style.dart';
 
 class HomeStatsGrid extends StatelessWidget {
@@ -12,36 +12,45 @@ class HomeStatsGrid extends StatelessWidget {
         Row(
           children: [
             Expanded(
-                child: _buildStatCard('TOTAL PROFIT', 'Rp 45jt', true,
-                    Icons.show_chart, isPrimary: true)),
+                child: _buildStatCard(
+                    context, 'TOTAL PROFIT', 'Rp 45jt', true, Icons.show_chart,
+                    isPrimary: true)),
             const SizedBox(width: 12),
             Expanded(
-                child: _buildStatCard(
-                    'KONTRAK AKTIF', '3 Unit', false, Icons.description_outlined)),
+                child: _buildStatCard(context, 'KONTRAK AKTIF', '3 Unit', false,
+                    Icons.description_outlined)),
           ],
         ),
         const SizedBox(height: 12),
         Row(
           children: [
             Expanded(
-                child: _buildStatCard('TOTAL SAPI', '2 Ekor', false, Icons.pets)),
+                child: _buildStatCard(
+                    context, 'TOTAL SAPI', '2 Ekor', false, Icons.pets)),
             const SizedBox(width: 12),
             Expanded(
-                child: _buildStatCard(
-                    'MITRA SAYA', '5 Orang', false, Icons.people_outline)),
+                child: _buildStatCard(context, 'MITRA SAYA', '5 Orang', false,
+                    Icons.people_outline)),
           ],
         ),
       ],
     );
   }
 
-  Widget _buildStatCard(String title, String value, bool isTrend, IconData icon,
+  Widget _buildStatCard(BuildContext context, String title, String value,
+      bool isTrend, IconData icon,
       {bool isPrimary = false}) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isPrimary ? AppColors.primary : Colors.white,
-        border: isPrimary ? null : Border.all(color: AppColors.borderLight),
+        color: isPrimary
+            ? colorScheme.primary
+            : (Theme.of(context).brightness == Brightness.dark
+                ? AppColors.surfaceDark
+                : AppColors.surfaceLight),
+        border: isPrimary ? null : Border.all(color: colorScheme.outline),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -52,21 +61,23 @@ class HomeStatsGrid extends StatelessWidget {
             decoration: BoxDecoration(
               color: isPrimary
                   ? Colors.white.withValues(alpha: 0.2)
-                  : AppColors.primaryLight.withValues(alpha: 0.1),
+                  : colorScheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon,
-                color: isPrimary ? Colors.white : AppColors.primary, size: 20),
+                color: isPrimary ? Colors.white : colorScheme.primary,
+                size: 20),
           ),
           const SizedBox(height: 12),
           Text(title,
               style: AppTextStyles.label(
-                  color: isPrimary ? Colors.white70 : AppColors.textSecondaryLight,
+                  color:
+                      isPrimary ? Colors.white70 : colorScheme.onSurfaceVariant,
                   letterSpacing: 0.5)),
           const SizedBox(height: 4),
           Text(value,
               style: AppTextStyles.title(
-                  color: isPrimary ? Colors.white : AppColors.textPrimaryLight,
+                  color: isPrimary ? Colors.white : colorScheme.onSurface,
                   fontWeight: FontWeight.bold)),
         ],
       ),

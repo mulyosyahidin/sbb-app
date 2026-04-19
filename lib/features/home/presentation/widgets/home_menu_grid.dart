@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:app/core/theme/app_theme.dart';
 import 'package:app/core/theme/app_text_style.dart';
 
 class HomeMenuGrid extends StatelessWidget {
@@ -7,6 +6,7 @@ class HomeMenuGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final menus = [
       {
         'title': 'Kontrak',
@@ -35,7 +35,11 @@ class HomeMenuGrid extends StatelessWidget {
         'icon': Icons.description_outlined,
         'color': Colors.teal
       },
-      {'title': 'Lainnya', 'icon': Icons.settings_outlined, 'color': Colors.grey},
+      {
+        'title': 'Lainnya',
+        'icon': Icons.settings_outlined,
+        'color': Colors.grey
+      },
     ];
 
     return GridView.builder(
@@ -67,10 +71,11 @@ class HomeMenuGrid extends StatelessWidget {
             const Spacer(),
             Text(
               menu['title'] as String,
-              style: AppTextStyles.label(
-                  color: AppColors.textPrimaryLight,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0),
+              style: AppTextStyles.body(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: colorScheme.onSurfaceVariant,
+              ),
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,

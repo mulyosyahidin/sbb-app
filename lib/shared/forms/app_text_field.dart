@@ -1,5 +1,4 @@
 import 'package:app/core/theme/app_text_style.dart';
-import 'package:app/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class AppTextField extends StatelessWidget {
@@ -40,13 +39,15 @@ class AppTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
           label.toUpperCase(),
           style: AppTextStyles.label(
-            color: AppColors.primaryDark,
+            color: colorScheme.primary,
             fontSize: 12,
             fontWeight: FontWeight.bold,
             letterSpacing: 0.5,
@@ -66,14 +67,14 @@ class AppTextField extends StatelessWidget {
           obscureText: obscureText,
           style: AppTextStyles.body(
             fontWeight: FontWeight.w500,
-            color: AppColors.textPrimaryLight,
+            color: colorScheme.onSurface,
           ),
           decoration: InputDecoration(
             hintText: hint,
             prefixIcon: prefixIcon,
             suffixIcon: suffixIcon,
             errorText: errorText,
-            fillColor: AppColors.primaryContainer.withValues(alpha: 0.1),
+            fillColor: colorScheme.primaryContainer.withValues(alpha: 0.1),
           ),
         ),
       ],

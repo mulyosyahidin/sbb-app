@@ -10,6 +10,7 @@ class HomeRecentActivities extends StatelessWidget {
     return Column(
       children: [
         _buildActivityCard(
+          context,
           icon: Icons.cruelty_free,
           iconColor: AppColors.primary,
           title: 'Sapi #SBB-014 sehat',
@@ -20,6 +21,7 @@ class HomeRecentActivities extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         _buildActivityCard(
+          context,
           icon: Icons.payments_outlined,
           iconColor: Colors.orange,
           title: 'Profit dicairkan',
@@ -30,6 +32,7 @@ class HomeRecentActivities extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         _buildActivityCard(
+          context,
           icon: Icons.assignment_outlined,
           iconColor: Colors.blue,
           title: 'Kontrak baru ditanda',
@@ -42,7 +45,8 @@ class HomeRecentActivities extends StatelessWidget {
     );
   }
 
-  Widget _buildActivityCard({
+  Widget _buildActivityCard(
+    BuildContext context, {
     required IconData icon,
     required Color iconColor,
     required String title,
@@ -51,11 +55,15 @@ class HomeRecentActivities extends StatelessWidget {
     required Color trailingTitleColor,
     required String trailingSubtitle,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: AppColors.borderLight),
+        color: Theme.of(context).brightness == Brightness.dark
+            ? AppColors.surfaceDark
+            : AppColors.surfaceLight,
+        border: Border.all(color: colorScheme.outline),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -76,11 +84,11 @@ class HomeRecentActivities extends StatelessWidget {
                 Text(title,
                     style: AppTextStyles.body(
                         fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimaryLight)),
+                        color: colorScheme.onSurface)),
                 const SizedBox(height: 4),
                 Text(subtitle,
                     style: AppTextStyles.label(
-                        color: AppColors.textSecondaryLight,
+                        color: colorScheme.onSurfaceVariant,
                         fontWeight: FontWeight.normal,
                         letterSpacing: 0)),
               ],
@@ -95,7 +103,7 @@ class HomeRecentActivities extends StatelessWidget {
               const SizedBox(height: 4),
               Text(trailingSubtitle,
                   style: AppTextStyles.label(
-                      color: AppColors.textSecondaryLight,
+                      color: colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.normal,
                       letterSpacing: 0)),
             ],

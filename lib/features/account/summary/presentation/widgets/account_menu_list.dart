@@ -17,6 +17,7 @@ class AccountMenuList extends ConsumerWidget {
     return Column(
       children: [
         _buildMenuItem(
+          context,
           Icons.person,
           'Edit Profil',
           const Color(0xFFF0F7F4),
@@ -24,23 +25,35 @@ class AccountMenuList extends ConsumerWidget {
           onTap: () => context.push(Routes.editProfile),
         ),
         _buildMenuItem(
+          context,
           Icons.security,
           'Password',
           const Color(0xFFF4F0F7),
           const Color(0xFF5B3284),
           onTap: () => context.push(Routes.editPassword),
         ),
-        _buildMenuItem(Icons.account_balance, 'Rekening Bank', const Color(0xFFF0F4F7), const Color(0xFF325B84)),
-        _buildMenuItem(Icons.notifications, 'Notifikasi', const Color(0xFFFFF8F0), const Color(0xFF846432)),
-        _buildMenuItem(Icons.description, 'Dokumen & Kontrak', const Color(0xFFF7F0F0), const Color(0xFF843232)),
         _buildMenuItem(
+          context,
+          Icons.account_balance,
+          'Rekening Bank',
+          const Color(0xFFF0F4F7),
+          const Color(0xFF325B84),
+          onTap: () => context.push(Routes.bankAccounts),
+        ),
+        _buildMenuItem(context, Icons.notifications, 'Notifikasi',
+            const Color(0xFFFFF8F0), const Color(0xFF846432)),
+        _buildMenuItem(context, Icons.description, 'Dokumen & Kontrak',
+            const Color(0xFFF7F0F0), const Color(0xFF843232)),
+        _buildMenuItem(
+          context,
           Icons.logout,
           'Keluar',
           const Color(0xFFFFF0F0),
           Colors.red,
           isLast: true,
           isLoading: isLoggingOut,
-          onTap: isLoggingOut ? null : () => _showLogoutConfirmation(context, ref),
+          onTap:
+              isLoggingOut ? null : () => _showLogoutConfirmation(context, ref),
         ),
       ],
     );
@@ -75,6 +88,7 @@ class AccountMenuList extends ConsumerWidget {
   }
 
   Widget _buildMenuItem(
+    BuildContext context,
     IconData icon,
     String title,
     Color bgColor,
@@ -83,12 +97,16 @@ class AccountMenuList extends ConsumerWidget {
     bool isLoading = false,
     VoidCallback? onTap,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.borderLight.withValues(alpha: 0.5)),
+        border: Border.all(
+            color: colorScheme.outline.withValues(alpha: isDark ? 0.3 : 0.5)),
       ),
       child: ListTile(
         onTap: isLoading ? null : onTap,
@@ -96,7 +114,7 @@ class AccountMenuList extends ConsumerWidget {
         leading: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: bgColor,
+            color: isDark ? iconColor.withValues(alpha: 0.15) : bgColor,
             borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(icon, color: iconColor, size: 20),
@@ -105,18 +123,23 @@ class AccountMenuList extends ConsumerWidget {
           title,
           style: AppTextStyles.body(
             fontWeight: FontWeight.w600,
-            color: isLast ? Colors.red : AppColors.textPrimaryLight,
+            color: isLast
+                ? Colors.red
+                : (isDark ? colorScheme.onSurface : AppColors.textPrimaryLight),
           ),
         ),
         trailing: isLoading
             ? const SizedBox(
                 width: 16,
                 height: 16,
-                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.red),
+                child:
+                    CircularProgressIndicator(strokeWidth: 2, color: Colors.red),
               )
             : Icon(
                 Icons.chevron_right,
-                color: isLast ? Colors.red.withValues(alpha: 0.4) : AppColors.textSecondaryLight.withValues(alpha: 0.4),
+                color: isLast
+                    ? Colors.red.withValues(alpha: 0.4)
+                    : colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
                 size: 16,
               ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),

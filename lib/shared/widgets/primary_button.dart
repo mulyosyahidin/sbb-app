@@ -7,6 +7,7 @@ class PrimaryButton extends StatelessWidget {
   final double? width;
   final Color? backgroundColor;
   final Color? foregroundColor;
+  final EdgeInsetsGeometry? padding;
 
   const PrimaryButton({
     super.key,
@@ -16,6 +17,7 @@ class PrimaryButton extends StatelessWidget {
     this.width = double.infinity,
     this.backgroundColor,
     this.foregroundColor,
+    this.padding,
   });
 
   @override
@@ -29,7 +31,7 @@ class PrimaryButton extends StatelessWidget {
               backgroundColor ?? Theme.of(context).colorScheme.primary,
           foregroundColor:
               foregroundColor ?? Theme.of(context).colorScheme.onPrimary,
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: padding ?? const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),

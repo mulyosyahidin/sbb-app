@@ -18,7 +18,7 @@ class AccountHeader extends ConsumerWidget {
       decoration: const BoxDecoration(
         color: Color(0xFF1B4D3E),
         image: DecorationImage(
-          image: NetworkImage('https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2000&auto=format&fit=crop'),
+          image: AssetImage('assets/images/account_summary_bg.jpg'),
           fit: BoxFit.cover,
           opacity: 0.15,
         ),

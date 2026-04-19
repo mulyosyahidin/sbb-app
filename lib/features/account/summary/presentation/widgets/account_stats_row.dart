@@ -7,27 +7,36 @@ class AccountStatsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Row(
       children: [
-        Expanded(child: _buildStatCard('3', 'Kontrak')),
+        Expanded(child: _buildStatCard(context, '3', 'Kontrak')),
         const SizedBox(width: 12),
-        Expanded(child: _buildStatCard('5', 'Mitra')),
+        Expanded(child: _buildStatCard(context, '5', 'Mitra')),
         const SizedBox(width: 12),
-        Expanded(child: _buildStatCard('Rp45jt', 'Profit', valueColor: AppColors.primary)),
+        Expanded(
+            child: _buildStatCard(context, 'Rp45jt', 'Profit',
+                valueColor: colorScheme.primary)),
       ],
     );
   }
 
-  Widget _buildStatCard(String value, String label, {Color? valueColor}) {
+  Widget _buildStatCard(BuildContext context, String value, String label,
+      {Color? valueColor}) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.borderLight.withValues(alpha: 0.5)),
+        border: Border.all(
+            color: colorScheme.outline.withValues(alpha: isDark ? 0.3 : 0.5)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
+            color: Colors.black.withValues(alpha: isDark ? 0.1 : 0.02),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -39,13 +48,14 @@ class AccountStatsRow extends StatelessWidget {
             value,
             style: AppTextStyles.title(
               fontWeight: FontWeight.bold,
-              color: valueColor ?? AppColors.textPrimaryLight,
+              color: valueColor ?? colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 4),
           Text(
             label,
-            style: AppTextStyles.label(color: AppColors.textSecondaryLight, letterSpacing: 0),
+            style: AppTextStyles.label(
+                color: colorScheme.onSurfaceVariant, letterSpacing: 0),
           ),
         ],
       ),

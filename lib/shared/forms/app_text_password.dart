@@ -1,4 +1,3 @@
-import 'package:app/core/theme/app_theme.dart';
 import 'package:app/shared/forms/app_text_field.dart';
 import 'package:flutter/material.dart';
 
@@ -33,6 +32,8 @@ class _AppTextPasswordState extends State<AppTextPassword> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return AppTextField(
       label: widget.label,
       hint: widget.hint,
@@ -46,7 +47,7 @@ class _AppTextPasswordState extends State<AppTextPassword> {
       suffixIcon: IconButton(
         icon: Icon(
           _obscureText ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-          color: AppColors.textSecondaryLight,
+          color: colorScheme.onSurfaceVariant,
           size: 20,
         ),
         onPressed: () {

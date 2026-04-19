@@ -20,17 +20,24 @@ class NavigationLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       body: navigationShell,
       bottomNavigationBar: Container(
-        decoration: const BoxDecoration(
-          border: Border(top: BorderSide(color: AppColors.borderLight)),
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              color: isDark ? AppColors.borderDark : AppColors.borderLight,
+            ),
+          ),
         ),
         child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.white,
-          selectedItemColor: AppColors.primary,
-          unselectedItemColor: AppColors.textSecondaryLight,
+          backgroundColor: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
+          selectedItemColor: colorScheme.primary,
+          unselectedItemColor: colorScheme.onSurfaceVariant,
           selectedLabelStyle: AppTextStyles.label(
               fontWeight: FontWeight.bold, letterSpacing: 0.5),
           unselectedLabelStyle: AppTextStyles.label(

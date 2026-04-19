@@ -7,7 +7,7 @@ part of 'auth_session_controller.dart';
 // **************************************************************************
 
 String _$authSessionControllerHash() =>
-    r'a4d0ca70ad1315914b69073a155a8807c3057f9b';
+    r'5eabfb7b755564feebfa62728428ea57d80d2292';
 
 /// See also [AuthSessionController].
 @ProviderFor(AuthSessionController)
