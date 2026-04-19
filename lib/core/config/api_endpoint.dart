@@ -10,4 +10,5 @@ class ApiEndpoint {
   // User
   static const String updateProfilePicture = '/user/update-profile-picture';
   static const String updateProfile = '/user/update-profile';
+  static const String updatePassword = '/user/update-password';
 }

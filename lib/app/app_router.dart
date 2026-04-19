@@ -11,6 +11,7 @@ import 'package:app/features/gallery/presentation/screens/gallery_page.dart';
 import 'package:app/features/home/presentation/screens/home_page.dart';
 import 'package:app/features/home_guest/presentation/screens/home_guest_page.dart';
 import 'package:app/features/profit/presentation/screens/profit_page.dart';
+import 'package:app/features/account/edit_password/presentation/screens/edit_password_page.dart';
 import 'package:app/features/splash/presentation/screens/splash_page.dart';
 import 'package:app/features/welcome/presentation/screens/welcome_page.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,7 @@ class Routes {
   static const gallery = "/gallery";
   static const account = "/account";
   static const editProfile = "/edit-profile";
+  static const editPassword = "/edit-password";
   static const homeGuest = "/home-guest";
 
   static const authenticatedRoutes = [
@@ -41,6 +43,7 @@ class Routes {
     gallery,
     account,
     editProfile,
+    editPassword,
   ];
 }
 
@@ -76,6 +79,10 @@ GoRouter router(Ref ref) {
       GoRoute(
         path: Routes.editProfile,
         builder: (context, state) => const EditProfilePage(),
+      ),
+      GoRoute(
+        path: Routes.editPassword,
+        builder: (context, state) => const EditPasswordPage(),
       ),
 
       // AUTHENTICATED TABS

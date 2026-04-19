@@ -23,9 +23,15 @@ class AccountMenuList extends ConsumerWidget {
           const Color(0xFF468432),
           onTap: () => context.push(Routes.editProfile),
         ),
+        _buildMenuItem(
+          Icons.security,
+          'Password',
+          const Color(0xFFF4F0F7),
+          const Color(0xFF5B3284),
+          onTap: () => context.push(Routes.editPassword),
+        ),
         _buildMenuItem(Icons.account_balance, 'Rekening Bank', const Color(0xFFF0F4F7), const Color(0xFF325B84)),
         _buildMenuItem(Icons.notifications, 'Notifikasi', const Color(0xFFFFF8F0), const Color(0xFF846432)),
-        _buildMenuItem(Icons.security, 'Keamanan & Password', const Color(0xFFF4F0F7), const Color(0xFF5B3284)),
         _buildMenuItem(Icons.description, 'Dokumen & Kontrak', const Color(0xFFF7F0F0), const Color(0xFF843232)),
         _buildMenuItem(
           Icons.logout,
