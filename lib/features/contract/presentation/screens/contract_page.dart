@@ -1,3 +1,4 @@
+import 'package:app/core/theme/app_theme.dart';
 import 'package:app/core/theme/app_text_style.dart';
 import 'package:app/shared/widgets/app_bar_header.dart';
 import 'package:app/shared/widgets/primary_button.dart';
@@ -40,10 +41,11 @@ class ContractPage extends StatelessWidget {
                           _buildSectionHeader(context, 'Informasi Sapi'),
                           const SizedBox(height: 12),
                           _buildDetailCard(context, [
-                             _buildDetailRow(context, 'ID Kontrak', '#SBB-014'),
+                            _buildDetailRow(context, 'ID Kontrak', '#SBB-014'),
                             _buildDetailRow(context, 'Jenis', 'Brahman Cross'),
                             _buildDetailRow(context, 'Berat Awal', '320 kg'),
-                            _buildDetailRow(context, 'Berat Sekarang', '415 kg'),
+                            _buildDetailRow(
+                                context, 'Berat Sekarang', '415 kg'),
                             _buildDetailRow(context, 'Target Berat', '500 kg'),
                           ]),
                           const SizedBox(height: 24),
@@ -52,11 +54,14 @@ class ContractPage extends StatelessWidget {
                           _buildSectionHeader(context, 'Rincian Keuangan'),
                           const SizedBox(height: 12),
                           _buildDetailCard(context, [
-                            _buildDetailRow(context, 'Modal Investasi', 'Rp 18.000.000'),
-                            _buildDetailRow(context, 
-                                'Bagi Hasil', '60% (Mitra) / 40% (SBB)'),
-                            _buildDetailRow(context, 'Estimasi Profit', '+Rp 4.200.000',
-                                valueColor: Theme.of(context).colorScheme.primary),
+                            _buildDetailRow(
+                                context, 'Modal Investasi', 'Rp 18.000.000'),
+                            _buildDetailRow(context, 'Bagi Hasil',
+                                '60% (Mitra) / 40% (SBB)'),
+                            _buildDetailRow(
+                                context, 'Estimasi Profit', '+Rp 4.200.000',
+                                valueColor:
+                                    Theme.of(context).colorScheme.primary),
                           ]),
                           const SizedBox(height: 24),
 
@@ -64,9 +69,10 @@ class ContractPage extends StatelessWidget {
                           _buildSectionHeader(context, 'Jadwal Kontrak'),
                           const SizedBox(height: 12),
                           _buildDetailCard(context, [
-                            _buildDetailRow(context, 'Tanggal Mulai', '20 Oktober 2025'),
-                            _buildDetailRow(context, 
-                                'Estimasi Selesai', '20 April 2026'),
+                            _buildDetailRow(
+                                context, 'Tanggal Mulai', '20 Oktober 2025'),
+                            _buildDetailRow(
+                                context, 'Estimasi Selesai', '20 April 2026'),
                             _buildDetailRow(context, 'Durasi', '6 Bulan'),
                           ]),
                           const SizedBox(height: 24),
@@ -103,14 +109,22 @@ class ContractPage extends StatelessWidget {
 
                           // Action Buttons
                           PrimaryButton(
-                            label: 'Laporan Lengkap',
+                            label: 'Perpanjang Kontrak',
                             onPressed: () {},
+                            icon: const Icon(Icons.history_rounded, size: 20),
                           ),
                           const SizedBox(height: 12),
                           SecondaryButton(
-                            label: 'Hubungi Tim',
+                            label: 'Download Kontrak',
                             onPressed: () {},
-                            icon: const Icon(Icons.chat_outlined, size: 20),
+                            icon: const Icon(Icons.download_rounded, size: 20),
+                          ),
+                          const SizedBox(height: 12),
+                          SecondaryButton(
+                            label: 'Batalkan Kontrak',
+                            onPressed: () {},
+                            color: AppColors.error,
+                            icon: const Icon(Icons.close_rounded, size: 20),
                           ),
                           const SizedBox(height: 40),
                         ],
@@ -126,7 +140,8 @@ class ContractPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeroCard(BuildContext context, String id, String status, double progress) {
+  Widget _buildHeroCard(
+      BuildContext context, String id, String status, double progress) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -211,7 +226,10 @@ class ContractPage extends StatelessWidget {
                       child: LinearProgressIndicator(
                         value: progress,
                         backgroundColor: Colors.white.withValues(alpha: 0.1),
-                        color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.5),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onPrimary
+                            .withValues(alpha: 0.5),
                         minHeight: 8,
                       ),
                     ),

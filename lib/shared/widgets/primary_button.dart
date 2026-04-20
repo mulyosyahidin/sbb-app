@@ -8,6 +8,7 @@ class PrimaryButton extends StatelessWidget {
   final Color? backgroundColor;
   final Color? foregroundColor;
   final EdgeInsetsGeometry? padding;
+  final Widget? icon;
 
   const PrimaryButton({
     super.key,
@@ -18,19 +19,22 @@ class PrimaryButton extends StatelessWidget {
     this.backgroundColor,
     this.foregroundColor,
     this.padding,
+    this.icon,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final effectiveBackgroundColor = backgroundColor ?? theme.colorScheme.primary;
+    final effectiveForegroundColor = foregroundColor ?? theme.colorScheme.onPrimary;
+
     return SizedBox(
       width: width,
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor:
-              backgroundColor ?? Theme.of(context).colorScheme.primary,
-          foregroundColor:
-              foregroundColor ?? Theme.of(context).colorScheme.onPrimary,
+          backgroundColor: effectiveBackgroundColor,
+          foregroundColor: effectiveForegroundColor,
           padding: padding ?? const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -38,20 +42,37 @@ class PrimaryButton extends StatelessWidget {
           elevation: 0,
         ),
         child: isLoading
-            ? const SizedBox(
+            ? SizedBox(
                 height: 20,
                 width: 20,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  valueColor: AlwaysStoppedAnimation<Color>(effectiveForegroundColor),
                 ),
               )
-            : Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (icon != null) ...[
+                    IconTheme(
+                      data: IconThemeData(
+                        color: effectiveForegroundColor,
+                        size: 20,
+                      ),
+                      child: icon!,
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: effectiveForegroundColor,
+                    ),
+                  ),
+                ],
               ),
       ),
     );

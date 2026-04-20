@@ -109,19 +109,21 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
           const SizedBox(height: 48),
           PrimaryButton(
             label: 'Submit Kontrak',
-            onPressed: () {
-              final data = {
-                'partner': partner,
-                'quantity': quantity,
-                'cowType': selectedCowType,
-                'price': currentPrice,
-                'bankAccount': selectedBankAccount,
-                'program': selectedProgram,
-                'duration': selectedDuration,
-                'subtotal': subtotal,
-              };
-              context.push(Routes.contractPreview, extra: data);
-            },
+            onPressed: selectedBankAccount == null
+                ? null
+                : () {
+                    final data = {
+                      'partner': partner,
+                      'quantity': quantity,
+                      'cowType': selectedCowType,
+                      'price': currentPrice,
+                      'bankAccount': selectedBankAccount,
+                      'program': selectedProgram,
+                      'duration': selectedDuration,
+                      'subtotal': subtotal,
+                    };
+                    context.push(Routes.contractPreview, extra: data);
+                  },
           ),
           const SizedBox(height: 40),
         ],

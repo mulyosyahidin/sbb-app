@@ -37,6 +37,7 @@ class _PartnerRegisterPageState extends ConsumerState<PartnerRegisterPage> {
       _nameController.text = user.name;
       _phoneController.text = user.phoneNumber ?? '';
     }
+    _joinDateController.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
   }
 
   @override

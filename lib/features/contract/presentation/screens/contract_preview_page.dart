@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:app/app/app_router.dart';
 import 'package:app/core/theme/app_text_style.dart';
 import 'package:app/features/account/bank_accounts/domain/entities/bank_account.dart';
 import 'package:app/features/partner/domain/entities/partner.dart';
@@ -8,6 +9,7 @@ import 'package:app/shared/widgets/primary_button.dart';
 import 'package:file_picker/file_picker.dart' as fp;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class ContractPreviewPage extends StatefulWidget {
@@ -113,9 +115,7 @@ class _ContractPreviewPageState extends State<ContractPreviewPage> {
                                   actions: [
                                     TextButton(
                                       onPressed: () {
-                                        Navigator.of(context).pop();
-                                        Navigator.of(context).pop();
-                                        Navigator.of(context).pop();
+                                        context.go(Routes.contract);
                                       },
                                       child: const Text('OK'),
                                     ),
@@ -163,7 +163,8 @@ class _ContractPreviewPageState extends State<ContractPreviewPage> {
           _buildSummaryRow('Jenis Sapi', cowType),
           _buildSummaryRow('Jumlah', '$quantity Ekor'),
           if (bankAccount != null)
-            _buildSummaryRow('Rekening Anda', '${bankAccount!.bankName} - ${bankAccount!.accountNumber}'),
+            _buildSummaryRow('Rekening Anda',
+                '${bankAccount!.bankName} - ${bankAccount!.accountNumber}'),
           const Divider(height: 32),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -240,7 +241,7 @@ class _ContractPreviewPageState extends State<ContractPreviewPage> {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: colorScheme.surfaceContainerLowest,
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
@@ -288,9 +289,10 @@ class _ContractPreviewPageState extends State<ContractPreviewPage> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: colorScheme.surfaceContainerLowest,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: colorScheme.outline.withValues(alpha: 0.1)),
+              border:
+                  Border.all(color: colorScheme.outline.withValues(alpha: 0.1)),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -330,7 +332,9 @@ class _ContractPreviewPageState extends State<ContractPreviewPage> {
           color: colorScheme.surface,
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
-            color: selectedFile != null ? colorScheme.primary : colorScheme.outline,
+            color: selectedFile != null
+                ? colorScheme.primary
+                : colorScheme.outline,
             style: selectedFile != null ? BorderStyle.solid : BorderStyle.solid,
           ),
         ),
