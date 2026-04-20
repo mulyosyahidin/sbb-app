@@ -7,6 +7,7 @@ import 'package:app/features/account/edit_profile/presentation/screens/edit_prof
 import 'package:app/features/auth/login/presentation/screens/login_page.dart';
 import 'package:app/features/auth/register/presentation/screens/register_page.dart';
 import 'package:app/features/contract/presentation/screens/contract_page.dart';
+import 'package:app/features/contract/presentation/screens/contracts_page.dart';
 import 'package:app/features/gallery/presentation/screens/galleries_page.dart';
 import 'package:app/features/gallery/presentation/screens/gallery_page.dart';
 import 'package:app/features/home/presentation/screens/home_page.dart';
@@ -35,6 +36,7 @@ class Routes {
   static const homeGate = "/home-gate";
   static const home = "/home";
   static const contract = "/contract";
+  static const contractDetail = "/contract/:id";
   static const profit = "/profit";
   static const gallery = "/gallery";
   static const galleryDetail = "/gallery/:id";
@@ -50,6 +52,7 @@ class Routes {
   static const authenticatedRoutes = [
     home,
     contract,
+    contractDetail,
     profit,
     gallery,
     galleryDetail,
@@ -147,7 +150,13 @@ GoRouter router(Ref ref) {
             routes: [
               GoRoute(
                 path: Routes.contract,
-                builder: (context, state) => const ContractPage(),
+                builder: (context, state) => const ContractsPage(),
+                routes: [
+                  GoRoute(
+                    path: ':id',
+                    builder: (context, state) => const ContractPage(),
+                  ),
+                ],
               ),
             ],
           ),

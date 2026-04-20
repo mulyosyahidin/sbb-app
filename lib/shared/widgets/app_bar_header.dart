@@ -1,3 +1,4 @@
+import 'package:app/app/app_router.dart';
 import 'package:app/core/theme/app_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -6,16 +7,31 @@ class AppBarHeader extends StatelessWidget {
   final String title;
   final String subtitle;
   final VoidCallback? onBackPressed;
+  final Widget? trailing;
 
   const AppBarHeader({
     super.key,
     required this.title,
     required this.subtitle,
     this.onBackPressed,
+    this.trailing,
   });
 
   @override
   Widget build(BuildContext context) {
+    final canPop = context.canPop();
+    // Show home icon if we can't pop and no custom callback is provided.
+    // If it's a sub-page, we show the back button.
+    final icon = canPop ? Icons.chevron_left : Icons.home_outlined;
+    final onTap = onBackPressed ??
+        () {
+          if (canPop) {
+            context.pop();
+          } else {
+            context.go(Routes.home);
+          }
+        };
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -24,7 +40,7 @@ class AppBarHeader extends StatelessWidget {
           child: Row(
             children: [
               InkWell(
-                onTap: onBackPressed ?? () => context.pop(),
+                onTap: onTap,
                 child: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
@@ -39,7 +55,7 @@ class AppBarHeader extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: const Icon(Icons.chevron_left, size: 24),
+                  child: Icon(icon, size: 24),
                 ),
               ),
               const SizedBox(width: 16),
@@ -69,6 +85,10 @@ class AppBarHeader extends StatelessWidget {
                   ],
                 ),
               ),
+              if (trailing != null) ...[
+                const SizedBox(width: 16),
+                trailing!,
+              ],
             ],
           ),
         ),
