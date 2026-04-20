@@ -7,6 +7,7 @@ import 'package:app/features/account/edit_profile/presentation/screens/edit_prof
 import 'package:app/features/auth/login/presentation/screens/login_page.dart';
 import 'package:app/features/auth/register/presentation/screens/register_page.dart';
 import 'package:app/features/contract/presentation/screens/contract_create_page.dart';
+import 'package:app/features/contract/presentation/screens/contract_preview_page.dart';
 import 'package:app/features/contract/presentation/screens/cow_catalog_page.dart';
 import 'package:app/features/contract/presentation/screens/contract_page.dart';
 import 'package:app/features/contract/presentation/screens/contracts_page.dart';
@@ -65,6 +66,7 @@ class Routes {
   static const companyProfile = "/company-profile";
   static const reward = "/reward";
   static const homeGuest = "/home-guest";
+  static const contractPreview = "/contract/preview";
 
   static const authenticatedRoutes = [
     home,
@@ -88,6 +90,7 @@ class Routes {
     calculator,
     companyProfile,
     reward,
+    contractPreview,
   ];
 }
 
@@ -178,6 +181,13 @@ GoRouter router(Ref ref) {
       GoRoute(
         path: Routes.reward,
         builder: (context, state) => const RewardPage(),
+      ),
+      GoRoute(
+        path: Routes.contractPreview,
+        builder: (context, state) {
+          final data = state.extra as Map<String, dynamic>;
+          return ContractPreviewPage(data: data);
+        },
       ),
 
       // AUTHENTICATED TABS

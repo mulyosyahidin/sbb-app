@@ -6,20 +6,27 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 
-class ContractCreatePage extends StatefulWidget {
+import 'package:app/features/partner/application/partner_controller.dart';
+import 'package:app/features/account/bank_accounts/application/bank_accounts_controller.dart';
+import 'package:app/features/account/bank_accounts/domain/entities/bank_account.dart';
+import 'package:app/features/partner/domain/entities/partner.dart';
+import 'package:app/features/partner/presentation/widgets/partner_skeleton.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+class ContractCreatePage extends ConsumerStatefulWidget {
   const ContractCreatePage({super.key});
 
   @override
-  State<ContractCreatePage> createState() => _ContractCreatePageState();
+  ConsumerState<ContractCreatePage> createState() => _ContractCreatePageState();
 }
 
-class _ContractCreatePageState extends State<ContractCreatePage> {
-  final String partnerName = 'Mulyo Syahidin';
-  final String partnerNIK = '3273112345678901';
-
+class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
   int quantity = 1;
   String selectedCowType = 'Brahman Cross';
   int currentPrice = 18000000;
+  BankAccount? selectedBankAccount;
+  String selectedProgram = 'Regular';
+  String selectedDuration = '12 Bulan';
 
   final currencyFormat = NumberFormat.currency(
     locale: 'id_ID',
@@ -32,6 +39,17 @@ class _ContractCreatePageState extends State<ContractCreatePage> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final partnerAsync = ref.watch(partnerControllerProvider);
+
+    ref.listen(bankAccountsControllerProvider, (previous, next) {
+      next.whenData((state) {
+        if (selectedBankAccount == null && state.accounts.isNotEmpty) {
+          final primary = state.accounts.firstWhere((a) => a.isPrimary,
+              orElse: () => state.accounts.first);
+          setState(() => selectedBankAccount = primary);
+        }
+      });
+    });
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -43,44 +61,230 @@ class _ContractCreatePageState extends State<ContractCreatePage> {
               subtitle: 'Lengkapi rincian akad kerjasama',
             ),
             Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildSectionHeader(context, 'Informasi Mitra'),
-                    const SizedBox(height: 12),
-                    _buildInfoCard(
-                      context,
-                      [
-                        _buildReadOnlyField(context, 'Nama Lengkap', partnerName),
-                        const SizedBox(height: 16),
-                        _buildReadOnlyField(context, 'NIK', partnerNIK),
-                      ],
+              child: partnerAsync.when(
+                data: (partner) {
+                  if (partner == null) {
+                    return _buildBecomePartnerState(context);
+                  }
+                  return _buildForm(context, partner);
+                },
+                loading: () => const PartnerSkeleton(),
+                error: (error, stack) => _buildErrorState(context, error),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildForm(BuildContext context, Partner partner) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildSectionHeader(context, 'Informasi Mitra'),
+          const SizedBox(height: 12),
+          _buildInfoCard(
+            context,
+            [
+              _buildReadOnlyField(context, 'Nama Lengkap', partner.name),
+              const SizedBox(height: 16),
+              _buildReadOnlyField(context, 'NIK', partner.nik),
+            ],
+          ),
+          const SizedBox(height: 32),
+          _buildSectionHeader(context, 'Rincian Kontrak'),
+          const SizedBox(height: 12),
+          _buildFormCard(context),
+          const SizedBox(height: 32),
+          _buildSectionHeader(context, 'Program & Durasi'),
+          const SizedBox(height: 12),
+          _buildProgramCard(context),
+          const SizedBox(height: 32),
+          _buildSectionHeader(context, 'Ringkasan Pembayaran'),
+          const SizedBox(height: 12),
+          _buildCalculationCard(context),
+          const SizedBox(height: 48),
+          PrimaryButton(
+            label: 'Submit Kontrak',
+            onPressed: () {
+              final data = {
+                'partner': partner,
+                'quantity': quantity,
+                'cowType': selectedCowType,
+                'price': currentPrice,
+                'bankAccount': selectedBankAccount,
+                'program': selectedProgram,
+                'duration': selectedDuration,
+                'subtotal': subtotal,
+              };
+              context.push(Routes.contractPreview, extra: data);
+            },
+          ),
+          const SizedBox(height: 40),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProgramCard(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: colorScheme.outline),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildChoiceGroup(
+            label: 'Pilih Program',
+            options: ['Regular', 'PPM', 'Umroh'],
+            selected: selectedProgram,
+            onSelected: (val) => setState(() => selectedProgram = val),
+          ),
+          const SizedBox(height: 24),
+          _buildChoiceGroup(
+            label: 'Durasi Kontrak',
+            options: ['12 Bulan', '36 Bulan'],
+            selected: selectedDuration,
+            onSelected: (val) => setState(() => selectedDuration = val),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildChoiceGroup({
+    required String label,
+    required List<String> options,
+    required String selected,
+    required ValueChanged<String> onSelected,
+  }) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          label,
+          style: AppTextStyles.body(
+            color: colorScheme.onSurfaceVariant,
+            fontSize: 12,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: options.map((option) {
+            final isSelected = selected == option;
+            return Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(right: option == options.last ? 0 : 8),
+                child: InkWell(
+                  onTap: () => onSelected(option),
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? colorScheme.primary
+                          : colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: isSelected
+                            ? colorScheme.primary
+                            : colorScheme.outline,
+                      ),
                     ),
-                    const SizedBox(height: 32),
-                    _buildSectionHeader(context, 'Rincian Kontrak'),
-                    const SizedBox(height: 12),
-                    _buildFormCard(context),
-                    const SizedBox(height: 32),
-                    _buildSectionHeader(context, 'Ringkasan Pembayaran'),
-                    const SizedBox(height: 12),
-                    _buildCalculationCard(context),
-                    const SizedBox(height: 48),
-                    PrimaryButton(
-                      label: 'Submit Kontrak',
-                      onPressed: () {
-                        // Submit logic here
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Kontrak berhasil diajukan')),
-                        );
-                      },
+                    child: Text(
+                      option,
+                      textAlign: TextAlign.center,
+                      style: AppTextStyles.body(
+                        fontSize: 13,
+                        fontWeight:
+                            isSelected ? FontWeight.bold : FontWeight.w500,
+                        color:
+                            isSelected ? Colors.white : colorScheme.onSurface,
+                      ),
                     ),
-                    const SizedBox(height: 40),
-                  ],
+                  ),
                 ),
               ),
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBecomePartnerState(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              color: colorScheme.primaryContainer,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.handshake_outlined,
+              size: 36,
+              color: colorScheme.primary,
+            ),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'Hanya untuk Mitra',
+            style: AppTextStyles.heading(),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Anda harus terdaftar sebagai mitra untuk dapat membuat kontrak kerjasama investasi.',
+            style: AppTextStyles.body(color: colorScheme.onSurfaceVariant),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 32),
+          PrimaryButton(
+            label: 'DAFTAR MITRA SEKARANG',
+            onPressed: () => context.push(Routes.openPartner),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorState(BuildContext context, Object error) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 48, color: Colors.red),
+            const SizedBox(height: 16),
+            Text('Gagal mengambil data mitra', style: AppTextStyles.title()),
+            const SizedBox(height: 8),
+            Text(
+              error.toString(),
+              textAlign: TextAlign.center,
+              style: AppTextStyles.body(),
+            ),
+            const SizedBox(height: 24),
+            PrimaryButton(
+              label: 'Coba Lagi',
+              onPressed: () => ref.refresh(partnerControllerProvider),
             ),
           ],
         ),
@@ -108,7 +312,7 @@ class _ContractCreatePageState extends State<ContractCreatePage> {
         border: Border.all(color: Theme.of(context).colorScheme.outline),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: children,
       ),
     );
@@ -148,7 +352,7 @@ class _ContractCreatePageState extends State<ContractCreatePage> {
         border: Border.all(color: colorScheme.outline),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
             'Jenis Sapi',
@@ -172,7 +376,8 @@ class _ContractCreatePageState extends State<ContractCreatePage> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
-                color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                color:
+                    colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: colorScheme.outline),
               ),
@@ -222,8 +427,220 @@ class _ContractCreatePageState extends State<ContractCreatePage> {
               }),
             ],
           ),
+          const SizedBox(height: 24),
+          Text(
+            'Rekening Pembayaran',
+            style: AppTextStyles.body(
+              color: colorScheme.onSurfaceVariant,
+              fontSize: 12,
+            ),
+          ),
+          const SizedBox(height: 8),
+          _buildBankAccountSelector(context),
         ],
       ),
+    );
+  }
+
+  Widget _buildBankAccountSelector(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final bankAccountsAsync = ref.watch(bankAccountsControllerProvider);
+
+    return bankAccountsAsync.when(
+      data: (state) {
+        if (state.accounts.isEmpty) {
+          return InkWell(
+            onTap: () => context.push(Routes.bankAccountCreate),
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.amber.withValues(alpha: 0.1),
+                border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.warning_amber_rounded,
+                      color: Colors.amber, size: 20),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'Belum ada rekening. Tambah sekarang?',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.orange.shade900,
+                      ),
+                    ),
+                  ),
+                  const Icon(Icons.add_circle_outline,
+                      color: Colors.amber, size: 20),
+                ],
+              ),
+            ),
+          );
+        }
+
+        return InkWell(
+          onTap: () => _showBankAccountPicker(context, state.accounts),
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            decoration: BoxDecoration(
+              color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: colorScheme.outline),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: colorScheme.primary.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(Icons.account_balance_rounded,
+                      size: 16, color: colorScheme.primary),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        selectedBankAccount?.bankName ?? 'Pilih Rekening',
+                        style: AppTextStyles.body(
+                          fontWeight: FontWeight.bold,
+                          color: colorScheme.onSurface,
+                        ),
+                      ),
+                      if (selectedBankAccount != null)
+                        Text(
+                          selectedBankAccount!.accountNumber,
+                          style: AppTextStyles.body(
+                            fontSize: 12,
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                Icon(Icons.keyboard_arrow_down_rounded,
+                    color: colorScheme.onSurfaceVariant),
+              ],
+            ),
+          ),
+        );
+      },
+      loading: () => Container(
+        height: 54,
+        decoration: BoxDecoration(
+          color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: colorScheme.outlineVariant),
+        ),
+      ),
+      error: (_, __) => const SizedBox.shrink(),
+    );
+  }
+
+  void _showBankAccountPicker(BuildContext context, List<BankAccount> accounts) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Pilih Rekening Pembayaran',
+                style: AppTextStyles.title(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              Flexible(
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: accounts.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 10),
+                  itemBuilder: (context, index) {
+                    final account = accounts[index];
+                    final isSelected = selectedBankAccount?.id == account.id;
+
+                    return InkWell(
+                      onTap: () {
+                        setState(() => selectedBankAccount = account);
+                        Navigator.pop(context);
+                      },
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: isSelected
+                                ? colorScheme.primary
+                                : colorScheme.outlineVariant,
+                            width: isSelected ? 2 : 1,
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          color: isSelected
+                              ? colorScheme.primary.withValues(alpha: 0.05)
+                              : null,
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: colorScheme.surfaceContainerLowest,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(Icons.account_balance_wallet_outlined,
+                                  color: colorScheme.primary),
+                            ),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    account.bankName,
+                                    style: AppTextStyles.body(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    '${account.accountNumber} • ${account.accountName}',
+                                    style: AppTextStyles.body(
+                                        fontSize: 12,
+                                        color: colorScheme.onSurfaceVariant),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            if (isSelected)
+                              Icon(Icons.check_circle_rounded,
+                                  color: colorScheme.primary),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -238,8 +655,8 @@ class _ContractCreatePageState extends State<ContractCreatePage> {
           border: Border.all(color: Theme.of(context).colorScheme.outline),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Icon(icon,
-            size: 20, color: Theme.of(context).colorScheme.primary),
+        child:
+            Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary),
       ),
     );
   }
@@ -254,6 +671,7 @@ class _ContractCreatePageState extends State<ContractCreatePage> {
         border: Border.all(color: colorScheme.primary.withValues(alpha: 0.1)),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _buildCalcRow(
               context, 'Harga Satuan', currencyFormat.format(currentPrice)),
