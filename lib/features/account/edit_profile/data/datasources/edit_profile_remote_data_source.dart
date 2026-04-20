@@ -8,18 +8,18 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'edit_profile_remote_datasource.g.dart';
+part 'edit_profile_remote_data_source.g.dart';
 
-abstract class EditProfileRemoteDatasource {
+abstract class EditProfileRemoteDataSource {
   Future<UpdateProfileResponseDto> updateProfile(UpdateProfileRequestDto dto);
 
   Future<UpdateProfileResponseDto> updateProfilePicture(File image);
 }
 
-class EditProfileRemoteDatasourceImpl implements EditProfileRemoteDatasource {
+class EditProfileRemoteDataSourceImpl implements EditProfileRemoteDataSource {
   final Dio _dio;
 
-  EditProfileRemoteDatasourceImpl(this._dio);
+  EditProfileRemoteDataSourceImpl(this._dio);
 
   @override
   Future<UpdateProfileResponseDto> updateProfile(
@@ -110,6 +110,6 @@ class EditProfileRemoteDatasourceImpl implements EditProfileRemoteDatasource {
 }
 
 @riverpod
-EditProfileRemoteDatasource editProfileRemoteDatasource(Ref ref) {
-  return EditProfileRemoteDatasourceImpl(ref.watch(dioProvider));
+EditProfileRemoteDataSource editProfileRemoteDataSource(Ref ref) {
+  return EditProfileRemoteDataSourceImpl(ref.watch(dioProvider));
 }

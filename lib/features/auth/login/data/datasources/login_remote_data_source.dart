@@ -8,17 +8,17 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'login_remote_datasource.g.dart';
+part 'login_remote_data_source.g.dart';
 
-abstract class LoginRemoteDatasource {
+abstract class LoginRemoteDataSource {
   Future<LoginResponseDto> login(LoginRequestDto dto);
   Future<LoginResponseDto> loginWithGoogle(GoogleLoginRequestDto dto);
 }
 
-class LoginRemoteDatasourceImpl implements LoginRemoteDatasource {
+class LoginRemoteDataSourceImpl implements LoginRemoteDataSource {
   final Dio _dio;
 
-  LoginRemoteDatasourceImpl(this._dio);
+  LoginRemoteDataSourceImpl(this._dio);
 
   @override
   Future<LoginResponseDto> login(LoginRequestDto dto) async {
@@ -92,6 +92,6 @@ class LoginRemoteDatasourceImpl implements LoginRemoteDatasource {
 }
 
 @riverpod
-LoginRemoteDatasource loginRemoteDatasource(Ref ref) {
-  return LoginRemoteDatasourceImpl(ref.watch(dioProvider));
+LoginRemoteDataSource loginRemoteDataSource(Ref ref) {
+  return LoginRemoteDataSourceImpl(ref.watch(dioProvider));
 }

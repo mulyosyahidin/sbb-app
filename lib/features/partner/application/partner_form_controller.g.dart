@@ -1,29 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'register_repository_impl.dart';
+part of 'partner_form_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$registerRepositoryHash() =>
-    r'eee1c6824c38c5be52e1c241b04ed60c43615d30';
+String _$partnerFormControllerHash() =>
+    r'ddd6f46d494f270b1d882ffce0f68de519c40ce2';
 
-/// See also [registerRepository].
-@ProviderFor(registerRepository)
-final registerRepositoryProvider =
-    AutoDisposeProvider<RegisterRepository>.internal(
-  registerRepository,
-  name: r'registerRepositoryProvider',
+/// See also [PartnerFormController].
+@ProviderFor(PartnerFormController)
+final partnerFormControllerProvider = AutoDisposeNotifierProvider<
+    PartnerFormController, AsyncValue<void>>.internal(
+  PartnerFormController.new,
+  name: r'partnerFormControllerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$registerRepositoryHash,
+      : _$partnerFormControllerHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef RegisterRepositoryRef = AutoDisposeProviderRef<RegisterRepository>;
+typedef _$PartnerFormController = AutoDisposeNotifier<AsyncValue<void>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -2,7 +2,7 @@ import 'package:app/core/errors/api_exception.dart';
 import 'package:app/core/errors/data_exception.dart';
 import 'package:app/core/errors/failure.dart';
 import 'package:app/core/utils/error_util.dart';
-import 'package:app/features/auth/login/data/datasources/login_remote_datasource.dart';
+import 'package:app/features/auth/login/data/datasources/login_remote_data_source.dart';
 import 'package:app/features/auth/login/data/dto/requests/google_login_request_dto.dart';
 import 'package:app/features/auth/login/data/dto/requests/login_request_dto.dart';
 import 'package:app/features/auth/login/data/dto/responses/login_response_dto.dart';
@@ -14,9 +14,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'login_repository_impl.g.dart';
 
 class LoginRepositoryImpl implements LoginRepository {
-  final LoginRemoteDatasource _loginRemoteDatasource;
+  final LoginRemoteDataSource _loginRemoteDataSource;
 
-  LoginRepositoryImpl(this._loginRemoteDatasource);
+  LoginRepositoryImpl(this._loginRemoteDataSource);
 
   Failure _mapExceptionToFailure(Object e, String reason) {
     final handled = ErrorUtil.handleRepositoryException(e, reason);
@@ -32,7 +32,7 @@ class LoginRepositoryImpl implements LoginRepository {
   @override
   Future<Either<Failure, LoginResponseData>> login(LoginRequestDto dto) async {
     try {
-      final response = await _loginRemoteDatasource.login(dto);
+      final response = await _loginRemoteDataSource.login(dto);
 
       return Right(response.data as LoginResponseData);
     } catch (e) {
@@ -44,7 +44,7 @@ class LoginRepositoryImpl implements LoginRepository {
   Future<Either<Failure, LoginResponseData>> loginWithGoogle(
       GoogleLoginRequestDto dto) async {
     try {
-      final response = await _loginRemoteDatasource.loginWithGoogle(dto);
+      final response = await _loginRemoteDataSource.loginWithGoogle(dto);
 
       return Right(response.data as LoginResponseData);
     } catch (e) {
@@ -56,5 +56,5 @@ class LoginRepositoryImpl implements LoginRepository {
 
 @riverpod
 LoginRepository loginRepository(Ref ref) {
-  return LoginRepositoryImpl(ref.watch(loginRemoteDatasourceProvider));
+  return LoginRepositoryImpl(ref.watch(loginRemoteDataSourceProvider));
 }

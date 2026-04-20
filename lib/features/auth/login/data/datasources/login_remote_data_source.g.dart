@@ -1,30 +1,30 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'register_remote_datasource.dart';
+part of 'login_remote_data_source.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$registerRemoteDatasourceHash() =>
-    r'e230bd632f0bf7aa909683baa29f1877281da8e2';
+String _$loginRemoteDataSourceHash() =>
+    r'245d9fe7c8b581c0f0535360de50f19d3735bcb8';
 
-/// See also [registerRemoteDatasource].
-@ProviderFor(registerRemoteDatasource)
-final registerRemoteDatasourceProvider =
-    AutoDisposeProvider<RegisterRemoteDatasource>.internal(
-  registerRemoteDatasource,
-  name: r'registerRemoteDatasourceProvider',
+/// See also [loginRemoteDataSource].
+@ProviderFor(loginRemoteDataSource)
+final loginRemoteDataSourceProvider =
+    AutoDisposeProvider<LoginRemoteDataSource>.internal(
+  loginRemoteDataSource,
+  name: r'loginRemoteDataSourceProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$registerRemoteDatasourceHash,
+      : _$loginRemoteDataSourceHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef RegisterRemoteDatasourceRef
-    = AutoDisposeProviderRef<RegisterRemoteDatasource>;
+typedef LoginRemoteDataSourceRef
+    = AutoDisposeProviderRef<LoginRemoteDataSource>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

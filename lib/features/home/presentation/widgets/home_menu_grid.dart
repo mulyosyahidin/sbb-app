@@ -22,7 +22,7 @@ class HomeMenuGrid extends StatelessWidget {
           title: 'Open Mitra',
           icon: Icons.group_outlined,
           color: Colors.purple,
-          route: Routes.openPartner,
+          route: Routes.partner,
         ),
         _buildMenuItem(
           context,

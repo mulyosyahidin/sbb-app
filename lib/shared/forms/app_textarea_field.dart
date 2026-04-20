@@ -1,42 +1,30 @@
 import 'package:app/core/theme/app_text_style.dart';
 import 'package:flutter/material.dart';
 
-class AppTextField extends StatelessWidget {
+class AppTextAreaField extends StatelessWidget {
   final String label;
   final String? hint;
   final TextEditingController? controller;
   final String? Function(String?)? validator;
-  final Widget? prefixIcon;
-  final Widget? suffixIcon;
-  final TextInputType? keyboardType;
-  final TextCapitalization textCapitalization;
+  final int minLines;
+  final int? maxLines;
   final bool autofocus;
   final ValueChanged<String>? onChanged;
-  final TextInputAction? textInputAction;
-  final ValueChanged<String>? onFieldSubmitted;
   final String? errorText;
-  final bool obscureText;
   final bool enabled;
-  final bool readOnly;
 
-  const AppTextField({
+  const AppTextAreaField({
     super.key,
     required this.label,
     this.hint,
     this.controller,
     this.validator,
-    this.prefixIcon,
-    this.suffixIcon,
-    this.keyboardType,
-    this.textCapitalization = TextCapitalization.none,
+    this.minLines = 3,
+    this.maxLines,
     this.autofocus = false,
     this.onChanged,
-    this.textInputAction,
-    this.onFieldSubmitted,
     this.errorText,
-    this.obscureText = false,
     this.enabled = true,
-    this.readOnly = false,
   });
 
   @override
@@ -59,25 +47,21 @@ class AppTextField extends StatelessWidget {
         TextFormField(
           controller: controller,
           enabled: enabled,
-          readOnly: readOnly,
           validator: validator,
-          keyboardType: keyboardType,
-          textCapitalization: textCapitalization,
+          minLines: minLines,
+          maxLines: maxLines,
+          keyboardType: TextInputType.multiline,
           autofocus: autofocus,
           onChanged: onChanged,
-          textInputAction: textInputAction,
-          onFieldSubmitted: onFieldSubmitted,
-          obscureText: obscureText,
           style: AppTextStyles.body(
             fontWeight: FontWeight.w500,
             color: colorScheme.onSurface,
           ),
           decoration: InputDecoration(
             hintText: hint,
-            prefixIcon: prefixIcon,
-            suffixIcon: suffixIcon,
             errorText: errorText,
             fillColor: colorScheme.primaryContainer.withValues(alpha: 0.1),
+            alignLabelWithHint: true,
           ),
         ),
       ],

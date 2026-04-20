@@ -19,4 +19,10 @@ class ApiEndpoint {
   static const String storeBankAccount = '/user/bank-accounts';
   static const String updateBankAccount = '/user/bank-accounts/{id}';
   static const String deleteBankAccount = '/user/bank-accounts/{id}';
+
+  // Partner
+  static const String registerPartner = '/user/partner';
+  static const String updatePartner = '/user/partner';
+  static const String getPartner = '/user/partner';
+  static const String checkPartner = '/user/partner/check';
 }

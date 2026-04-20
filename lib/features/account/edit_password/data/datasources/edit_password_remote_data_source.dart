@@ -7,16 +7,16 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'edit_password_remote_datasource.g.dart';
+part 'edit_password_remote_data_source.g.dart';
 
-abstract class EditPasswordRemoteDatasource {
+abstract class EditPasswordRemoteDataSource {
   Future<ApiResponseDto<void>> updatePassword(UpdatePasswordRequestDto dto);
 }
 
-class EditPasswordRemoteDatasourceImpl implements EditPasswordRemoteDatasource {
+class EditPasswordRemoteDataSourceImpl implements EditPasswordRemoteDataSource {
   final Dio _dio;
 
-  EditPasswordRemoteDatasourceImpl(this._dio);
+  EditPasswordRemoteDataSourceImpl(this._dio);
 
   @override
   Future<ApiResponseDto<void>> updatePassword(UpdatePasswordRequestDto dto) async {
@@ -64,6 +64,6 @@ class EditPasswordRemoteDatasourceImpl implements EditPasswordRemoteDatasource {
 }
 
 @riverpod
-EditPasswordRemoteDatasource editPasswordRemoteDatasource(Ref ref) {
-  return EditPasswordRemoteDatasourceImpl(ref.watch(dioProvider));
+EditPasswordRemoteDataSource editPasswordRemoteDataSource(Ref ref) {
+  return EditPasswordRemoteDataSourceImpl(ref.watch(dioProvider));
 }

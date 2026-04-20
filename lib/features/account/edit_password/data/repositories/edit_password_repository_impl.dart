@@ -2,7 +2,7 @@ import 'package:app/core/errors/api_exception.dart';
 import 'package:app/core/errors/data_exception.dart';
 import 'package:app/core/errors/failure.dart';
 import 'package:app/core/utils/error_util.dart';
-import 'package:app/features/account/edit_password/data/datasources/edit_password_remote_datasource.dart';
+import 'package:app/features/account/edit_password/data/datasources/edit_password_remote_data_source.dart';
 import 'package:app/features/account/edit_password/data/dtos/requests/update_password_request_dto.dart';
 import 'package:app/features/account/edit_password/domain/repositories/edit_password_repository.dart';
 import 'package:fpdart/fpdart.dart';
@@ -12,9 +12,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'edit_password_repository_impl.g.dart';
 
 class EditPasswordRepositoryImpl implements EditPasswordRepository {
-  final EditPasswordRemoteDatasource _remoteDatasource;
+  final EditPasswordRemoteDataSource _editPasswordRemoteDataSource;
 
-  EditPasswordRepositoryImpl(this._remoteDatasource);
+  EditPasswordRepositoryImpl(this._editPasswordRemoteDataSource);
 
   Failure _mapExceptionToFailure(Object e, String reason) {
     final handled = ErrorUtil.handleRepositoryException(e, reason);
@@ -34,7 +34,7 @@ class EditPasswordRepositoryImpl implements EditPasswordRepository {
     required String newPasswordConfirmation,
   }) async {
     try {
-      final response = await _remoteDatasource.updatePassword(
+      final response = await _editPasswordRemoteDataSource.updatePassword(
         UpdatePasswordRequestDto(
           currentPassword: currentPassword,
           newPassword: newPassword,
@@ -52,6 +52,6 @@ class EditPasswordRepositoryImpl implements EditPasswordRepository {
 @riverpod
 EditPasswordRepository editPasswordRepository(Ref ref) {
   return EditPasswordRepositoryImpl(
-    ref.watch(editPasswordRemoteDatasourceProvider),
+    ref.watch(editPasswordRemoteDataSourceProvider),
   );
 }

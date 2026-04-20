@@ -7,16 +7,16 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'register_remote_datasource.g.dart';
+part 'register_remote_data_source.g.dart';
 
-abstract class RegisterRemoteDatasource {
+abstract class RegisterRemoteDataSource {
   Future<RegisterResponseDto> register(RegisterRequestDto registerRequestDto);
 }
 
-class RegisterRemoteDatasourceImpl implements RegisterRemoteDatasource {
+class RegisterRemoteDataSourceImpl implements RegisterRemoteDataSource {
   final Dio _dio;
 
-  RegisterRemoteDatasourceImpl(this._dio);
+  RegisterRemoteDataSourceImpl(this._dio);
 
   @override
   Future<RegisterResponseDto> register(
@@ -56,6 +56,6 @@ class RegisterRemoteDatasourceImpl implements RegisterRemoteDatasource {
 }
 
 @riverpod
-RegisterRemoteDatasource registerRemoteDatasource(Ref ref) {
-  return RegisterRemoteDatasourceImpl(ref.watch(dioProvider));
+RegisterRemoteDataSource registerRemoteDataSource(Ref ref) {
+  return RegisterRemoteDataSourceImpl(ref.watch(dioProvider));
 }

@@ -50,3 +50,50 @@ class Skeleton extends StatelessWidget {
     );
   }
 }
+
+class InputSkeleton extends StatelessWidget {
+  final String? label;
+  final bool showLabel;
+  final double height;
+
+  const InputSkeleton({
+    super.key,
+    this.label,
+    this.showLabel = true,
+    this.height = 56,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (label != null) ...[
+          Text(
+            label!.toUpperCase(),
+            style: TextStyle(
+              color: colorScheme.primary.withValues(alpha: 0.5),
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.5,
+            ),
+          ),
+          const SizedBox(height: 8),
+        ] else if (showLabel) ...[
+          const AppShimmer(
+            child: Skeleton(width: 100, height: 14),
+          ),
+          const SizedBox(height: 8),
+        ],
+        AppShimmer(
+          child: Skeleton(
+            height: height,
+            borderRadius: 12,
+          ),
+        ),
+      ],
+    );
+  }
+}
