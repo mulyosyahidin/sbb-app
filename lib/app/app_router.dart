@@ -7,10 +7,12 @@ import 'package:app/features/account/edit_profile/presentation/screens/edit_prof
 import 'package:app/features/auth/login/presentation/screens/login_page.dart';
 import 'package:app/features/auth/register/presentation/screens/register_page.dart';
 import 'package:app/features/contract/presentation/screens/contract_page.dart';
+import 'package:app/features/gallery/presentation/screens/galleries_page.dart';
 import 'package:app/features/gallery/presentation/screens/gallery_page.dart';
 import 'package:app/features/home/presentation/screens/home_page.dart';
 import 'package:app/features/home_guest/presentation/screens/home_guest_page.dart';
 import 'package:app/features/profit/presentation/screens/profit_page.dart';
+import 'package:app/features/open_partner/presentation/screens/open_partner_page.dart';
 import 'package:app/features/account/edit_password/presentation/screens/edit_password_page.dart';
 import 'package:app/features/account/bank_accounts/presentation/screens/bank_accounts_page.dart';
 import 'package:app/features/account/bank_accounts/presentation/screens/bank_account_create_page.dart';
@@ -35,12 +37,14 @@ class Routes {
   static const contract = "/contract";
   static const profit = "/profit";
   static const gallery = "/gallery";
+  static const galleryDetail = "/gallery/:id";
   static const account = "/account";
   static const editProfile = "/edit-profile";
   static const editPassword = "/edit-password";
   static const bankAccounts = "/bank-accounts";
   static const bankAccountCreate = "/bank-accounts/create";
   static const bankAccountEdit = "/bank-accounts/edit";
+  static const openPartner = "/open-partner";
   static const homeGuest = "/home-guest";
 
   static const authenticatedRoutes = [
@@ -48,12 +52,14 @@ class Routes {
     contract,
     profit,
     gallery,
+    galleryDetail,
     account,
     editProfile,
     editPassword,
     bankAccounts,
     bankAccountCreate,
     bankAccountEdit,
+    openPartner,
   ];
 }
 
@@ -110,6 +116,19 @@ GoRouter router(Ref ref) {
         },
       ),
 
+      GoRoute(
+        path: Routes.openPartner,
+        builder: (context, state) => const OpenPartnerPage(),
+      ),
+      GoRoute(
+        path: Routes.gallery,
+        builder: (context, state) => const GalleriesPage(),
+      ),
+      GoRoute(
+        path: Routes.galleryDetail,
+        builder: (context, state) => const GalleryPage(),
+      ),
+
       // AUTHENTICATED TABS
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
@@ -137,14 +156,6 @@ GoRouter router(Ref ref) {
               GoRoute(
                 path: Routes.profit,
                 builder: (context, state) => const ProfitPage(),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: Routes.gallery,
-                builder: (context, state) => const GalleryPage(),
               ),
             ],
           ),

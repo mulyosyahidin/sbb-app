@@ -35,7 +35,8 @@ class NavigationLayout extends StatelessWidget {
         ),
         child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          backgroundColor: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
+          backgroundColor:
+              isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
           selectedItemColor: colorScheme.primary,
           unselectedItemColor: colorScheme.onSurfaceVariant,
           selectedLabelStyle: AppTextStyles.label(
@@ -60,11 +61,6 @@ class NavigationLayout extends StatelessWidget {
               icon: Icon(Icons.bar_chart_outlined),
               activeIcon: Icon(Icons.bar_chart),
               label: 'Profit',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.photo_outlined),
-              activeIcon: Icon(Icons.photo),
-              label: 'Galeri',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person_outline),

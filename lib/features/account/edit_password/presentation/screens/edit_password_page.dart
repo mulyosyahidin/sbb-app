@@ -5,6 +5,7 @@ import 'package:app/core/theme/app_theme.dart';
 import 'package:app/core/utils/toast_util.dart';
 import 'package:app/features/account/edit_password/application/edit_password_controller.dart';
 import 'package:app/shared/forms/app_text_password.dart';
+import 'package:app/shared/widgets/app_bar_header.dart';
 import 'package:app/shared/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -101,83 +102,93 @@ class _EditPasswordPageState extends ConsumerState<EditPasswordPage> {
     final isLoading = ref.watch(editPasswordControllerProvider).isLoading;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Ganti Password'),
-      ),
-      body: !isEmailUser
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.1),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.security_update_warning_outlined,
-                        size: 64,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      'Fitur Tidak Tersedia',
-                      style: AppTextStyles.heading(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'Anda masuk menggunakan akun ${user?.driver?.toUpperCase()}. Password hanya dapat diubah melalui penyedia layanan tersebut atau jika Anda mendaftar menggunakan Email.',
-                      style: AppTextStyles.body(
-                        color: AppColors.textSecondaryLight,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-            )
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  AppTextPassword(
-                    controller: _currentPasswordController,
-                    label: 'PASSWORD SAAT INI',
-                    hint: 'Masukkan password lama',
-                    errorText: _fieldErrors['current_password'],
-                  ),
-                  const SizedBox(height: 20),
-                  AppTextPassword(
-                    controller: _newPasswordController,
-                    label: 'PASSWORD BARU',
-                    hint: 'Masukkan password baru',
-                    errorText: _fieldErrors['new_password'],
-                  ),
-                  const SizedBox(height: 20),
-                  AppTextPassword(
-                    controller: _confirmPasswordController,
-                    label: 'KONFIRMASI PASSWORD BARU',
-                    hint: 'Ulangi password baru',
-                    errorText: _fieldErrors['new_password_confirmation'],
-                  ),
-                  const SizedBox(height: 40),
-                  PrimaryButton(
-                    label: 'Simpan Password',
-                    isLoading: isLoading,
-                    onPressed: isLoading ? null : _handleSubmit,
-                  ),
-                ],
-              ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            const AppBarHeader(
+              title: 'Ganti Password',
+              subtitle: 'Gunakan password akun Anda',
             ),
+            Expanded(
+              child: !isEmailUser
+                  ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(32.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(24),
+                              decoration: BoxDecoration(
+                                color: AppColors.primary.withValues(alpha: 0.1),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.security_update_warning_outlined,
+                                size: 64,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                            Text(
+                              'Fitur Tidak Tersedia',
+                              style: AppTextStyles.heading(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              'Anda masuk menggunakan akun ${user?.driver?.toUpperCase()}. Password hanya dapat diubah melalui penyedia layanan tersebut atau jika Anda mendaftar menggunakan Email.',
+                              style: AppTextStyles.body(
+                                color: AppColors.textSecondaryLight,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  : SingleChildScrollView(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          AppTextPassword(
+                            controller: _currentPasswordController,
+                            label: 'PASSWORD SAAT INI',
+                            hint: 'Masukkan password lama',
+                            errorText: _fieldErrors['current_password'],
+                          ),
+                          const SizedBox(height: 20),
+                          AppTextPassword(
+                            controller: _newPasswordController,
+                            label: 'PASSWORD BARU',
+                            hint: 'Masukkan password baru',
+                            errorText: _fieldErrors['new_password'],
+                          ),
+                          const SizedBox(height: 20),
+                          AppTextPassword(
+                            controller: _confirmPasswordController,
+                            label: 'KONFIRMASI PASSWORD BARU',
+                            hint: 'Ulangi password baru',
+                            errorText:
+                                _fieldErrors['new_password_confirmation'],
+                          ),
+                          const SizedBox(height: 40),
+                          PrimaryButton(
+                            label: 'Simpan Password',
+                            isLoading: isLoading,
+                            onPressed: isLoading ? null : _handleSubmit,
+                          ),
+                        ],
+                      ),
+                    ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

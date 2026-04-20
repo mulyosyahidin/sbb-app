@@ -4,6 +4,7 @@ import 'package:app/core/utils/toast_util.dart';
 import 'package:app/features/account/bank_accounts/application/bank_account_edit_controller.dart';
 import 'package:app/features/account/bank_accounts/domain/entities/bank_account.dart';
 import 'package:app/shared/forms/app_text_field.dart';
+import 'package:app/shared/widgets/app_bar_header.dart';
 import 'package:app/shared/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -119,99 +120,107 @@ class _BankAccountEditPageState extends ConsumerState<BankAccountEditPage> {
     });
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Edit Akun Bank'),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              AppTextField(
-                controller: _bankNameController,
-                label: 'Nama Bank',
-                prefixIcon:
-                    const Icon(Icons.account_balance_outlined, size: 20),
-                textCapitalization: TextCapitalization.characters,
-                errorText: _fieldErrors['bank_name'],
-              ),
-              const SizedBox(height: 24),
+      body: SafeArea(
+        child: Column(
+          children: [
+            const AppBarHeader(
+              title: 'Edit Rekening',
+              subtitle: 'Perbarui informasi detail rekening bank Anda',
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      AppTextField(
+                        controller: _bankNameController,
+                        label: 'Nama Bank',
+                        prefixIcon:
+                            const Icon(Icons.account_balance_outlined, size: 20),
+                        textCapitalization: TextCapitalization.characters,
+                        errorText: _fieldErrors['bank_name'],
+                      ),
+                      const SizedBox(height: 24),
 
-              AppTextField(
-                controller: _accountNameController,
-                label: 'Nama Pemilik Rekening',
-                prefixIcon: const Icon(Icons.person_outline, size: 20),
-                errorText: _fieldErrors['account_name'],
-              ),
-              const SizedBox(height: 24),
+                      AppTextField(
+                        controller: _accountNameController,
+                        label: 'Nama Pemilik Rekening',
+                        prefixIcon: const Icon(Icons.person_outline, size: 20),
+                        errorText: _fieldErrors['account_name'],
+                      ),
+                      const SizedBox(height: 24),
 
-              AppTextField(
-                controller: _accountNumberController,
-                label: 'Nomor Rekening',
-                prefixIcon: const Icon(Icons.numbers, size: 20),
-                keyboardType: TextInputType.number,
-                errorText: _fieldErrors['account_number'],
-              ),
-              const SizedBox(height: 24),
+                      AppTextField(
+                        controller: _accountNumberController,
+                        label: 'Nomor Rekening',
+                        prefixIcon: const Icon(Icons.numbers, size: 20),
+                        keyboardType: TextInputType.number,
+                        errorText: _fieldErrors['account_number'],
+                      ),
+                      const SizedBox(height: 24),
 
-              AppTextField(
-                controller: _noteController,
-                label: 'Catatan (Opsional)',
-                prefixIcon: const Icon(Icons.note_alt_outlined, size: 20),
-                errorText: _fieldErrors['note'],
-              ),
-              const SizedBox(height: 24),
+                      AppTextField(
+                        controller: _noteController,
+                        label: 'Catatan (Opsional)',
+                        prefixIcon: const Icon(Icons.note_alt_outlined, size: 20),
+                        errorText: _fieldErrors['note'],
+                      ),
+                      const SizedBox(height: 24),
 
-              // Switch for isPrimary
-              Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: Theme.of(context).colorScheme.outlineVariant,
+                      // Switch for isPrimary
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surface,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.outlineVariant,
+                          ),
+                        ),
+                        child: SwitchListTile(
+                          value: _isPrimary,
+                          onChanged: widget.account.isPrimary 
+                            ? null // Cannot unset primary if it's already primary
+                            : (value) => setState(() => _isPrimary = value),
+                          title: const Text(
+                            'Jadikan Akun Utama',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          subtitle: Text(
+                            widget.account.isPrimary 
+                              ? 'Rekening ini adalah akun utama'
+                              : 'Tandai rekening ini sebagai rekening utama untuk menerima pembayaran',
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                          secondary: Icon(
+                            _isPrimary ? Icons.star : Icons.star_border,
+                            color: _isPrimary ? AppColors.warning : null,
+                          ),
+                          activeColor: AppColors.warning,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 40),
+
+                      PrimaryButton(
+                        label: 'Simpan Perubahan',
+                        onPressed: isLoading ? null : _handleSubmit,
+                        isLoading: isLoading,
+                      ),
+                      const SizedBox(height: 16),
+                    ],
                   ),
                 ),
-                child: SwitchListTile(
-                  value: _isPrimary,
-                  onChanged: widget.account.isPrimary 
-                    ? null // Cannot unset primary if it's already primary
-                    : (value) => setState(() => _isPrimary = value),
-                  title: const Text(
-                    'Jadikan Akun Utama',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  subtitle: Text(
-                    widget.account.isPrimary 
-                      ? 'Rekening ini adalah akun utama'
-                      : 'Tandai rekening ini sebagai rekening utama untuk menerima pembayaran',
-                    style: const TextStyle(fontSize: 12),
-                  ),
-                  secondary: Icon(
-                    _isPrimary ? Icons.star : Icons.star_border,
-                    color: _isPrimary ? AppColors.warning : null,
-                  ),
-                  activeColor: AppColors.warning,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
               ),
-
-              const SizedBox(height: 40),
-
-              PrimaryButton(
-                label: 'Simpan Perubahan',
-                onPressed: isLoading ? null : _handleSubmit,
-                isLoading: isLoading,
-              ),
-              const SizedBox(height: 16),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -6,6 +6,7 @@ import 'package:app/core/theme/app_theme.dart';
 import 'package:app/features/account/bank_accounts/application/bank_accounts_controller.dart';
 import 'package:app/features/account/bank_accounts/presentation/widgets/bank_account_card.dart';
 import 'package:app/features/account/bank_accounts/presentation/widgets/bank_account_skeleton.dart';
+import 'package:app/shared/widgets/app_bar_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -67,93 +68,89 @@ class _BankAccountsPageState extends ConsumerState<BankAccountsPage> {
     final hasQuery = _searchController.text.isNotEmpty;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Rekening Bank',
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: colorScheme.onSurface,
-      ),
-      body: Column(
-        children: [
-          // Search bar — pill shape
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: isDark ? AppColors.surfaceDark : Colors.white,
-                      borderRadius: BorderRadius.circular(22),
-                      border: Border.all(
-                        color: _searchFocus.hasFocus
-                            ? colorScheme.primary.withValues(alpha: 0.5)
-                            : colorScheme.outline.withValues(alpha: 0.25),
-                        width: 0.5,
+      body: SafeArea(
+        child: Column(
+          children: [
+            const AppBarHeader(
+              title: 'Rekening Bank',
+              subtitle: 'Kelola daftar rekening bank Anda',
+            ),
+            const SizedBox(height: 16),
+            // Search bar — pill shape
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: isDark ? AppColors.surfaceDark : Colors.white,
+                        borderRadius: BorderRadius.circular(22),
+                        border: Border.all(
+                          color: _searchFocus.hasFocus
+                              ? colorScheme.primary.withValues(alpha: 0.5)
+                              : colorScheme.outline.withValues(alpha: 0.25),
+                          width: 0.5,
+                        ),
                       ),
-                    ),
-                    child: TextField(
-                      controller: _searchController,
-                      focusNode: _searchFocus,
-                      onChanged: _onSearchChanged,
-                      style: AppTextStyles.body(
-                        fontSize: 14,
-                        color: colorScheme.onSurface,
-                      ),
-                      decoration: InputDecoration(
-                        hintText: 'Cari bank atau nama pemilik...',
-                        hintStyle: AppTextStyles.body(
+                      child: TextField(
+                        controller: _searchController,
+                        focusNode: _searchFocus,
+                        onChanged: _onSearchChanged,
+                        style: AppTextStyles.body(
                           fontSize: 14,
-                          color: colorScheme.onSurfaceVariant
-                              .withValues(alpha: 0.4),
+                          color: colorScheme.onSurface,
                         ),
-                        prefixIcon: Icon(
-                          Icons.search,
-                          size: 18,
-                          color: colorScheme.onSurfaceVariant
-                              .withValues(alpha: 0.6),
+                        decoration: InputDecoration(
+                          hintText: 'Cari bank atau nama pemilik...',
+                          hintStyle: AppTextStyles.body(
+                            fontSize: 14,
+                            color: colorScheme.onSurfaceVariant
+                                .withValues(alpha: 0.4),
+                          ),
+                          prefixIcon: Icon(
+                            Icons.search,
+                            size: 18,
+                            color: colorScheme.onSurfaceVariant
+                                .withValues(alpha: 0.6),
+                          ),
+                          suffixIcon: hasQuery
+                              ? GestureDetector(
+                                  onTap: _clearSearch,
+                                  child: Container(
+                                    margin: const EdgeInsets.all(10),
+                                    width: 22,
+                                    height: 22,
+                                    decoration: BoxDecoration(
+                                      color: colorScheme.onSurfaceVariant
+                                          .withValues(alpha: 0.15),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      Icons.close,
+                                      size: 12,
+                                      color: colorScheme.onSurfaceVariant,
+                                    ),
+                                  ),
+                                )
+                              : null,
+                          border: InputBorder.none,
+                          contentPadding:
+                              const EdgeInsets.symmetric(vertical: 12),
                         ),
-                        suffixIcon: hasQuery
-                            ? GestureDetector(
-                                onTap: _clearSearch,
-                                child: Container(
-                                  margin: const EdgeInsets.all(10),
-                                  width: 22,
-                                  height: 22,
-                                  decoration: BoxDecoration(
-                                    color: colorScheme.onSurfaceVariant
-                                        .withValues(alpha: 0.15),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    Icons.close,
-                                    size: 12,
-                                    color: colorScheme.onSurfaceVariant,
-                                  ),
-                                ),
-                              )
-                            : null,
-                        border: InputBorder.none,
-                        contentPadding:
-                            const EdgeInsets.symmetric(vertical: 12),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
 
-          // List
-          Expanded(
-            child: state.when(
-              skipLoadingOnRefresh: false,
-              data: (data) {
+            // List
+            Expanded(
+              child: state.when(
+                skipLoadingOnRefresh: false,
+                data: (data) {
                   if (data.accounts.isEmpty) {
                     return ListView(
                       physics: const AlwaysScrollableScrollPhysics(),
@@ -254,10 +251,11 @@ class _BankAccountsPageState extends ConsumerState<BankAccountsPage> {
                       ),
                     ),
                   ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.push(Routes.bankAccountCreate),
