@@ -9,6 +9,7 @@ class CowCatalogPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final cows = [
       {
         'name': 'Brahman Cross',
@@ -31,7 +32,7 @@ class CowCatalogPage extends StatelessWidget {
     );
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F9F5),
+      backgroundColor: colorScheme.surface,
       body: SafeArea(
         child: Column(
           children: [
@@ -56,9 +57,9 @@ class CowCatalogPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: colorScheme.surface,
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: const Color(0xFFE8ECE7)),
+                        border: Border.all(color: colorScheme.outline),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,13 +86,14 @@ class CowCatalogPage extends StatelessWidget {
                                   style: AppTextStyles.body(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14,
+                                    color: colorScheme.onSurface,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
                                   currencyFormat.format(cow['price']),
                                   style: AppTextStyles.body(
-                                    color: const Color(0xFF1E5135),
+                                    color: colorScheme.primary,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 13,
                                   ),

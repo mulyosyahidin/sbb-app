@@ -136,7 +136,7 @@ class _ContractsPageState extends State<ContractsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F9F5),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -170,7 +170,7 @@ class _ContractsPageState extends State<ContractsPage> {
           width: 36,
           height: 36,
           decoration: BoxDecoration(
-            color: const Color(0xFF1E5135), // Dark green from image
+            color: Theme.of(context).colorScheme.primary, // Primary green from theme
             borderRadius: BorderRadius.circular(10),
           ),
           child: const Icon(
@@ -202,12 +202,14 @@ class _ContractsPageState extends State<ContractsPage> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                 decoration: BoxDecoration(
-                  color: isSelected ? const Color(0xFF1E5135) : Colors.white,
+                  color: isSelected
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: isSelected
                         ? Colors.transparent
-                        : const Color(0xFFE8ECE7),
+                        : Theme.of(context).colorScheme.outline,
                   ),
                 ),
                 child: Center(
@@ -217,8 +219,9 @@ class _ContractsPageState extends State<ContractsPage> {
                       fontSize: 13,
                       fontWeight:
                           isSelected ? FontWeight.bold : FontWeight.w500,
-                      color:
-                          isSelected ? Colors.white : const Color(0xFF747972),
+                      color: isSelected
+                          ? Theme.of(context).colorScheme.onPrimary
+                          : Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ),
@@ -240,9 +243,9 @@ class _ContractsPageState extends State<ContractsPage> {
         margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFE8ECE7)),
+        border: Border.all(color: Theme.of(context).colorScheme.outline),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.02),
@@ -262,10 +265,10 @@ class _ContractsPageState extends State<ContractsPage> {
                 style: AppTextStyles.body(
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
-                  color: const Color(0xFF1A1C19),
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
-              _buildStatusBadge(item.status),
+              _buildStatusBadge(context, item.status),
             ],
           ),
           const SizedBox(height: 20),
@@ -276,7 +279,7 @@ class _ContractsPageState extends State<ContractsPage> {
               _buildDetailItem('Modal', item.modal, isBold: true),
               if (item.profit != null)
                 _buildDetailItem('Profit', item.profit!,
-                    isBold: true, valueColor: const Color(0xFF1E5135))
+                    isBold: true, valueColor: Theme.of(context).colorScheme.primary)
               else
                 _buildDetailItem('Bagi Hasil', item.bagiHasil, isBold: true),
             ],
@@ -289,7 +292,7 @@ class _ContractsPageState extends State<ContractsPage> {
                 'Progres penggemukan',
                 style: AppTextStyles.body(
                   fontSize: 12,
-                  color: const Color(0xFF9A9A9A),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
               Text(
@@ -297,7 +300,7 @@ class _ContractsPageState extends State<ContractsPage> {
                 style: AppTextStyles.body(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
-                  color: const Color(0xFF1A1C19),
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ],
@@ -307,8 +310,8 @@ class _ContractsPageState extends State<ContractsPage> {
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
               value: item.progress,
-              backgroundColor: const Color(0xFFF1F5F0),
-              color: const Color(0xFF1E5135),
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.2),
+              color: Theme.of(context).colorScheme.primary,
               minHeight: 8,
             ),
           ),
@@ -318,36 +321,31 @@ class _ContractsPageState extends State<ContractsPage> {
     );
   }
 
-  Widget _buildStatusBadge(String status) {
-    Color bgColor;
-    Color textColor;
+  Widget _buildStatusBadge(BuildContext context, String status) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    Color color;
 
     switch (status) {
       case 'Aktif':
-        bgColor = const Color(0xFFE8F5E9);
-        textColor = const Color(0xFF4CAF50);
+        color = const Color(0xFF4CAF50);
         break;
       case 'Proses':
-        bgColor = const Color(0xFFFFF3E0);
-        textColor = const Color(0xFFFF9800);
+        color = const Color(0xFFFF9800);
         break;
       case 'Selesai':
-        bgColor = const Color(0xFFE3F2FD);
-        textColor = const Color(0xFF2196F3);
+        color = const Color(0xFF2196F3);
         break;
       case 'Qurban':
-        bgColor = const Color(0xFFF3E5F5); // Light purple
-        textColor = const Color(0xFF9C27B0); // Deep purple
+        color = const Color(0xFF9C27B0);
         break;
       default:
-        bgColor = Colors.grey[100]!;
-        textColor = Colors.grey[600]!;
+        color = Colors.grey;
     }
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
-        color: bgColor,
+        color: color.withValues(alpha: isDark ? 0.2 : 0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
@@ -355,7 +353,7 @@ class _ContractsPageState extends State<ContractsPage> {
         style: AppTextStyles.body(
           fontSize: 11,
           fontWeight: FontWeight.bold,
-          color: textColor,
+          color: isDark ? color.withValues(alpha: 0.9) : color,
         ),
       ),
     );
@@ -370,7 +368,7 @@ class _ContractsPageState extends State<ContractsPage> {
           label,
           style: AppTextStyles.body(
             fontSize: 11,
-            color: const Color(0xFF9A9A9A),
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         ),
         const SizedBox(height: 4),
@@ -379,7 +377,7 @@ class _ContractsPageState extends State<ContractsPage> {
           style: AppTextStyles.body(
             fontSize: 14,
             fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-            color: valueColor ?? const Color(0xFF1A1C19),
+            color: valueColor ?? Theme.of(context).colorScheme.onSurface,
           ),
         ),
       ],

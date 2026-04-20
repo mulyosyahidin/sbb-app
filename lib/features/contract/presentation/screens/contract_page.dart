@@ -14,7 +14,7 @@ class ContractPage extends StatelessWidget {
     const double progress = 0.72;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F9F5),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -33,48 +33,49 @@ class ContractPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // Hero Summary Card
-                          _buildHeroCard(contractId, status, progress),
+                          _buildHeroCard(context, contractId, status, progress),
                           const SizedBox(height: 24),
 
                           // Informasi Sapi
-                          _buildSectionHeader('Informasi Sapi'),
+                          _buildSectionHeader(context, 'Informasi Sapi'),
                           const SizedBox(height: 12),
-                          _buildDetailCard([
-                            _buildDetailRow('ID Kontrak', '#SBB-014'),
-                            _buildDetailRow('Jenis', 'Brahman Cross'),
-                            _buildDetailRow('Berat Awal', '320 kg'),
-                            _buildDetailRow('Berat Sekarang', '415 kg'),
-                            _buildDetailRow('Target Berat', '500 kg'),
+                          _buildDetailCard(context, [
+                             _buildDetailRow(context, 'ID Kontrak', '#SBB-014'),
+                            _buildDetailRow(context, 'Jenis', 'Brahman Cross'),
+                            _buildDetailRow(context, 'Berat Awal', '320 kg'),
+                            _buildDetailRow(context, 'Berat Sekarang', '415 kg'),
+                            _buildDetailRow(context, 'Target Berat', '500 kg'),
                           ]),
                           const SizedBox(height: 24),
 
                           // Rincian Keuangan
-                          _buildSectionHeader('Rincian Keuangan'),
+                          _buildSectionHeader(context, 'Rincian Keuangan'),
                           const SizedBox(height: 12),
-                          _buildDetailCard([
-                            _buildDetailRow('Modal Investasi', 'Rp 18.000.000'),
-                            _buildDetailRow(
+                          _buildDetailCard(context, [
+                            _buildDetailRow(context, 'Modal Investasi', 'Rp 18.000.000'),
+                            _buildDetailRow(context, 
                                 'Bagi Hasil', '60% (Mitra) / 40% (SBB)'),
-                            _buildDetailRow('Estimasi Profit', '+Rp 4.200.000',
-                                valueColor: const Color(0xFF468432)),
+                            _buildDetailRow(context, 'Estimasi Profit', '+Rp 4.200.000',
+                                valueColor: Theme.of(context).colorScheme.primary),
                           ]),
                           const SizedBox(height: 24),
 
                           // Jadwal
-                          _buildSectionHeader('Jadwal Kontrak'),
+                          _buildSectionHeader(context, 'Jadwal Kontrak'),
                           const SizedBox(height: 12),
-                          _buildDetailCard([
-                            _buildDetailRow('Tanggal Mulai', '20 Oktober 2025'),
-                            _buildDetailRow(
+                          _buildDetailCard(context, [
+                            _buildDetailRow(context, 'Tanggal Mulai', '20 Oktober 2025'),
+                            _buildDetailRow(context, 
                                 'Estimasi Selesai', '20 April 2026'),
-                            _buildDetailRow('Durasi', '6 Bulan'),
+                            _buildDetailRow(context, 'Durasi', '6 Bulan'),
                           ]),
                           const SizedBox(height: 24),
 
                           // Timeline Aktivitas
-                          _buildSectionHeader('Timeline Aktivitas'),
+                          _buildSectionHeader(context, 'Timeline Aktivitas'),
                           const SizedBox(height: 16),
                           _buildTimelineItem(
+                            context,
                             date: '15 April 2026',
                             time: '09:00',
                             title: 'Pemeriksaan Kesehatan Rutin',
@@ -83,6 +84,7 @@ class ContractPage extends StatelessWidget {
                             isLast: false,
                           ),
                           _buildTimelineItem(
+                            context,
                             date: '10 April 2026',
                             time: '14:30',
                             title: 'Penimbangan Berat Badan',
@@ -90,6 +92,7 @@ class ContractPage extends StatelessWidget {
                             isLast: false,
                           ),
                           _buildTimelineItem(
+                            context,
                             date: '01 April 2026',
                             time: '08:00',
                             title: 'Pemberian Vitamin & Vaksin',
@@ -123,15 +126,15 @@ class ContractPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeroCard(String id, String status, double progress) {
+  Widget _buildHeroCard(BuildContext context, String id, String status, double progress) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E5135),
+        color: Theme.of(context).colorScheme.primary,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF1E5135).withValues(alpha: 0.2),
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
@@ -208,7 +211,7 @@ class ContractPage extends StatelessWidget {
                       child: LinearProgressIndicator(
                         value: progress,
                         backgroundColor: Colors.white.withValues(alpha: 0.1),
-                        color: const Color(0xFFC8E6C9),
+                        color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.5),
                         minHeight: 8,
                       ),
                     ),
@@ -222,24 +225,24 @@ class ContractPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionHeader(String title) {
+  Widget _buildSectionHeader(BuildContext context, String title) {
     return Text(
       title,
       style: AppTextStyles.title(
         fontWeight: FontWeight.bold,
         fontSize: 16,
-        color: const Color(0xFF1A1C19),
+        color: Theme.of(context).colorScheme.onSurface,
       ),
     );
   }
 
-  Widget _buildDetailCard(List<Widget> children) {
+  Widget _buildDetailCard(BuildContext context, List<Widget> children) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFE8ECE7)),
+        border: Border.all(color: Theme.of(context).colorScheme.outline),
       ),
       child: Column(
         children: children,
@@ -247,7 +250,8 @@ class ContractPage extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailRow(String label, String value, {Color? valueColor}) {
+  Widget _buildDetailRow(BuildContext context, String label, String value,
+      {Color? valueColor}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -256,7 +260,7 @@ class ContractPage extends StatelessWidget {
           Text(
             label,
             style: AppTextStyles.body(
-              color: const Color(0xFF747972),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
               fontSize: 13,
             ),
           ),
@@ -265,7 +269,7 @@ class ContractPage extends StatelessWidget {
             style: AppTextStyles.body(
               fontWeight: FontWeight.bold,
               fontSize: 14,
-              color: valueColor ?? const Color(0xFF1A1C19),
+              color: valueColor ?? Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ],
@@ -273,7 +277,8 @@ class ContractPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTimelineItem({
+  Widget _buildTimelineItem(
+    BuildContext context, {
     required String date,
     required String time,
     required String title,
@@ -289,8 +294,8 @@ class ContractPage extends StatelessWidget {
               Container(
                 width: 12,
                 height: 12,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF1E5135),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary,
                   shape: BoxShape.circle,
                 ),
               ),
@@ -298,7 +303,7 @@ class ContractPage extends StatelessWidget {
                 Expanded(
                   child: Container(
                     width: 2,
-                    color: const Color(0xFFE8ECE7),
+                    color: Theme.of(context).colorScheme.outline,
                   ),
                 ),
             ],
@@ -317,7 +322,7 @@ class ContractPage extends StatelessWidget {
                         style: AppTextStyles.body(
                           fontWeight: FontWeight.bold,
                           fontSize: 13,
-                          color: const Color(0xFF1A1C19),
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -325,7 +330,7 @@ class ContractPage extends StatelessWidget {
                         time,
                         style: AppTextStyles.body(
                           fontSize: 11,
-                          color: const Color(0xFF747972),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ],
@@ -336,7 +341,7 @@ class ContractPage extends StatelessWidget {
                     style: AppTextStyles.body(
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
-                      color: const Color(0xFF1E5135),
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -344,7 +349,7 @@ class ContractPage extends StatelessWidget {
                     desc,
                     style: AppTextStyles.body(
                       fontSize: 13,
-                      color: const Color(0xFF747972),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ).copyWith(height: 1.5),
                   ),
                 ],

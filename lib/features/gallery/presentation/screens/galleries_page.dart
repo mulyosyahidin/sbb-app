@@ -13,27 +13,32 @@ class GalleriesPage extends StatelessWidget {
       {
         'title': 'Kandang Brahman',
         'location': 'Cariu, Jawa Barat',
-        'image': 'assets/images/galleries/kandang_brahman.png',
+        'image': 'assets/images/galleries/kandang-sapi-sbb-2.png',
       },
       {
         'title': 'Blok D7 — Simental',
         'location': 'Cariu, Jawa Barat',
-        'image': 'assets/images/galleries/blok_d7_simental.png',
+        'image': 'assets/images/galleries/kandang-sapi-sbb-1.png',
       },
       {
         'title': 'Tahap Penimbangan',
         'location': 'Cariu, Jawa Barat',
-        'image': 'assets/images/galleries/tahap_penimbangan.png',
+        'image': 'assets/images/galleries/tahap-penimbangan.png',
       },
       {
         'title': 'Tahap Pengemasan',
         'location': 'Kab. Bogor',
-        'image': 'assets/images/galleries/tahap_pengemasan.png',
+        'image': 'assets/images/galleries/tahap-pengemasan.png',
+      },
+      {
+        'title': 'Kunjungan ke PT. Cianjur Arta Makmur',
+        'location': 'Kab. Bogor',
+        'image': 'assets/images/galleries/kunjungan-ke-pt.png',
       },
     ];
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F9F5),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -71,9 +76,9 @@ class GalleriesPage extends StatelessWidget {
   Widget _buildGalleryCard(BuildContext context, Map<String, String> item) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFE8ECE7)),
+        border: Border.all(color: Theme.of(context).colorScheme.outline),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -113,7 +118,7 @@ class GalleriesPage extends StatelessWidget {
                     style: AppTextStyles.body(
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
-                      color: const Color(0xFF1A1C19),
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -132,7 +137,8 @@ class GalleriesPage extends StatelessWidget {
                           item['location']!,
                           style: AppTextStyles.body(
                             fontSize: 10,
-                            color: const Color(0xFF747972),
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,

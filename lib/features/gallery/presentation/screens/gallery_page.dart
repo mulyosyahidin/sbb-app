@@ -1,5 +1,4 @@
 import 'package:app/core/theme/app_text_style.dart';
-import 'package:app/shared/widgets/app_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -8,8 +7,7 @@ class GalleryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const String dummyImage =
-        'https://images.unsplash.com/photo-1546445317-29f4545e9d53?q=80&w=1600&auto=format&fit=crop';
+    const String dummyImage = 'assets/images/galleries/kandang-sapi-sbb-1.png';
     const String dummyTitle = 'Cariu Brahman Batch #4';
     const String dummyDate = '20 April 2024';
     const String dummyLocation = 'Cariu, Jawa Barat';
@@ -19,16 +17,16 @@ class GalleryPage extends StatelessWidget {
         'Pemberian pakan konsentrat dan hijauan dilakukan secara terjadwal untuk memastikan nutrisi optimal.';
 
     final List<String> dummyPhotos = [
-      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1596733430284-f7437764b1a9?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1589303204158-c33028c33117?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1625109567648-84e1332f5d3f?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1773171033482-053653857f78?q=80&w=800&auto=format&fit=crop',
+      'assets/images/galleries/kandang-sapi-sbb-1.png',
+      'assets/images/galleries/kandang-sapi-sbb-2.png',
+      'assets/images/galleries/kunjungan-ke-pt.png',
+      'assets/images/galleries/kunjungan-ke-pt-2.png',
+      'assets/images/galleries/tahap-pengemasan.png',
+      'assets/images/galleries/tahap-penimbangan.png',
     ];
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: CustomScrollView(
         slivers: [
           // Hero Image Header
@@ -36,7 +34,7 @@ class GalleryPage extends StatelessWidget {
             expandedHeight: 350,
             pinned: true,
             leadingWidth: 70,
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).colorScheme.surface,
             leading: Padding(
               padding: const EdgeInsets.only(left: 16),
               child: Center(
@@ -45,7 +43,10 @@ class GalleryPage extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.9),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .surface
+                          .withValues(alpha: 0.9),
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
@@ -55,8 +56,8 @@ class GalleryPage extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: const Icon(Icons.chevron_left,
-                        color: Color(0xFF1A1C19)),
+                    child: Icon(Icons.chevron_left,
+                        color: Theme.of(context).colorScheme.onSurface),
                   ),
                 ),
               ),
@@ -66,12 +67,16 @@ class GalleryPage extends StatelessWidget {
                 fit: StackFit.expand,
                 children: [
                   InkWell(
-                    onTap: () => _showFullScreenImage(context, dummyImage),
+                    onTap: () => _showFullScreenImage(
+                        context, dummyImage, 'header_$dummyImage'),
                     child: Hero(
-                      tag: dummyImage,
-                      child: AppNetworkImage(
-                        imageUrl: dummyImage,
-                        fit: BoxFit.cover,
+                      tag: 'header_$dummyImage',
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(0),
+                        child: Image.asset(
+                          dummyImage,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),
@@ -131,8 +136,8 @@ class GalleryPage extends StatelessWidget {
           // Content
           SliverToBoxAdapter(
             child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
               ),
               child: Padding(
@@ -145,6 +150,7 @@ class GalleryPage extends StatelessWidget {
                       children: [
                         Expanded(
                           child: _buildInfoItem(
+                            context,
                             icon: Icons.calendar_today_outlined,
                             label: 'Tanggal',
                             value: dummyDate,
@@ -153,6 +159,7 @@ class GalleryPage extends StatelessWidget {
                         const SizedBox(width: 16),
                         Expanded(
                           child: _buildInfoItem(
+                            context,
                             icon: Icons.location_on_outlined,
                             label: 'Lokasi',
                             value: dummyLocation,
@@ -168,14 +175,14 @@ class GalleryPage extends StatelessWidget {
                       style: AppTextStyles.title(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
-                        color: const Color(0xFF1A1C19),
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 12),
                     Text(
                       dummyDescription,
                       style: AppTextStyles.body(
-                        color: const Color(0xFF444941),
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 15,
                       ).copyWith(height: 1.6),
                     ),
@@ -190,13 +197,14 @@ class GalleryPage extends StatelessWidget {
                           style: AppTextStyles.title(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
-                            color: const Color(0xFF1A1C19),
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                         Text(
                           '${dummyPhotos.length} Foto',
                           style: AppTextStyles.body(
-                            color: const Color(0xFF747972),
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
                             fontSize: 12,
                           ),
                         ),
@@ -219,13 +227,17 @@ class GalleryPage extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final imageUrl = dummyPhotos[index];
                         return InkWell(
-                          onTap: () => _showFullScreenImage(context, imageUrl),
+                          onTap: () => _showFullScreenImage(
+                              context, imageUrl, 'photo_${imageUrl}_$index'),
                           borderRadius: BorderRadius.circular(16),
                           child: Hero(
-                            tag: imageUrl,
-                            child: AppNetworkImage(
-                              imageUrl: imageUrl,
-                              borderRadius: 16,
+                            tag: 'photo_${imageUrl}_$index',
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Image.asset(
+                                imageUrl,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                         );
@@ -242,7 +254,8 @@ class GalleryPage extends StatelessWidget {
     );
   }
 
-  void _showFullScreenImage(BuildContext context, String imageUrl) {
+  void _showFullScreenImage(
+      BuildContext context, String imageUrl, String heroTag) {
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
@@ -258,9 +271,9 @@ class GalleryPage extends StatelessWidget {
                   minScale: 0.5,
                   maxScale: 4.0,
                   child: Hero(
-                    tag: imageUrl,
-                    child: AppNetworkImage(
-                      imageUrl: imageUrl,
+                    tag: heroTag,
+                    child: Image.asset(
+                      imageUrl,
                       fit: BoxFit.contain,
                       width: double.infinity,
                       height: double.infinity,
@@ -283,7 +296,8 @@ class GalleryPage extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoItem({
+  Widget _buildInfoItem(
+    BuildContext context, {
     required IconData icon,
     required String label,
     required String value,
@@ -293,10 +307,11 @@ class GalleryPage extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: const Color(0xFFF1F5F0),
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Icon(icon, color: const Color(0xFF4CAF50), size: 20),
+          child: Icon(icon,
+              color: Theme.of(context).colorScheme.primary, size: 20),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -306,7 +321,7 @@ class GalleryPage extends StatelessWidget {
               Text(
                 label,
                 style: AppTextStyles.body(
-                  color: const Color(0xFF747972),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fontSize: 11,
                 ),
                 maxLines: 1,
@@ -317,7 +332,7 @@ class GalleryPage extends StatelessWidget {
                 style: AppTextStyles.body(
                   fontWeight: FontWeight.bold,
                   fontSize: 13,
-                  color: const Color(0xFF1A1C19),
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

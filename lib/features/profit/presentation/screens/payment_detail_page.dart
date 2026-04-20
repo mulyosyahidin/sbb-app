@@ -19,7 +19,7 @@ class PaymentDetailPage extends StatelessWidget {
     const String source = 'Bagi Hasil #SBB-007';
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F9F5),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -33,23 +33,23 @@ class PaymentDetailPage extends StatelessWidget {
                 child: Column(
                   children: [
                     // Amount Hero
-                    _buildAmountHero(amount, status),
+                    _buildAmountHero(context, amount, status),
                     const SizedBox(height: 32),
 
                     // Transaction Details
-                    _buildSectionHeader('Detail Transaksi'),
+                    _buildSectionHeader(context, 'Detail Transaksi'),
                     const SizedBox(height: 12),
-                    _buildInfoCard([
-                      _buildInfoRow('Jenis Transaksi', 'Bagi Hasil'),
-                      _buildInfoRow('ID Transaksi', txId),
-                      _buildInfoRow('Waktu', date),
-                      _buildInfoRow('Metode', method),
-                      _buildInfoRow('Sumber Dana', source),
+                    _buildInfoCard(context, [
+                      _buildInfoRow(context, 'Jenis Transaksi', 'Bagi Hasil'),
+                      _buildInfoRow(context, 'ID Transaksi', txId),
+                      _buildInfoRow(context, 'Waktu', date),
+                      _buildInfoRow(context, 'Metode', method),
+                      _buildInfoRow(context, 'Sumber Dana', source),
                     ]),
                     const SizedBox(height: 32),
 
                     // Source Contract
-                    _buildSectionHeader('Kontrak Terkait'),
+                    _buildSectionHeader(context, 'Kontrak Terkait'),
                     const SizedBox(height: 12),
                     _buildContractCard(context),
                     const SizedBox(height: 48),
@@ -58,7 +58,7 @@ class PaymentDetailPage extends StatelessWidget {
                     PrimaryButton(
                       label: 'Unduh Bukti Transfer',
                       onPressed: () {},
-                      backgroundColor: const Color(0xFF1E5135),
+                      backgroundColor: Theme.of(context).colorScheme.primary,
                     ),
                     const SizedBox(height: 16),
                     SecondaryButton(
@@ -77,27 +77,28 @@ class PaymentDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildAmountHero(String amount, String status) {
+  Widget _buildAmountHero(BuildContext context, String amount, String status) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       children: [
         Text(
           amount,
           style: AppTextStyles.hero(
             fontWeight: FontWeight.bold,
-            color: const Color(0xFF1E5135),
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
         const SizedBox(height: 12),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
           decoration: BoxDecoration(
-            color: const Color(0xFFE8F5E9),
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: isDark ? 0.2 : 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
             status,
             style: AppTextStyles.body(
-              color: const Color(0xFF468432),
+              color: isDark ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.9) : Theme.of(context).colorScheme.primary,
               fontWeight: FontWeight.bold,
               fontSize: 12,
             ),
@@ -107,7 +108,7 @@ class PaymentDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionHeader(String title) {
+  Widget _buildSectionHeader(BuildContext context, String title) {
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(
@@ -115,19 +116,19 @@ class PaymentDetailPage extends StatelessWidget {
         style: AppTextStyles.title(
           fontWeight: FontWeight.bold,
           fontSize: 16,
-          color: const Color(0xFF1A1C19),
+          color: Theme.of(context).colorScheme.onSurface,
         ),
       ),
     );
   }
 
-  Widget _buildInfoCard(List<Widget> children) {
+  Widget _buildInfoCard(BuildContext context, List<Widget> children) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFE8ECE7)),
+        border: Border.all(color: Theme.of(context).colorScheme.outline),
       ),
       child: Column(
         children: children,
@@ -135,7 +136,7 @@ class PaymentDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
+  Widget _buildInfoRow(BuildContext context, String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -144,7 +145,7 @@ class PaymentDetailPage extends StatelessWidget {
           Text(
             label,
             style: AppTextStyles.body(
-              color: const Color(0xFF747972),
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
               fontSize: 13,
             ),
           ),
@@ -153,7 +154,7 @@ class PaymentDetailPage extends StatelessWidget {
             style: AppTextStyles.body(
               fontWeight: FontWeight.bold,
               fontSize: 14,
-              color: const Color(0xFF1A1C19),
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ],
@@ -170,7 +171,7 @@ class PaymentDetailPage extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: const Color(0xFF1E5135),
+          color: Theme.of(context).colorScheme.primary,
           borderRadius: BorderRadius.circular(24),
         ),
         child: Row(

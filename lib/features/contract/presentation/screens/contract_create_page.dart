@@ -31,8 +31,10 @@ class _ContractCreatePageState extends State<ContractCreatePage> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F9F5),
+      backgroundColor: colorScheme.surface,
       body: SafeArea(
         child: Column(
           children: [
@@ -46,34 +48,34 @@ class _ContractCreatePageState extends State<ContractCreatePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildSectionHeader('Informasi Mitra'),
+                    _buildSectionHeader(context, 'Informasi Mitra'),
                     const SizedBox(height: 12),
-                    _buildInfoCard([
-                      _buildReadOnlyField('Nama Lengkap', partnerName),
-                      const SizedBox(height: 16),
-                      _buildReadOnlyField('NIK', partnerNIK),
-                    ]),
+                    _buildInfoCard(
+                      context,
+                      [
+                        _buildReadOnlyField(context, 'Nama Lengkap', partnerName),
+                        const SizedBox(height: 16),
+                        _buildReadOnlyField(context, 'NIK', partnerNIK),
+                      ],
+                    ),
                     const SizedBox(height: 32),
-
-                    _buildSectionHeader('Rincian Kontrak'),
+                    _buildSectionHeader(context, 'Rincian Kontrak'),
                     const SizedBox(height: 12),
-                    _buildFormCard(),
+                    _buildFormCard(context),
                     const SizedBox(height: 32),
-
-                    _buildSectionHeader('Ringkasan Pembayaran'),
+                    _buildSectionHeader(context, 'Ringkasan Pembayaran'),
                     const SizedBox(height: 12),
-                    _buildCalculationCard(),
+                    _buildCalculationCard(context),
                     const SizedBox(height: 48),
-
                     PrimaryButton(
                       label: 'Submit Kontrak',
                       onPressed: () {
                         // Submit logic here
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Kontrak berhasil diajukan')),
+                          const SnackBar(
+                              content: Text('Kontrak berhasil diajukan')),
                         );
                       },
-                      backgroundColor: const Color(0xFF1E5135),
                     ),
                     const SizedBox(height: 40),
                   ],
@@ -86,24 +88,24 @@ class _ContractCreatePageState extends State<ContractCreatePage> {
     );
   }
 
-  Widget _buildSectionHeader(String title) {
+  Widget _buildSectionHeader(BuildContext context, String title) {
     return Text(
       title,
       style: AppTextStyles.title(
         fontWeight: FontWeight.bold,
         fontSize: 16,
-        color: const Color(0xFF1A1C19),
+        color: Theme.of(context).colorScheme.onSurface,
       ),
     );
   }
 
-  Widget _buildInfoCard(List<Widget> children) {
+  Widget _buildInfoCard(BuildContext context, List<Widget> children) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFE8ECE7)),
+        border: Border.all(color: Theme.of(context).colorScheme.outline),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,14 +114,14 @@ class _ContractCreatePageState extends State<ContractCreatePage> {
     );
   }
 
-  Widget _buildReadOnlyField(String label, String value) {
+  Widget _buildReadOnlyField(BuildContext context, String label, String value) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
           style: AppTextStyles.body(
-            color: const Color(0xFF747972),
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
             fontSize: 12,
           ),
         ),
@@ -129,20 +131,21 @@ class _ContractCreatePageState extends State<ContractCreatePage> {
           style: AppTextStyles.body(
             fontWeight: FontWeight.bold,
             fontSize: 15,
-            color: const Color(0xFF1A1C19),
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildFormCard() {
+  Widget _buildFormCard(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFE8ECE7)),
+        border: Border.all(color: colorScheme.outline),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -150,7 +153,7 @@ class _ContractCreatePageState extends State<ContractCreatePage> {
           Text(
             'Jenis Sapi',
             style: AppTextStyles.body(
-              color: const Color(0xFF747972),
+              color: colorScheme.onSurfaceVariant,
               fontSize: 12,
             ),
           ),
@@ -169,18 +172,22 @@ class _ContractCreatePageState extends State<ContractCreatePage> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
-                color: const Color(0xFFF9F9F9),
+                color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xFFE8ECE7)),
+                border: Border.all(color: colorScheme.outline),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     selectedCowType,
-                    style: AppTextStyles.body(fontWeight: FontWeight.bold),
+                    style: AppTextStyles.body(
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.onSurface,
+                    ),
                   ),
-                  const Icon(Icons.arrow_forward_ios, size: 14, color: Color(0xFF747972)),
+                  Icon(Icons.arrow_forward_ios,
+                      size: 14, color: colorScheme.onSurfaceVariant),
                 ],
               ),
             ),
@@ -189,14 +196,14 @@ class _ContractCreatePageState extends State<ContractCreatePage> {
           Text(
             'Jumlah Sapi',
             style: AppTextStyles.body(
-              color: const Color(0xFF747972),
+              color: colorScheme.onSurfaceVariant,
               fontSize: 12,
             ),
           ),
           const SizedBox(height: 12),
           Row(
             children: [
-              _buildCounterButton(Icons.remove, () {
+              _buildCounterButton(context, Icons.remove, () {
                 if (quantity > 1) setState(() => quantity--);
               }),
               SizedBox(
@@ -204,10 +211,13 @@ class _ContractCreatePageState extends State<ContractCreatePage> {
                 child: Text(
                   quantity.toString(),
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.title(fontWeight: FontWeight.bold),
+                  style: AppTextStyles.title(
+                    fontWeight: FontWeight.bold,
+                    color: colorScheme.onSurface,
+                  ),
                 ),
               ),
-              _buildCounterButton(Icons.add, () {
+              _buildCounterButton(context, Icons.add, () {
                 setState(() => quantity++);
               }),
             ],
@@ -217,35 +227,39 @@ class _ContractCreatePageState extends State<ContractCreatePage> {
     );
   }
 
-  Widget _buildCounterButton(IconData icon, VoidCallback onTap) {
+  Widget _buildCounterButton(
+      BuildContext context, IconData icon, VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          border: Border.all(color: const Color(0xFFE8ECE7)),
+          border: Border.all(color: Theme.of(context).colorScheme.outline),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Icon(icon, size: 20, color: const Color(0xFF1E5135)),
+        child: Icon(icon,
+            size: 20, color: Theme.of(context).colorScheme.primary),
       ),
     );
   }
 
-  Widget _buildCalculationCard() {
+  Widget _buildCalculationCard(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E5135).withValues(alpha: 0.05),
+        color: colorScheme.primary.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFF1E5135).withValues(alpha: 0.1)),
+        border: Border.all(color: colorScheme.primary.withValues(alpha: 0.1)),
       ),
       child: Column(
         children: [
-          _buildCalcRow('Harga Satuan', currencyFormat.format(currentPrice)),
+          _buildCalcRow(
+              context, 'Harga Satuan', currencyFormat.format(currentPrice)),
           const SizedBox(height: 12),
-          _buildCalcRow('Jumlah', '$quantity Ekor'),
-          const Divider(height: 24, color: Color(0xFFE8ECE7)),
+          _buildCalcRow(context, 'Jumlah', '$quantity Ekor'),
+          Divider(height: 24, color: colorScheme.outline),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -254,14 +268,14 @@ class _ContractCreatePageState extends State<ContractCreatePage> {
                 style: AppTextStyles.body(
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
-                  color: const Color(0xFF1A1C19),
+                  color: colorScheme.onSurface,
                 ),
               ),
               Text(
                 currencyFormat.format(subtotal),
                 style: AppTextStyles.title(
                   fontWeight: FontWeight.bold,
-                  color: const Color(0xFF1E5135),
+                  color: colorScheme.primary,
                   fontSize: 20,
                 ),
               ),
@@ -272,14 +286,14 @@ class _ContractCreatePageState extends State<ContractCreatePage> {
     );
   }
 
-  Widget _buildCalcRow(String label, String value) {
+  Widget _buildCalcRow(BuildContext context, String label, String value) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           label,
           style: AppTextStyles.body(
-            color: const Color(0xFF747972),
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
             fontSize: 13,
           ),
         ),
@@ -288,7 +302,7 @@ class _ContractCreatePageState extends State<ContractCreatePage> {
           style: AppTextStyles.body(
             fontWeight: FontWeight.w600,
             fontSize: 14,
-            color: const Color(0xFF1A1C19),
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
       ],

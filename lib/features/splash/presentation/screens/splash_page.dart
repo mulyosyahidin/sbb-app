@@ -1,4 +1,3 @@
-import 'package:app/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class SplashPage extends StatefulWidget {
@@ -45,11 +44,11 @@ class _SplashPageState extends State<SplashPage>
     return Scaffold(
       body: Container(
         width: double.infinity,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              AppColors.backgroundLight,
-              Color(0xFFEFF6FF),
+              Theme.of(context).colorScheme.surface,
+              Theme.of(context).scaffoldBackgroundColor,
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -63,7 +62,7 @@ class _SplashPageState extends State<SplashPage>
               child: Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
@@ -85,11 +84,11 @@ class _SplashPageState extends State<SplashPage>
 
             FadeTransition(
               opacity: _opacity,
-              child: const SizedBox(
+              child: SizedBox(
                 width: 40,
                 height: 40,
                 child: CircularProgressIndicator(
-                  color: AppColors.primary,
+                  color: Theme.of(context).colorScheme.primary,
                   strokeWidth: 3,
                 ),
               ),
@@ -102,7 +101,10 @@ class _SplashPageState extends State<SplashPage>
               child: Text(
                 "Getting things ready...",
                 style: TextStyle(
-                  color: AppColors.textPrimaryLight.withValues(alpha: 0.6),
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurface
+                      .withValues(alpha: 0.6),
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                   letterSpacing: 1.1,

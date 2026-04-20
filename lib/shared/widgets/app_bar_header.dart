@@ -25,7 +25,7 @@ class AppBarHeader extends StatelessWidget {
     final icon = canPop ? Icons.chevron_left : Icons.home_outlined;
     final onTap = onBackPressed ??
         () {
-          if (canPop) {
+          if (context.canPop()) {
             context.pop();
           } else {
             context.go(Routes.home);
@@ -44,9 +44,9 @@ class AppBarHeader extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.surface,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color(0xFFE8ECE7)),
+                    border: Border.all(color: Theme.of(context).colorScheme.outline),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withValues(alpha: 0.03),
@@ -55,7 +55,11 @@ class AppBarHeader extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: Icon(icon, size: 24),
+                  child: Icon(
+                    icon,
+                    size: 24,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                 ),
               ),
               const SizedBox(width: 16),
@@ -68,7 +72,7 @@ class AppBarHeader extends StatelessWidget {
                       style: AppTextStyles.title(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
-                        color: const Color(0xFF1A1C19),
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -77,7 +81,7 @@ class AppBarHeader extends StatelessWidget {
                       subtitle,
                       style: AppTextStyles.body(
                         fontSize: 12,
-                        color: const Color(0xFF747972),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -92,7 +96,7 @@ class AppBarHeader extends StatelessWidget {
             ],
           ),
         ),
-        const Divider(height: 1, color: Color(0xFFE8ECE7)),
+        Divider(height: 1, color: Theme.of(context).colorScheme.outline),
       ],
     );
   }

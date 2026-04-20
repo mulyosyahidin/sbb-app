@@ -10,7 +10,7 @@ class ProfitPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F9F5),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -25,16 +25,16 @@ class ProfitPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 10),
-                    _buildSummaryCards(),
+                    _buildSummaryCards(context),
                     const SizedBox(height: 24),
-                    _buildMonthlyChart(),
+                    _buildMonthlyChart(context),
                     const SizedBox(height: 32),
                     Text(
                       'Riwayat Pembayaran',
                       style: AppTextStyles.title(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
-                        color: const Color(0xFF1A1C19),
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -50,18 +50,18 @@ class ProfitPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSummaryCards() {
+  Widget _buildSummaryCards(BuildContext context) {
     return Row(
       children: [
         Expanded(
           child: Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: const Color(0xFF1E5135),
+              color: Theme.of(context).colorScheme.primary,
               borderRadius: BorderRadius.circular(24),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF1E5135).withValues(alpha: 0.1),
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -98,9 +98,9 @@ class ProfitPage extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: const Color(0xFFE8ECE7)),
+              border: Border.all(color: Theme.of(context).colorScheme.outline),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,7 +111,7 @@ class ProfitPage extends StatelessWidget {
                 Text(
                   'SUDAH CAIR',
                   style: AppTextStyles.body(
-                    color: const Color(0xFF747972),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
                   ),
@@ -119,7 +119,7 @@ class ProfitPage extends StatelessWidget {
                 Text(
                   'Rp 38jt',
                   style: AppTextStyles.title(
-                    color: const Color(0xFF1A1C19),
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
@@ -132,7 +132,7 @@ class ProfitPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMonthlyChart() {
+  Widget _buildMonthlyChart(BuildContext context) {
     final months = ['Okt', 'Nov', 'Des', 'Jan', 'Feb', 'Mar', 'Apr'];
     final values = [2.1, 3.4, 2.8, 4.2, 3.8, 5.1, 3.2];
     const maxValue = 6.0;
@@ -140,9 +140,9 @@ class ProfitPage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFE8ECE7)),
+        border: Border.all(color: Theme.of(context).colorScheme.outline),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,7 +152,7 @@ class ProfitPage extends StatelessWidget {
             style: AppTextStyles.body(
               fontWeight: FontWeight.bold,
               fontSize: 15,
-              color: const Color(0xFF1A1C19),
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 32),
@@ -176,8 +176,8 @@ class ProfitPage extends StatelessWidget {
                           style: AppTextStyles.label(
                             fontSize: 9,
                             color: isHighlight
-                                ? const Color(0xFF1E5135)
-                                : const Color(0xFF747972),
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context).colorScheme.onSurfaceVariant,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -188,8 +188,8 @@ class ProfitPage extends StatelessWidget {
                           height: barHeight,
                           decoration: BoxDecoration(
                             color: isHighlight
-                                ? const Color(0xFF1E5135)
-                                : const Color(0xFFD3E5D8),
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(6),
                           ),
                         ),
@@ -198,7 +198,7 @@ class ProfitPage extends StatelessWidget {
                           months[index],
                           style: AppTextStyles.body(
                             fontSize: 11,
-                            color: const Color(0xFF747972),
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
                       ],
@@ -265,9 +265,9 @@ class ProfitPage extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: const Color(0xFFE8ECE7)),
+              border: Border.all(color: Theme.of(context).colorScheme.outline),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -281,7 +281,7 @@ class ProfitPage extends StatelessWidget {
                         style: AppTextStyles.body(
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
-                          color: const Color(0xFF1A1C19),
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -289,7 +289,7 @@ class ProfitPage extends StatelessWidget {
                         item.subtitle,
                         style: AppTextStyles.body(
                           fontSize: 12,
-                          color: const Color(0xFF747972),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ],
@@ -303,7 +303,7 @@ class ProfitPage extends StatelessWidget {
                       style: AppTextStyles.body(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
-                        color: const Color(0xFF1E5135),
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -312,7 +312,7 @@ class ProfitPage extends StatelessWidget {
                       style: AppTextStyles.body(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
-                        color: item.statusColor ?? const Color(0xFF468432),
+                        color: item.statusColor ?? Theme.of(context).colorScheme.primary,
                       ),
                     ),
                   ],

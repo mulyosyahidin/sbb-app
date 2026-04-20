@@ -11,10 +11,16 @@ class HomeMenuGrid extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final menus = [
       {
-        'title': 'Kontrak',
-        'icon': Icons.assignment_outlined,
-        'color': Colors.blue,
-        'route': Routes.contract,
+        'title': 'Open Mitra',
+        'icon': Icons.group_outlined,
+        'color': Colors.purple,
+        'route': Routes.openPartner,
+      },
+      {
+        'title': 'Company',
+        'icon': Icons.business_outlined,
+        'color': Colors.green,
+        'route': null,
       },
       {
         'title': 'Profit',
@@ -23,34 +29,28 @@ class HomeMenuGrid extends StatelessWidget {
         'route': Routes.profit,
       },
       {
-        'title': 'Galeri',
-        'icon': Icons.photo_outlined,
-        'color': Colors.orange,
-        'route': Routes.gallery,
-      },
-      {
         'title': 'Reward',
         'icon': Icons.emoji_events_outlined,
         'color': Colors.amber,
         'route': null,
       },
       {
-        'title': 'Open Mitra',
-        'icon': Icons.group_outlined,
-        'color': Colors.purple,
-        'route': Routes.openPartner,
+        'title': 'Kalkulator',
+        'icon': Icons.calculate_outlined,
+        'color': Colors.amber,
+        'route': Routes.calculator,
       },
       {
-        'title': 'Jadwal',
-        'icon': Icons.calendar_month_outlined,
-        'color': Colors.indigo,
-        'route': null,
+        'title': 'Galeri',
+        'icon': Icons.photo_outlined,
+        'color': Colors.orange,
+        'route': Routes.gallery,
       },
       {
-        'title': 'Laporan',
-        'icon': Icons.description_outlined,
-        'color': Colors.teal,
-        'route': null,
+        'title': 'Kontrak',
+        'icon': Icons.assignment_outlined,
+        'color': Colors.blue,
+        'route': Routes.contract,
       },
       {
         'title': 'Lainnya',
@@ -76,7 +76,18 @@ class HomeMenuGrid extends StatelessWidget {
         final route = menu['route'] as String?;
 
         return InkWell(
-          onTap: route != null ? () => context.go(route) : null,
+          onTap: route != null
+              ? () {
+                  if (route == Routes.profit ||
+                      route == Routes.contract ||
+                      route == Routes.home ||
+                      route == Routes.account) {
+                    context.go(route);
+                  } else {
+                    context.push(route);
+                  }
+                }
+              : null,
           borderRadius: BorderRadius.circular(16),
           child: Column(
             children: [

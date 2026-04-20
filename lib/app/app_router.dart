@@ -12,6 +12,7 @@ import 'package:app/features/contract/presentation/screens/contract_page.dart';
 import 'package:app/features/contract/presentation/screens/contracts_page.dart';
 import 'package:app/features/gallery/presentation/screens/galleries_page.dart';
 import 'package:app/features/gallery/presentation/screens/gallery_page.dart';
+import 'package:app/features/calculator/presentation/screens/calculator_page.dart';
 import 'package:app/features/home/presentation/screens/home_page.dart';
 import 'package:app/features/home_guest/presentation/screens/home_guest_page.dart';
 import 'package:app/features/profit/presentation/screens/payment_detail_page.dart';
@@ -53,6 +54,7 @@ class Routes {
   static const bankAccountCreate = "/bank-accounts/create";
   static const bankAccountEdit = "/bank-accounts/edit";
   static const openPartner = "/open-partner";
+  static const calculator = "/calculator";
   static const homeGuest = "/home-guest";
 
   static const authenticatedRoutes = [
@@ -72,6 +74,7 @@ class Routes {
     bankAccountCreate,
     bankAccountEdit,
     openPartner,
+    calculator,
   ];
 }
 
@@ -139,6 +142,10 @@ GoRouter router(Ref ref) {
       GoRoute(
         path: Routes.galleryDetail,
         builder: (context, state) => const GalleryPage(),
+      ),
+      GoRoute(
+        path: Routes.calculator,
+        builder: (context, state) => const CalculatorPage(),
       ),
 
       // AUTHENTICATED TABS
