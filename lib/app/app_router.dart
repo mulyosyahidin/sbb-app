@@ -12,6 +12,7 @@ import 'package:app/features/gallery/presentation/screens/galleries_page.dart';
 import 'package:app/features/gallery/presentation/screens/gallery_page.dart';
 import 'package:app/features/home/presentation/screens/home_page.dart';
 import 'package:app/features/home_guest/presentation/screens/home_guest_page.dart';
+import 'package:app/features/profit/presentation/screens/payment_detail_page.dart';
 import 'package:app/features/profit/presentation/screens/profit_page.dart';
 import 'package:app/features/open_partner/presentation/screens/open_partner_page.dart';
 import 'package:app/features/account/edit_password/presentation/screens/edit_password_page.dart';
@@ -38,6 +39,7 @@ class Routes {
   static const contract = "/contract";
   static const contractDetail = "/contract/:id";
   static const profit = "/profit";
+  static const paymentDetail = "/profit/:id";
   static const gallery = "/gallery";
   static const galleryDetail = "/gallery/:id";
   static const account = "/account";
@@ -54,6 +56,7 @@ class Routes {
     contract,
     contractDetail,
     profit,
+    paymentDetail,
     gallery,
     galleryDetail,
     account,
@@ -165,6 +168,12 @@ GoRouter router(Ref ref) {
               GoRoute(
                 path: Routes.profit,
                 builder: (context, state) => const ProfitPage(),
+                routes: [
+                  GoRoute(
+                    path: ':id',
+                    builder: (context, state) => const PaymentDetailPage(),
+                  ),
+                ],
               ),
             ],
           ),
