@@ -6,6 +6,8 @@ import 'package:app/features/account/summary/presentation/screens/account_page.d
 import 'package:app/features/account/edit_profile/presentation/screens/edit_profile_page.dart';
 import 'package:app/features/auth/login/presentation/screens/login_page.dart';
 import 'package:app/features/auth/register/presentation/screens/register_page.dart';
+import 'package:app/features/contract/presentation/screens/contract_create_page.dart';
+import 'package:app/features/contract/presentation/screens/cow_catalog_page.dart';
 import 'package:app/features/contract/presentation/screens/contract_page.dart';
 import 'package:app/features/contract/presentation/screens/contracts_page.dart';
 import 'package:app/features/gallery/presentation/screens/galleries_page.dart';
@@ -37,6 +39,8 @@ class Routes {
   static const homeGate = "/home-gate";
   static const home = "/home";
   static const contract = "/contract";
+  static const contractCreate = "/contract/create";
+  static const cowCatalog = "/contract/catalog";
   static const contractDetail = "/contract/:id";
   static const profit = "/profit";
   static const paymentDetail = "/profit/:id";
@@ -54,6 +58,8 @@ class Routes {
   static const authenticatedRoutes = [
     home,
     contract,
+    contractCreate,
+    cowCatalog,
     contractDetail,
     profit,
     paymentDetail,
@@ -155,6 +161,14 @@ GoRouter router(Ref ref) {
                 path: Routes.contract,
                 builder: (context, state) => const ContractsPage(),
                 routes: [
+                  GoRoute(
+                    path: 'create',
+                    builder: (context, state) => const ContractCreatePage(),
+                  ),
+                  GoRoute(
+                    path: 'catalog',
+                    builder: (context, state) => const CowCatalogPage(),
+                  ),
                   GoRoute(
                     path: ':id',
                     builder: (context, state) => const ContractPage(),

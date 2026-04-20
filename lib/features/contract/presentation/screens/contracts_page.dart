@@ -163,17 +163,21 @@ class _ContractsPageState extends State<ContractsPage> {
       subtitle: selectedFilter == 'Semua'
           ? '${contracts.length} kontrak terdaftar'
           : '${filteredContracts.length} kontrak $selectedFilter',
-      trailing: Container(
-        width: 36,
-        height: 36,
-        decoration: BoxDecoration(
-          color: const Color(0xFF1E5135), // Dark green from image
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-          size: 20,
+      trailing: InkWell(
+        onTap: () => context.push(Routes.contractCreate),
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            color: const Color(0xFF1E5135), // Dark green from image
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
+            size: 20,
+          ),
         ),
       ),
     );

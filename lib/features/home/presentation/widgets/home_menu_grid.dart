@@ -76,7 +76,7 @@ class HomeMenuGrid extends StatelessWidget {
         final route = menu['route'] as String?;
 
         return InkWell(
-          onTap: route != null ? () => context.push(route) : null,
+          onTap: route != null ? () => context.go(route) : null,
           borderRadius: BorderRadius.circular(16),
           child: Column(
             children: [
