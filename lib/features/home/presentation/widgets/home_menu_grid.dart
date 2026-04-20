@@ -20,7 +20,7 @@ class HomeMenuGrid extends StatelessWidget {
         'title': 'Company',
         'icon': Icons.business_outlined,
         'color': Colors.green,
-        'route': null,
+        'route': Routes.companyProfile,
       },
       {
         'title': 'Profit',
