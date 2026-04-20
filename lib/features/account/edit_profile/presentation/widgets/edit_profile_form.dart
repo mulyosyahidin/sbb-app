@@ -25,14 +25,13 @@ class _EditProfileFormState extends ConsumerState<EditProfileForm> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final user = ref.read(authSessionControllerProvider).value?.user;
-      if (user != null) {
-        _nameController.text = user.name;
-        _emailController.text = user.email;
-        _phoneController.text = user.phoneNumber ?? '';
-      }
-    });
+    // Initial check in case data is already available
+    final user = ref.read(authSessionControllerProvider).value?.user;
+    if (user != null) {
+      _nameController.text = user.name;
+      _emailController.text = user.email;
+      _phoneController.text = user.phoneNumber ?? '';
+    }
   }
 
   @override
@@ -65,93 +64,124 @@ class _EditProfileFormState extends ConsumerState<EditProfileForm> {
 
   @override
   Widget build(BuildContext context) {
-    final user = ref.watch(authSessionControllerProvider).value?.user;
-    final isEmailEditable = user?.driver == 'email';
-    final isGoogleUser = user?.driver == 'google';
-
-    ref.listen(editProfileControllerProvider, (previous, next) {
-      if (next is AsyncError) {
-        final error = next.error;
-        if (error is ValidationFailure) {
-          setState(() {
-            _fieldErrors = error.errors ?? {};
-          });
-          ToastUtil.showError(
-            context,
-            title: 'Terjadi kesalahan',
-            description: error.message,
-          );
-        } else if (error is Failure) {
-          ToastUtil.showError(
-            context,
-            title: 'Gagal',
-            description: error.message,
-          );
-        } else {
-          ToastUtil.showError(
-            context,
-            title: 'Terjadi kesalahan',
-            description: error.toString(),
-          );
+    final sessionState = ref.watch(authSessionControllerProvider);
+    
+    // Listen for session data to populate controllers if they were empty
+    ref.listen(authSessionControllerProvider, (previous, next) {
+      if (next.hasValue && _nameController.text.isEmpty) {
+        final user = next.value?.user;
+        if (user != null) {
+          _nameController.text = user.name;
+          _emailController.text = user.email;
+          _phoneController.text = user.phoneNumber ?? '';
         }
-      } else if (next is AsyncData &&
-          !next.isLoading &&
-          previous is AsyncLoading) {
-        ToastUtil.showSuccess(
-          context,
-          title: 'Berhasil',
-          description: 'Profil berhasil diperbarui',
-        );
       }
     });
 
-    final profileState = ref.watch(editProfileControllerProvider);
-    final isLoading = profileState is AsyncLoading;
+    return sessionState.when(
+      loading: () => const Center(
+        child: Padding(
+          padding: EdgeInsets.all(40.0),
+          child: CircularProgressIndicator(),
+        ),
+      ),
+      error: (error, stack) => Center(
+        child: Text('Gagal memuat data: $error'),
+      ),
+      data: (session) {
+        final user = session.user;
+        if (user == null) {
+          return const Center(child: Text('Data pengguna tidak ditemukan'));
+        }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        AppTextField(
-          controller: _nameController,
-          label: 'NAMA LENGKAP',
-          hint: 'Masukkan nama lengkap',
-          keyboardType: TextInputType.name,
-          errorText: _fieldErrors['name'],
-        ),
-        const SizedBox(height: 16),
-        AppTextField(
-          controller: _emailController,
-          label: 'EMAIL',
-          hint: 'Masukkan email',
-          keyboardType: TextInputType.emailAddress,
-          errorText: _fieldErrors['email'],
-          enabled: isEmailEditable,
-          suffixIcon: isGoogleUser
-              ? Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: SvgPicture.asset(
-                    'assets/icons/google.svg',
-                    width: 20,
-                    height: 20,
-                  ),
-                )
-              : null,
-        ),
-        const SizedBox(height: 16),
-        AppTextField(
-          controller: _phoneController,
-          label: 'NOMOR HANDPHONE',
-          hint: 'Masukkan nomor HP',
-          keyboardType: TextInputType.phone,
-          errorText: _fieldErrors['phone_number'],
-        ),
-        const SizedBox(height: 32),
-        PrimaryButton(
-          label: 'Simpan',
-          isLoading: isLoading,
-          onPressed: isLoading ? null : _handleSubmit,
-        ),
-      ],
+        final isEmailEditable = user.driver == 'email';
+        final isGoogleUser = user.driver == 'google';
+
+        ref.listen(editProfileControllerProvider, (previous, next) {
+          if (next is AsyncError) {
+            final error = next.error;
+            if (error is ValidationFailure) {
+              setState(() {
+                _fieldErrors = error.errors ?? {};
+              });
+              ToastUtil.showError(
+                context,
+                title: 'Terjadi kesalahan',
+                description: error.message,
+              );
+            } else if (error is Failure) {
+              ToastUtil.showError(
+                context,
+                title: 'Gagal',
+                description: error.message,
+              );
+            } else {
+              ToastUtil.showError(
+                context,
+                title: 'Terjadi kesalahan',
+                description: error.toString(),
+              );
+            }
+          } else if (next is AsyncData &&
+              !next.isLoading &&
+              previous is AsyncLoading) {
+            ToastUtil.showSuccess(
+              context,
+              title: 'Berhasil',
+              description: 'Profil berhasil diperbarui',
+            );
+          }
+        });
+
+        final profileState = ref.watch(editProfileControllerProvider);
+        final isLoading = profileState is AsyncLoading;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            AppTextField(
+              controller: _nameController,
+              label: 'NAMA LENGKAP',
+              hint: 'Masukkan nama lengkap',
+              keyboardType: TextInputType.name,
+              errorText: _fieldErrors['name'],
+            ),
+            const SizedBox(height: 16),
+            AppTextField(
+              controller: _emailController,
+              label: 'EMAIL',
+              hint: 'Masukkan email',
+              keyboardType: TextInputType.emailAddress,
+              errorText: _fieldErrors['email'],
+              enabled: isEmailEditable,
+              suffixIcon: isGoogleUser
+                  ? Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: SvgPicture.asset(
+                        'assets/icons/google.svg',
+                        width: 20,
+                        height: 20,
+                      ),
+                    )
+                  : null,
+            ),
+            const SizedBox(height: 16),
+            AppTextField(
+              controller: _phoneController,
+              label: 'NOMOR HANDPHONE',
+              hint: 'Masukkan nomor HP',
+              keyboardType: TextInputType.phone,
+              errorText: _fieldErrors['phone_number'],
+            ),
+            const SizedBox(height: 32),
+            PrimaryButton(
+              label: 'Simpan',
+              isLoading: isLoading,
+              onPressed: isLoading ? null : _handleSubmit,
+            ),
+          ],
+        );
+      },
     );
   }
 }

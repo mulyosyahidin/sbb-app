@@ -14,6 +14,7 @@ import 'package:app/features/gallery/presentation/screens/galleries_page.dart';
 import 'package:app/features/gallery/presentation/screens/gallery_page.dart';
 import 'package:app/features/calculator/presentation/screens/calculator_page.dart';
 import 'package:app/features/company_profile/presentation/screens/company_profile_page.dart';
+import 'package:app/features/reward/presentation/screens/reward_page.dart';
 import 'package:app/features/home/presentation/screens/home_page.dart';
 import 'package:app/features/home_guest/presentation/screens/home_guest_page.dart';
 import 'package:app/features/profit/presentation/screens/payment_detail_page.dart';
@@ -57,6 +58,7 @@ class Routes {
   static const openPartner = "/open-partner";
   static const calculator = "/calculator";
   static const companyProfile = "/company-profile";
+  static const reward = "/reward";
   static const homeGuest = "/home-guest";
 
   static const authenticatedRoutes = [
@@ -78,6 +80,7 @@ class Routes {
     openPartner,
     calculator,
     companyProfile,
+    reward,
   ];
 }
 
@@ -153,6 +156,10 @@ GoRouter router(Ref ref) {
       GoRoute(
         path: Routes.companyProfile,
         builder: (context, state) => const CompanyProfilePage(),
+      ),
+      GoRoute(
+        path: Routes.reward,
+        builder: (context, state) => const RewardPage(),
       ),
 
       // AUTHENTICATED TABS
