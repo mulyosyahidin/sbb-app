@@ -12,17 +12,32 @@ class AccountStatsRow extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final partner = ref.watch(partnerControllerProvider).value;
 
-    return Row(
+    return Column(
       children: [
-        Expanded(child: _buildStatCard(context, '3', 'Kontrak')),
-        if (partner?.level == 'partner_consultant') ...[
-          const SizedBox(width: 12),
-          Expanded(child: _buildStatCard(context, '5', 'Mitra')),
-        ],
-        const SizedBox(width: 12),
-        Expanded(
-            child: _buildStatCard(context, 'Rp45jt', 'Profit',
-                valueColor: colorScheme.primary)),
+        Row(
+          children: [
+            Expanded(child: _buildStatCard(context, '3', 'Kontrak')),
+            const SizedBox(width: 12),
+            Expanded(child: _buildStatCard(context, '2', 'Sapi')),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            if (partner?.level == 'partner_consultant') ...[
+              Expanded(child: _buildStatCard(context, '5', 'Mitra')),
+              const SizedBox(width: 12),
+            ],
+            Expanded(
+              child: _buildStatCard(
+                context,
+                'Rp45jt',
+                'Profit',
+                valueColor: colorScheme.primary,
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }
