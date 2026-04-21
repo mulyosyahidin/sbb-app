@@ -1,19 +1,24 @@
 import 'package:app/core/theme/app_text_style.dart';
 import 'package:app/core/theme/app_theme.dart';
+import 'package:app/features/partner/application/partner_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AccountStatsRow extends StatelessWidget {
+class AccountStatsRow extends ConsumerWidget {
   const AccountStatsRow({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
+    final partner = ref.watch(partnerControllerProvider).value;
 
     return Row(
       children: [
         Expanded(child: _buildStatCard(context, '3', 'Kontrak')),
-        const SizedBox(width: 12),
-        Expanded(child: _buildStatCard(context, '5', 'Mitra')),
+        if (partner?.level == 'partner_consultant') ...[
+          const SizedBox(width: 12),
+          Expanded(child: _buildStatCard(context, '5', 'Mitra')),
+        ],
         const SizedBox(width: 12),
         Expanded(
             child: _buildStatCard(context, 'Rp45jt', 'Profit',

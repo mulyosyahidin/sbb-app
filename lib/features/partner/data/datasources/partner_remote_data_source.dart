@@ -1,7 +1,8 @@
 import 'package:app/core/config/api_endpoint.dart';
 import 'package:app/core/networks/dio_client.dart';
 import 'package:app/core/utils/logger_util.dart';
-import 'package:app/features/partner/data/dtos/requests/partner_request_dto.dart';
+import 'package:app/features/partner/data/dtos/requests/register_partner_request_dto.dart';
+import 'package:app/features/partner/data/dtos/requests/update_partner_request_dto.dart';
 import 'package:app/features/partner/data/dtos/responses/check_partner_response_dto.dart';
 import 'package:app/features/partner/data/dtos/responses/get_partner_response_dto.dart';
 import 'package:dio/dio.dart';
@@ -13,8 +14,8 @@ part 'partner_remote_data_source.g.dart';
 abstract class PartnerRemoteDataSource {
   Future<CheckPartnerResponseDto> checkPartner();
   Future<GetPartnerResponseDto> getPartner();
-  Future<GetPartnerResponseDto> registerPartner(PartnerRequestDto dto);
-  Future<GetPartnerResponseDto> updatePartner(PartnerRequestDto dto);
+  Future<GetPartnerResponseDto> registerPartner(RegisterPartnerRequestDto dto);
+  Future<GetPartnerResponseDto> updatePartner(UpdatePartnerRequestDto dto);
 }
 
 class PartnerRemoteDataSourceImpl implements PartnerRemoteDataSource {
@@ -91,7 +92,8 @@ class PartnerRemoteDataSourceImpl implements PartnerRemoteDataSource {
   }
 
   @override
-  Future<GetPartnerResponseDto> registerPartner(PartnerRequestDto dto) async {
+  Future<GetPartnerResponseDto> registerPartner(
+      RegisterPartnerRequestDto dto) async {
     const endpoint = ApiEndpoint.registerPartner;
 
     try {
@@ -125,7 +127,8 @@ class PartnerRemoteDataSourceImpl implements PartnerRemoteDataSource {
   }
 
   @override
-  Future<GetPartnerResponseDto> updatePartner(PartnerRequestDto dto) async {
+  Future<GetPartnerResponseDto> updatePartner(
+      UpdatePartnerRequestDto dto) async {
     const endpoint = ApiEndpoint.updatePartner;
 
     try {

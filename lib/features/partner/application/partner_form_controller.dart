@@ -1,5 +1,6 @@
 import 'package:app/features/partner/application/partner_controller.dart';
-import 'package:app/features/partner/data/dtos/requests/partner_request_dto.dart';
+import 'package:app/features/partner/data/dtos/requests/register_partner_request_dto.dart';
+import 'package:app/features/partner/data/dtos/requests/update_partner_request_dto.dart';
 import 'package:app/features/partner/data/repositories/partner_repository_impl.dart';
 import 'package:app/features/partner/domain/repositories/partner_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -21,15 +22,17 @@ class PartnerFormController extends _$PartnerFormController {
     required String address,
     required String phoneNumber,
     required String joinDate,
+    required String level,
   }) async {
     state = const AsyncLoading();
 
-    final dto = PartnerRequestDto(
+    final dto = RegisterPartnerRequestDto(
       name: name,
       nik: nik,
       address: address,
       phoneNumber: phoneNumber,
       joinDate: joinDate,
+      level: level,
     );
 
     final result = await _repository.registerPartner(dto);
@@ -37,7 +40,7 @@ class PartnerFormController extends _$PartnerFormController {
     state = result.fold(
       (l) => AsyncError(l, StackTrace.current),
       (r) {
-        ref.read(partnerControllerProvider.notifier).refresh();
+        ref.invalidate(partnerControllerProvider);
         return const AsyncData(null);
       },
     );
@@ -52,7 +55,7 @@ class PartnerFormController extends _$PartnerFormController {
   }) async {
     state = const AsyncLoading();
 
-    final dto = PartnerRequestDto(
+    final dto = UpdatePartnerRequestDto(
       name: name,
       nik: nik,
       address: address,
@@ -65,7 +68,7 @@ class PartnerFormController extends _$PartnerFormController {
     state = result.fold(
       (l) => AsyncError(l, StackTrace.current),
       (r) {
-        ref.read(partnerControllerProvider.notifier).refresh();
+        ref.invalidate(partnerControllerProvider);
         return const AsyncData(null);
       },
     );

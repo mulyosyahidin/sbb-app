@@ -134,8 +134,37 @@ class PartnerPage extends ConsumerWidget {
           _buildInfoCard(context, partner),
           const SizedBox(height: 20),
           _buildEditButton(context, partner),
+          if (partner.level == 'partner') ...[
+            const SizedBox(height: 12),
+            _buildUpgradeButton(context),
+          ],
           const SizedBox(height: 16),
         ],
+      ),
+    );
+  }
+
+  Widget _buildUpgradeButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () => context.push(Routes.partnerUpgrade),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: Theme.of(context).colorScheme.primary),
+        ),
+        child: Center(
+          child: Text(
+            'Upgrade jadi Konsultan',
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.primary,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.3,
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -266,7 +295,7 @@ class PartnerPage extends ConsumerWidget {
                           color: Colors.white, size: 14),
                       const SizedBox(width: 6),
                       Text(
-                        'LEVEL ${(partner.level as String).toUpperCase()}',
+                        partner.levelLabel,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 12,

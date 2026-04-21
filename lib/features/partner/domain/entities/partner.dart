@@ -9,6 +9,7 @@ class Partner extends Equatable {
   final String address;
   final DateTime joinDate;
   final String level;
+  final String levelLabel;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -21,6 +22,7 @@ class Partner extends Equatable {
     required this.address,
     required this.joinDate,
     required this.level,
+    required this.levelLabel,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -35,6 +37,7 @@ class Partner extends Equatable {
         address,
         joinDate,
         level,
+        levelLabel,
         createdAt,
         updatedAt,
       ];

@@ -4,6 +4,7 @@ import 'package:app/features/account/summary/presentation/widgets/account_header
 import 'package:app/features/account/summary/presentation/widgets/account_menu_list.dart';
 import 'package:app/features/account/summary/presentation/widgets/account_stats_row.dart';
 import 'package:app/features/account/summary/presentation/widgets/consultant_panel.dart';
+import 'package:app/features/partner/application/partner_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -13,6 +14,8 @@ class AccountPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final partner = ref.watch(partnerControllerProvider).value;
+    
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
@@ -31,10 +34,12 @@ class AccountPage extends ConsumerWidget {
                   children: [
                     const SizedBox(height: 16),
                     const AccountStatsRow(),
-                    const SizedBox(height: 24),
-                    _buildSectionTitle(context, 'Panel Konsultan'),
-                    const SizedBox(height: 12),
-                    const ConsultantPanel(),
+                    if (partner?.level == 'partner_consultant') ...[
+                      const SizedBox(height: 24),
+                      _buildSectionTitle(context, 'Panel Konsultan'),
+                      const SizedBox(height: 12),
+                      const ConsultantPanel(),
+                    ],
                     const SizedBox(height: 24),
                     _buildSectionTitle(context, 'Pengaturan Akun'),
                     const SizedBox(height: 12),

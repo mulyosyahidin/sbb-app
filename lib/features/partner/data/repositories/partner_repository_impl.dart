@@ -1,7 +1,8 @@
 import 'package:app/core/errors/api_exception.dart';
 import 'package:app/core/errors/failure.dart';
 import 'package:app/features/partner/data/datasources/partner_remote_data_source.dart';
-import 'package:app/features/partner/data/dtos/requests/partner_request_dto.dart';
+import 'package:app/features/partner/data/dtos/requests/register_partner_request_dto.dart';
+import 'package:app/features/partner/data/dtos/requests/update_partner_request_dto.dart';
 import 'package:app/features/partner/data/dtos/responses/check_partner_response_dto.dart';
 import 'package:app/features/partner/data/dtos/responses/get_partner_response_dto.dart';
 import 'package:app/features/partner/domain/repositories/partner_repository.dart';
@@ -42,7 +43,7 @@ class PartnerRepositoryImpl implements PartnerRepository {
 
   @override
   Future<Either<Failure, GetPartnerResponseData>> registerPartner(
-      PartnerRequestDto dto) async {
+      RegisterPartnerRequestDto dto) async {
     try {
       final response = await _dataSource.registerPartner(dto);
       return Right(response.data!);
@@ -58,7 +59,7 @@ class PartnerRepositoryImpl implements PartnerRepository {
 
   @override
   Future<Either<Failure, GetPartnerResponseData>> updatePartner(
-      PartnerRequestDto dto) async {
+      UpdatePartnerRequestDto dto) async {
     try {
       final response = await _dataSource.updatePartner(dto);
       return Right(response.data!);

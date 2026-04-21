@@ -6,7 +6,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'partner_controller.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class PartnerController extends _$PartnerController {
   PartnerRepository get _repository => ref.watch(partnerRepositoryProvider);
 
@@ -32,10 +32,5 @@ class PartnerController extends _$PartnerController {
         );
       },
     );
-  }
-
-  Future<void> refresh() async {
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(() => _init());
   }
 }

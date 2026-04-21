@@ -6,6 +6,7 @@ import 'package:app/features/partner/application/partner_form_controller.dart';
 import 'package:app/shared/widgets/app_bar_header.dart';
 import 'package:app/shared/forms/app_text_field.dart';
 import 'package:app/shared/forms/app_textarea_field.dart';
+import 'package:app/shared/forms/app_choice_field.dart';
 import 'package:app/shared/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,6 +27,7 @@ class _PartnerRegisterPageState extends ConsumerState<PartnerRegisterPage> {
   final _addressController = TextEditingController();
   final _phoneController = TextEditingController();
   final _joinDateController = TextEditingController();
+  String _selectedLevel = 'partner';
   Map<String, String> _fieldErrors = {};
 
   @override
@@ -72,6 +74,7 @@ class _PartnerRegisterPageState extends ConsumerState<PartnerRegisterPage> {
           address: _addressController.text,
           phoneNumber: _phoneController.text,
           joinDate: _joinDateController.text,
+          level: _selectedLevel,
         );
   }
 
@@ -195,49 +198,62 @@ class _PartnerRegisterPageState extends ConsumerState<PartnerRegisterPage> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                        AppTextField(
-                          controller: _nameController,
-                          label: 'Nama Lengkap',
-                          prefixIcon: const Icon(Icons.person_outline),
-                          errorText: _fieldErrors['name'],
-                        ),
-                        const SizedBox(height: 20),
-                        AppTextField(
-                          controller: _nikController,
-                          label: 'NIK',
-                          keyboardType: TextInputType.number,
-                          prefixIcon: const Icon(Icons.badge_outlined),
-                          errorText: _fieldErrors['nik'],
-                        ),
-                        const SizedBox(height: 20),
-                        AppTextAreaField(
-                          controller: _addressController,
-                          label: 'Alamat',
-                          minLines: 4,
-                          errorText: _fieldErrors['address'],
-                        ),
-                        const SizedBox(height: 20),
-                        AppTextField(
-                          controller: _phoneController,
-                          label: 'Nomor Telepon',
-                          keyboardType: TextInputType.phone,
-                          prefixIcon: const Icon(Icons.phone_outlined),
-                          errorText: _fieldErrors['phone_number'],
-                        ),
-                        const SizedBox(height: 20),
-                        GestureDetector(
-                          onTap: isLoading ? null : _selectDate,
-                          child: AbsorbPointer(
-                            child: AppTextField(
-                              controller: _joinDateController,
-                              label: 'TANGGAL BERGABUNG',
-                              hint: 'Pilih tanggal',
-                              prefixIcon:
-                                  const Icon(Icons.calendar_today_outlined),
-                              errorText: _fieldErrors['join_date'],
-                            ),
+                      AppTextField(
+                        controller: _nameController,
+                        label: 'Nama Lengkap',
+                        prefixIcon: const Icon(Icons.person_outline),
+                        errorText: _fieldErrors['name'],
+                      ),
+                      const SizedBox(height: 20),
+                      AppTextField(
+                        controller: _nikController,
+                        label: 'NIK',
+                        keyboardType: TextInputType.number,
+                        prefixIcon: const Icon(Icons.badge_outlined),
+                        errorText: _fieldErrors['nik'],
+                      ),
+                      const SizedBox(height: 20),
+                      AppTextAreaField(
+                        controller: _addressController,
+                        label: 'Alamat',
+                        minLines: 4,
+                        errorText: _fieldErrors['address'],
+                      ),
+                      const SizedBox(height: 20),
+                      AppTextField(
+                        controller: _phoneController,
+                        label: 'Nomor Telepon',
+                        keyboardType: TextInputType.phone,
+                        prefixIcon: const Icon(Icons.phone_outlined),
+                        errorText: _fieldErrors['phone_number'],
+                      ),
+                      const SizedBox(height: 20),
+                      GestureDetector(
+                        onTap: isLoading ? null : _selectDate,
+                        child: AbsorbPointer(
+                          child: AppTextField(
+                            controller: _joinDateController,
+                            label: 'TANGGAL BERGABUNG',
+                            hint: 'Pilih tanggal',
+                            prefixIcon:
+                                const Icon(Icons.calendar_today_outlined),
+                            errorText: _fieldErrors['join_date'],
                           ),
                         ),
+                      ),
+                      const SizedBox(height: 24),
+                      AppChoiceField<String>(
+                        label: 'Level Kemitraan',
+                        options: const [
+                          ChoiceOption(label: 'Mitra', value: 'partner'),
+                          ChoiceOption(
+                              label: 'Mitra + Konsultan',
+                              value: 'partner_consultant'),
+                        ],
+                        selected: _selectedLevel,
+                        onSelected: (val) =>
+                            setState(() => _selectedLevel = val),
+                      ),
                       const SizedBox(height: 32),
                       PrimaryButton(
                         onPressed: isLoading ? null : _handleSubmit,
@@ -256,3 +272,4 @@ class _PartnerRegisterPageState extends ConsumerState<PartnerRegisterPage> {
     );
   }
 }
+

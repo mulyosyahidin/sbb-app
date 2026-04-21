@@ -1,6 +1,7 @@
 import 'package:app/app/app_router.dart';
 import 'package:app/core/theme/app_text_style.dart';
 import 'package:app/shared/widgets/app_bar_header.dart';
+import 'package:app/shared/forms/app_choice_field.dart';
 import 'package:app/shared/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -144,83 +145,28 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _buildChoiceGroup(
+          AppChoiceField<String>(
             label: 'Pilih Program',
-            options: ['Regular', 'PPM', 'Umroh'],
+            options: const [
+              ChoiceOption(label: 'Regular', value: 'Regular'),
+              ChoiceOption(label: 'PPM', value: 'PPM'),
+              ChoiceOption(label: 'Umroh', value: 'Umroh'),
+            ],
             selected: selectedProgram,
             onSelected: (val) => setState(() => selectedProgram = val),
           ),
           const SizedBox(height: 24),
-          _buildChoiceGroup(
+          AppChoiceField<String>(
             label: 'Durasi Kontrak',
-            options: ['12 Bulan', '36 Bulan'],
+            options: const [
+              ChoiceOption(label: '12 Bulan', value: '12 Bulan'),
+              ChoiceOption(label: '36 Bulan', value: '36 Bulan'),
+            ],
             selected: selectedDuration,
             onSelected: (val) => setState(() => selectedDuration = val),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildChoiceGroup({
-    required String label,
-    required List<String> options,
-    required String selected,
-    required ValueChanged<String> onSelected,
-  }) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          label,
-          style: AppTextStyles.body(
-            color: colorScheme.onSurfaceVariant,
-            fontSize: 12,
-          ),
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: options.map((option) {
-            final isSelected = selected == option;
-            return Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(right: option == options.last ? 0 : 8),
-                child: InkWell(
-                  onTap: () => onSelected(option),
-                  borderRadius: BorderRadius.circular(12),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? colorScheme.primary
-                          : colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: isSelected
-                            ? colorScheme.primary
-                            : colorScheme.outline,
-                      ),
-                    ),
-                    child: Text(
-                      option,
-                      textAlign: TextAlign.center,
-                      style: AppTextStyles.body(
-                        fontSize: 13,
-                        fontWeight:
-                            isSelected ? FontWeight.bold : FontWeight.w500,
-                        color:
-                            isSelected ? Colors.white : colorScheme.onSurface,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            );
-          }).toList(),
-        ),
-      ],
     );
   }
 

@@ -153,16 +153,20 @@ class HomeHeader extends ConsumerWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                _buildBadge('MITRA', AppColors.primaryLight),
-                                const SizedBox(width: 6),
-                                _buildBadge(
-                                  'KONSULTAN',
-                                  Colors.white.withValues(alpha: 0.2),
-                                ),
-                              ],
-                            ),
+                            if (homeData?.partner != null)
+                              Row(
+                                children: [
+                                  _buildBadge('MITRA', AppColors.primaryLight),
+                                  if (homeData?.partner?.level ==
+                                      'partner_consultant') ...[
+                                    const SizedBox(width: 6),
+                                    _buildBadge(
+                                      'KONSULTAN',
+                                      AppColors.primaryLight,
+                                    ),
+                                  ],
+                                ],
+                              ),
                             const SizedBox(height: 6),
                             Text(
                               'Halo, $userName!',

@@ -13,6 +13,7 @@ class PartnerMapper {
       address: dto.address,
       joinDate: DateTime.parse(dto.joinDate),
       level: dto.level,
+      levelLabel: dto.level == 'partner' ? 'Mitra' : 'Partner & Konsultan',
       createdAt: dto.createdAt,
       updatedAt: dto.updatedAt,
     );
