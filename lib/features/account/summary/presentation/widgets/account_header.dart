@@ -12,7 +12,7 @@ class AccountHeader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authSessionControllerProvider).value?.user;
     final partner = ref.watch(partnerControllerProvider).value;
-    
+
     final name = user?.name ?? 'User';
     final email = user?.email ?? '-';
 
@@ -53,7 +53,10 @@ class AccountHeader extends ConsumerWidget {
               errorWidget: Container(
                 color: Colors.white.withValues(alpha: 0.2),
                 child: const Center(
-                  child: Text('👤', style: TextStyle(fontSize: 40)),
+                  child: Text(
+                    '👤',
+                    style: TextStyle(fontSize: 40),
+                  ),
                 ),
               ),
             ),
@@ -67,19 +70,23 @@ class AccountHeader extends ConsumerWidget {
           const SizedBox(height: 4),
           Text(
             email,
-            style:
-                AppTextStyles.body(color: Colors.white.withValues(alpha: 0.7)),
+            style: AppTextStyles.body(
+              color: Colors.white.withValues(alpha: 0.7),
+            ),
           ),
           const SizedBox(height: 16),
           if (partner != null)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildBadge('Mitra', isActive: true),
-                if (partner.level == 'partner_consultant') ...[
+                if (partner.level == 'partner' ||
+                    partner.level == 'partner_consultant')
+                  _buildBadge('Mitra', isActive: true),
+                if (partner.level == 'partner_consultant')
                   const SizedBox(width: 8),
+                if (partner.level == 'consultant' ||
+                    partner.level == 'partner_consultant')
                   _buildBadge('Konsultan', isActive: true),
-                ],
               ],
             ),
         ],

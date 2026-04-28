@@ -104,7 +104,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.1)),
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.1),),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.03),
@@ -127,7 +127,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
           Row(
             children: [
               _buildAdjustButton(
-                  Icons.remove, () => _updateCowCount(_cowCount - 1)),
+                  Icons.remove, () => _updateCowCount(_cowCount - 1),),
               Expanded(
                 child: TextField(
                   controller: _controller,
@@ -149,7 +149,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                 ),
               ),
               _buildAdjustButton(
-                  Icons.add, () => _updateCowCount(_cowCount + 1)),
+                  Icons.add, () => _updateCowCount(_cowCount + 1),),
             ],
           ),
           const SizedBox(height: 16),
@@ -166,7 +166,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
               min: 1,
               max: 100,
               divisions: 99,
-              onChanged: (value) => _updateCowCount(value.toInt()),
+              onChanged: (value) => _updateCowCount(value.toInt(),),
             ),
           ),
         ],
@@ -297,7 +297,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.1)),
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.1),),
       ),
       child: Column(
         children: List.generate(_durationMonths, (index) {
@@ -312,7 +312,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                   ? null
                   : Border(
                       bottom: BorderSide(
-                          color: colorScheme.outline.withValues(alpha: 0.05))),
+                          color: colorScheme.outline.withValues(alpha: 0.05),)),
             ),
             child: Row(
               children: [

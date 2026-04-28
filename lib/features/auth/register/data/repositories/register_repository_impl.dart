@@ -25,7 +25,9 @@ class RegisterRepositoryImpl implements RegisterRepository {
     if (handled is DataException) {
       return ServerFailure(handled.message, code: handled.code);
     }
-    return ServerFailure(handled.toString());
+    return ServerFailure(
+      handled.toString(),
+    );
   }
 
   @override
@@ -37,7 +39,9 @@ class RegisterRepositoryImpl implements RegisterRepository {
 
       return Right(response.data!);
     } catch (e) {
-      return Left(_mapExceptionToFailure(e, 'RegisterRepositoryImpl'));
+      return Left(
+        _mapExceptionToFailure(e, 'RegisterRepositoryImpl'),
+      );
     }
   }
 }

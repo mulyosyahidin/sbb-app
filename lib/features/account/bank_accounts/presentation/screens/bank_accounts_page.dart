@@ -28,7 +28,9 @@ class _BankAccountsPageState extends ConsumerState<BankAccountsPage> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    _searchController.addListener(() => setState(() {}));
+    _searchController.addListener(
+      () => setState(() {}),
+    );
   }
 
   @override
@@ -157,8 +159,8 @@ class _BankAccountsPageState extends ConsumerState<BankAccountsPage> {
                       children: [
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.6,
-                          child:
-                              _buildEmptyState(context, isSearchEmpty: hasQuery),
+                          child: _buildEmptyState(context,
+                              isSearchEmpty: hasQuery),
                         ),
                       ],
                     );
@@ -237,8 +239,10 @@ class _BankAccountsPageState extends ConsumerState<BankAccountsPage> {
                             Icon(Icons.error_outline,
                                 size: 40, color: colorScheme.error),
                             const SizedBox(height: 12),
-                            Text('Gagal memuat data',
-                                style: AppTextStyles.body()),
+                            Text(
+                              'Gagal memuat data',
+                              style: AppTextStyles.body(),
+                            ),
                             const SizedBox(height: 8),
                             TextButton(
                               onPressed: () => ref

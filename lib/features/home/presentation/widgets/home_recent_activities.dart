@@ -81,31 +81,39 @@ class HomeRecentActivities extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title,
-                    style: AppTextStyles.body(
-                        fontWeight: FontWeight.bold,
-                        color: colorScheme.onSurface)),
+                Text(
+                  title,
+                  style: AppTextStyles.body(
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.onSurface),
+                ),
                 const SizedBox(height: 4),
-                Text(subtitle,
-                    style: AppTextStyles.label(
-                        color: colorScheme.onSurfaceVariant,
-                        fontWeight: FontWeight.normal,
-                        letterSpacing: 0)),
+                Text(
+                  subtitle,
+                  style: AppTextStyles.label(
+                      color: colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.normal,
+                      letterSpacing: 0),
+                ),
               ],
             ),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(trailingTitle,
-                  style: AppTextStyles.body(
-                      fontWeight: FontWeight.bold, color: trailingTitleColor)),
+              Text(
+                trailingTitle,
+                style: AppTextStyles.body(
+                    fontWeight: FontWeight.bold, color: trailingTitleColor),
+              ),
               const SizedBox(height: 4),
-              Text(trailingSubtitle,
-                  style: AppTextStyles.label(
-                      color: colorScheme.onSurfaceVariant,
-                      fontWeight: FontWeight.normal,
-                      letterSpacing: 0)),
+              Text(
+                trailingSubtitle,
+                style: AppTextStyles.label(
+                    color: colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.normal,
+                    letterSpacing: 0),
+              ),
             ],
           ),
         ],

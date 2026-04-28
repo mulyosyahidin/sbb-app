@@ -16,16 +16,23 @@ class AccountStatsRow extends ConsumerWidget {
       children: [
         Row(
           children: [
-            Expanded(child: _buildStatCard(context, '3', 'Kontrak')),
+            Expanded(
+              child: _buildStatCard(context, '3', 'Kontrak'),
+            ),
             const SizedBox(width: 12),
-            Expanded(child: _buildStatCard(context, '2', 'Sapi')),
+            Expanded(
+              child: _buildStatCard(context, '2', 'Sapi'),
+            ),
           ],
         ),
         const SizedBox(height: 12),
         Row(
           children: [
-            if (partner?.level == 'partner_consultant') ...[
-              Expanded(child: _buildStatCard(context, '5', 'Mitra')),
+            if (partner?.level == 'consultant' ||
+                partner?.level == 'partner_consultant') ...[
+              Expanded(
+                child: _buildStatCard(context, '5', 'Mitra'),
+              ),
               const SizedBox(width: 12),
             ],
             Expanded(
@@ -53,7 +60,8 @@ class AccountStatsRow extends ConsumerWidget {
         color: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-            color: colorScheme.outline.withValues(alpha: isDark ? 0.3 : 0.5)),
+          color: colorScheme.outline.withValues(alpha: isDark ? 0.3 : 0.5),
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: isDark ? 0.1 : 0.02),

@@ -16,7 +16,9 @@ class HomeGuestCTA extends StatelessWidget {
       decoration: BoxDecoration(
         color: colorScheme.primary.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: colorScheme.primary.withValues(alpha: 0.1)),
+        border: Border.all(
+          color: colorScheme.primary.withValues(alpha: 0.1),
+        ),
       ),
       child: Column(
         children: [

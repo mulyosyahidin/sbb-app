@@ -26,7 +26,9 @@ class LoginRepositoryImpl implements LoginRepository {
     if (handled is DataException) {
       return ServerFailure(handled.message, code: handled.code);
     }
-    return ServerFailure(handled.toString());
+    return ServerFailure(
+      handled.toString(),
+    );
   }
 
   @override
@@ -36,7 +38,9 @@ class LoginRepositoryImpl implements LoginRepository {
 
       return Right(response.data as LoginResponseData);
     } catch (e) {
-      return Left(_mapExceptionToFailure(e, 'LoginRepositoryImpl.login'));
+      return Left(
+        _mapExceptionToFailure(e, 'LoginRepositoryImpl.login'),
+      );
     }
   }
 
@@ -49,12 +53,15 @@ class LoginRepositoryImpl implements LoginRepository {
       return Right(response.data as LoginResponseData);
     } catch (e) {
       return Left(
-          _mapExceptionToFailure(e, 'LoginRepositoryImpl.loginWithGoogle'));
+        _mapExceptionToFailure(e, 'LoginRepositoryImpl.loginWithGoogle'),
+      );
     }
   }
 }
 
 @riverpod
 LoginRepository loginRepository(Ref ref) {
-  return LoginRepositoryImpl(ref.watch(loginRemoteDataSourceProvider));
+  return LoginRepositoryImpl(
+    ref.watch(loginRemoteDataSourceProvider),
+  );
 }

@@ -82,7 +82,9 @@ class PartnerUpgradePage extends StatelessWidget {
           ],
         ),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: colorScheme.primary.withValues(alpha: 0.2)),
+        border: Border.all(
+          color: colorScheme.primary.withValues(alpha: 0.2),
+        ),
       ),
       child: Column(
         children: [
@@ -163,7 +165,9 @@ class PartnerUpgradePage extends StatelessWidget {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
         title: const Text('Pengajuan Terkirim'),
         content: const Text(
           'Terima kasih! Pengajuan upgrade Anda telah kami terima dan akan segera diproses oleh tim kami.',

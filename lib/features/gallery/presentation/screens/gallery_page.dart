@@ -18,9 +18,9 @@ class GalleryPage extends StatelessWidget {
 
     final List<String> dummyPhotos = [
       'assets/images/galleries/kandang-sapi-sbb-1.png',
-      'assets/images/galleries/kandang-sapi-sbb-2.png',
-      'assets/images/galleries/kunjungan-ke-pt.png',
-      'assets/images/galleries/kunjungan-ke-pt-2.png',
+      'assets/images/galleries/kandang-sapi-sbb-2.jpg',
+      'assets/images/galleries/kunjungan-ke-pt.jpg',
+      'assets/images/galleries/kunjungan-ke-pt-2.jpg',
       'assets/images/galleries/tahap-pengemasan.png',
       'assets/images/galleries/tahap-penimbangan.png',
     ];
@@ -138,7 +138,9 @@ class GalleryPage extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(30),
+                ),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(24),

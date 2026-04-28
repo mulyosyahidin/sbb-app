@@ -27,17 +27,21 @@ class HomePage extends ConsumerWidget {
                   const SizedBox(height: 20),
                   const HomeBanner(),
                   const SizedBox(height: 24),
-                  Text('Menu Utama',
-                      style: AppTextStyles.title(
-                          fontWeight: FontWeight.w600,
-                          color: colorScheme.onSurface)),
+                  Text(
+                    'Menu Utama',
+                    style: AppTextStyles.title(
+                        fontWeight: FontWeight.w600,
+                        color: colorScheme.onSurface),
+                  ),
                   const SizedBox(height: 16),
                   const HomeMenuGrid(),
                   const SizedBox(height: 24),
-                  Text('Aktivitas Terbaru',
-                      style: AppTextStyles.title(
-                          fontWeight: FontWeight.w600,
-                          color: colorScheme.onSurface)),
+                  Text(
+                    'Aktivitas Terbaru',
+                    style: AppTextStyles.title(
+                        fontWeight: FontWeight.w600,
+                        color: colorScheme.onSurface),
+                  ),
                   const SizedBox(height: 16),
                   const HomeRecentActivities(),
                   const SizedBox(height: 24),

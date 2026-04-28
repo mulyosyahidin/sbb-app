@@ -41,7 +41,8 @@ class BankAccountsState {
 
 @riverpod
 class BankAccountsController extends _$BankAccountsController {
-  BankAccountRepository get _repository => ref.watch(bankAccountRepositoryProvider);
+  BankAccountRepository get _repository =>
+      ref.watch(bankAccountRepositoryProvider);
 
   @override
   FutureOr<BankAccountsState> build() async {
@@ -65,11 +66,14 @@ class BankAccountsController extends _$BankAccountsController {
     final currentState = state.value;
     if (currentState == null || currentState.isLoadingMore) return;
     if (currentState.pagination == null) return;
-    if (currentState.pagination!.currentPage >= currentState.pagination!.lastPage) {
+    if (currentState.pagination!.currentPage >=
+        currentState.pagination!.lastPage) {
       return;
     }
 
-    state = AsyncData(currentState.copyWith(isLoadingMore: true));
+    state = AsyncData(
+      currentState.copyWith(isLoadingMore: true),
+    );
 
     final result = await _repository.getBankAccounts(
       page: currentState.pagination!.currentPage + 1,
@@ -78,29 +82,37 @@ class BankAccountsController extends _$BankAccountsController {
 
     result.fold(
       (l) {
-        state = AsyncData(currentState.copyWith(isLoadingMore: false));
+        state = AsyncData(
+          currentState.copyWith(isLoadingMore: false),
+        );
       },
       (r) {
-        state = AsyncData(currentState.copyWith(
-          accounts: [
-            ...currentState.accounts,
-            ...BankAccountMapper.toEntityList(r.bankAccounts)
-          ],
-          pagination: r.pagination,
-          isLoadingMore: false,
-        ));
+        state = AsyncData(
+          currentState.copyWith(
+            accounts: [
+              ...currentState.accounts,
+              ...BankAccountMapper.toEntityList(r.bankAccounts)
+            ],
+            pagination: r.pagination,
+            isLoadingMore: false,
+          ),
+        );
       },
     );
   }
 
   Future<void> search(String query) async {
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() => _fetchInitial(search: query));
+    state = await AsyncValue.guard(
+      () => _fetchInitial(search: query),
+    );
   }
 
   Future<void> refresh() async {
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() => _fetchInitial(search: state.value?.searchQuery));
+    state = await AsyncValue.guard(
+      () => _fetchInitial(search: state.value?.searchQuery),
+    );
   }
 
   Future<void> setPrimary(String id) async {
@@ -108,18 +120,24 @@ class BankAccountsController extends _$BankAccountsController {
     if (currentState == null) return;
 
     // Set processing ID
-    state = AsyncData(currentState.copyWith(processingId: id));
+    state = AsyncData(
+      currentState.copyWith(processingId: id),
+    );
 
     final result = await _repository.markAsPrimary(id);
 
     result.fold(
       (l) {
         // Clear processing ID on failure
-        state = AsyncData(currentState.copyWith(processingId: null));
+        state = AsyncData(
+          currentState.copyWith(processingId: null),
+        );
       },
       (r) {
         // Clear processing ID and refresh the list
-        state = AsyncData(currentState.copyWith(processingId: null));
+        state = AsyncData(
+          currentState.copyWith(processingId: null),
+        );
         refresh();
       },
     );
@@ -130,19 +148,25 @@ class BankAccountsController extends _$BankAccountsController {
     if (currentState == null) return;
 
     // Set processing ID
-    state = AsyncData(currentState.copyWith(processingId: id));
+    state = AsyncData(
+      currentState.copyWith(processingId: id),
+    );
 
     final result = await _repository.deleteBankAccount(id);
 
     result.fold(
       (l) {
         // Clear processing ID on failure
-        state = AsyncData(currentState.copyWith(processingId: null));
+        state = AsyncData(
+          currentState.copyWith(processingId: null),
+        );
         throw l; // Rethrow to be caught by the UI
       },
       (r) {
         // Clear processing ID and refresh the list
-        state = AsyncData(currentState.copyWith(processingId: null));
+        state = AsyncData(
+          currentState.copyWith(processingId: null),
+        );
         refresh();
       },
     );

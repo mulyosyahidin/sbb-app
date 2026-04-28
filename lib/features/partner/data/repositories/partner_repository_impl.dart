@@ -23,9 +23,13 @@ class PartnerRepositoryImpl implements PartnerRepository {
       final response = await _dataSource.checkPartner();
       return Right(response.data!);
     } on ApiException catch (e) {
-      return Left(ServerFailure(e.message));
+      return Left(
+        ServerFailure(e.message),
+      );
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(
+        e.toString(),
+      ));
     }
   }
 
@@ -35,9 +39,13 @@ class PartnerRepositoryImpl implements PartnerRepository {
       final response = await _dataSource.getPartner();
       return Right(response.data!);
     } on ApiException catch (e) {
-      return Left(ServerFailure(e.message));
+      return Left(
+        ServerFailure(e.message),
+      );
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(
+        e.toString(),
+      ));
     }
   }
 
@@ -49,11 +57,17 @@ class PartnerRepositoryImpl implements PartnerRepository {
       return Right(response.data!);
     } on ApiException catch (e) {
       if (e.errors != null) {
-        return Left(ValidationFailure(e.message, errors: e.errors));
+        return Left(
+          ValidationFailure(e.message, errors: e.errors),
+        );
       }
-      return Left(ServerFailure(e.message));
+      return Left(
+        ServerFailure(e.message),
+      );
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(
+        e.toString(),
+      ));
     }
   }
 
@@ -65,16 +79,24 @@ class PartnerRepositoryImpl implements PartnerRepository {
       return Right(response.data!);
     } on ApiException catch (e) {
       if (e.errors != null) {
-        return Left(ValidationFailure(e.message, errors: e.errors));
+        return Left(
+          ValidationFailure(e.message, errors: e.errors),
+        );
       }
-      return Left(ServerFailure(e.message));
+      return Left(
+        ServerFailure(e.message),
+      );
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(ServerFailure(
+        e.toString(),
+      ));
     }
   }
 }
 
 @riverpod
 PartnerRepository partnerRepository(Ref ref) {
-  return PartnerRepositoryImpl(ref.watch(partnerRemoteDataSourceProvider));
+  return PartnerRepositoryImpl(
+    ref.watch(partnerRemoteDataSourceProvider),
+  );
 }

@@ -49,7 +49,6 @@ class AppTheme {
     ),
     textTheme: GoogleFonts.lexendTextTheme(),
     scaffoldBackgroundColor: AppColors.backgroundLight,
-
     appBarTheme: const AppBarTheme(
       centerTitle: true,
       elevation: 0,
@@ -61,7 +60,9 @@ class AppTheme {
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
@@ -104,7 +105,6 @@ class AppTheme {
     ),
     textTheme: GoogleFonts.lexendTextTheme(ThemeData.dark().textTheme),
     scaffoldBackgroundColor: AppColors.backgroundDark,
-
     appBarTheme: const AppBarTheme(
       centerTitle: true,
       elevation: 0,
@@ -116,7 +116,9 @@ class AppTheme {
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(

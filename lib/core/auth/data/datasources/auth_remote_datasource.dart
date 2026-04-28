@@ -39,7 +39,8 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
     } on DioException catch (e) {
       LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
 
-      if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
+      if (e.response?.data != null &&
+          e.response?.data is Map<String, dynamic>) {
         dto = RefreshAccessTokenResponseDto.fromJson(e.response!.data);
       } else {
         rethrow;
@@ -74,7 +75,8 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
     } on DioException catch (e) {
       LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
 
-      if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
+      if (e.response?.data != null &&
+          e.response?.data is Map<String, dynamic>) {
         dto = GetMeResponseDto.fromJson(e.response!.data);
       } else {
         rethrow;
@@ -126,5 +128,7 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
 
 @riverpod
 AuthRemoteDatasource authRemoteDatasource(Ref ref) {
-  return AuthRemoteDatasourceImpl(ref.watch(dioProvider));
+  return AuthRemoteDatasourceImpl(
+    ref.watch(dioProvider),
+  );
 }

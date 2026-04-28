@@ -19,11 +19,16 @@ class EditPasswordRemoteDataSourceImpl implements EditPasswordRemoteDataSource {
   EditPasswordRemoteDataSourceImpl(this._dio);
 
   @override
-  Future<ApiResponseDto<void>> updatePassword(UpdatePasswordRequestDto dto) async {
+  Future<ApiResponseDto<void>> updatePassword(
+      UpdatePasswordRequestDto dto) async {
     const endpoint = ApiEndpoint.updatePassword;
 
     try {
-      LoggerUtil.api("PUT", endpoint, data: dto.toJson());
+      LoggerUtil.api(
+        "PUT",
+        endpoint,
+        data: dto.toJson(),
+      );
 
       final response = await _dio.put(
         endpoint,
@@ -47,7 +52,8 @@ class EditPasswordRemoteDataSourceImpl implements EditPasswordRemoteDataSource {
     } on DioException catch (e) {
       LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
 
-      if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
+      if (e.response?.data != null &&
+          e.response?.data is Map<String, dynamic>) {
         final dto = ApiResponseDto<void>.fromJson(
           e.response!.data,
           (_) {},
@@ -65,5 +71,7 @@ class EditPasswordRemoteDataSourceImpl implements EditPasswordRemoteDataSource {
 
 @riverpod
 EditPasswordRemoteDataSource editPasswordRemoteDataSource(Ref ref) {
-  return EditPasswordRemoteDataSourceImpl(ref.watch(dioProvider));
+  return EditPasswordRemoteDataSourceImpl(
+    ref.watch(dioProvider),
+  );
 }

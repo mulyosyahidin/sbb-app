@@ -72,14 +72,18 @@ class HomeGuestHeader extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Sarana Bahagia Berkah',
-                              style: AppTextStyles.body(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold)),
-                          Text('Peternakan Digital',
-                              style: AppTextStyles.label(
-                                  color: AppColors.primaryContainer,
-                                  letterSpacing: 0.5)),
+                          Text(
+                            'Sarana Bahagia Berkah',
+                            style: AppTextStyles.body(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            'Peternakan Digital',
+                            style: AppTextStyles.label(
+                                color: AppColors.primaryContainer,
+                                letterSpacing: 0.5),
+                          ),
                         ],
                       ),
                     ),
@@ -91,13 +95,15 @@ class HomeGuestHeader extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Selamat Datang',
-                            style: AppTextStyles.title(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold)),
+                        Text(
+                          'Selamat Datang',
+                          style: AppTextStyles.title(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
                         Text('Yuk mulai kemitraan sekarang',
                             style: AppTextStyles.body(
-                                color: Colors.white.withValues(alpha: 0.7))),
+                              color: Colors.white.withValues(alpha: 0.7),
+                            )),
                       ],
                     ),
                   ],

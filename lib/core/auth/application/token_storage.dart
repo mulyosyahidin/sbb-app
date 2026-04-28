@@ -36,7 +36,9 @@ class TokenStorage {
 
   Future<void> saveUser(User user) async {
     final userDto = UserMapper.toDto(user);
-    final jsonString = jsonEncode(userDto.toJson());
+    final jsonString = jsonEncode(
+      userDto.toJson(),
+    );
 
     await _flutterSecureStorage.write(key: _userKey, value: jsonString);
   }
@@ -47,7 +49,9 @@ class TokenStorage {
       return null;
     }
 
-    final userDto = UserDto.fromJson(jsonDecode(jsonString));
+    final userDto = UserDto.fromJson(
+      jsonDecode(jsonString),
+    );
     return UserMapper.toEntity(userDto);
   }
 
@@ -57,7 +61,9 @@ class TokenStorage {
 
   Future<void> saveDevice(UserDevice userDevice) async {
     final userDeviceDto = UserDeviceMapper.toDto(userDevice);
-    final jsonString = jsonEncode(userDeviceDto.toJson());
+    final jsonString = jsonEncode(
+      userDeviceDto.toJson(),
+    );
 
     await _flutterSecureStorage.write(key: _deviceKey, value: jsonString);
   }
@@ -68,7 +74,9 @@ class TokenStorage {
       return null;
     }
 
-    final userDeviceDto = UserDeviceDto.fromJson(jsonDecode(jsonString));
+    final userDeviceDto = UserDeviceDto.fromJson(
+      jsonDecode(jsonString),
+    );
     return UserDeviceMapper.toEntity(userDeviceDto);
   }
 
@@ -83,5 +91,7 @@ class TokenStorage {
 
 @Riverpod(keepAlive: true)
 TokenStorage tokenStorage(Ref ref) {
-  return TokenStorage(ref.watch(flutterSecureStorageProvider));
+  return TokenStorage(
+    ref.watch(flutterSecureStorageProvider),
+  );
 }

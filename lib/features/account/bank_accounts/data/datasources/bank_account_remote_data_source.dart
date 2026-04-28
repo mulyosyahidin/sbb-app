@@ -70,7 +70,8 @@ class BankAccountRemoteDataSourceImpl implements BankAccountRemoteDataSource {
     } on DioException catch (e) {
       LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
 
-      if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
+      if (e.response?.data != null &&
+          e.response?.data is Map<String, dynamic>) {
         final dto = BankAccountsResponseDto.fromJson(e.response!.data);
         throw dto.toException();
       } else {
@@ -105,7 +106,8 @@ class BankAccountRemoteDataSourceImpl implements BankAccountRemoteDataSource {
     } on DioException catch (e) {
       LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
 
-      if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
+      if (e.response?.data != null &&
+          e.response?.data is Map<String, dynamic>) {
         final dto = MarkAsPrimaryResponseDto.fromJson(e.response!.data);
         throw dto.toException();
       } else {
@@ -123,7 +125,11 @@ class BankAccountRemoteDataSourceImpl implements BankAccountRemoteDataSource {
     const endpoint = ApiEndpoint.storeBankAccount;
 
     try {
-      LoggerUtil.api("POST", endpoint, data: dto.toJson());
+      LoggerUtil.api(
+        "POST",
+        endpoint,
+        data: dto.toJson(),
+      );
 
       final response = await _dio.post(
         endpoint,
@@ -144,7 +150,8 @@ class BankAccountRemoteDataSourceImpl implements BankAccountRemoteDataSource {
     } on DioException catch (e) {
       LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
 
-      if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
+      if (e.response?.data != null &&
+          e.response?.data is Map<String, dynamic>) {
         final dto = CreateBankAccountResponseDto.fromJson(e.response!.data);
         throw dto.toException();
       } else {
@@ -162,7 +169,11 @@ class BankAccountRemoteDataSourceImpl implements BankAccountRemoteDataSource {
     final endpoint = ApiEndpoint.updateBankAccount.replaceAll('{id}', id);
 
     try {
-      LoggerUtil.api("PUT", endpoint, data: dto.toJson());
+      LoggerUtil.api(
+        "PUT",
+        endpoint,
+        data: dto.toJson(),
+      );
 
       final response = await _dio.put(
         endpoint,
@@ -183,7 +194,8 @@ class BankAccountRemoteDataSourceImpl implements BankAccountRemoteDataSource {
     } on DioException catch (e) {
       LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
 
-      if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
+      if (e.response?.data != null &&
+          e.response?.data is Map<String, dynamic>) {
         final dto = CreateBankAccountResponseDto.fromJson(e.response!.data);
         throw dto.toException();
       } else {
@@ -221,5 +233,7 @@ class BankAccountRemoteDataSourceImpl implements BankAccountRemoteDataSource {
 
 @riverpod
 BankAccountRemoteDataSource bankAccountRemoteDataSource(Ref ref) {
-  return BankAccountRemoteDataSourceImpl(ref.watch(dioProvider));
+  return BankAccountRemoteDataSourceImpl(
+    ref.watch(dioProvider),
+  );
 }

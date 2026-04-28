@@ -284,8 +284,9 @@ class PartnerPage extends ConsumerWidget {
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.18),
-                    border:
-                        Border.all(color: Colors.white.withValues(alpha: 0.3)),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.3),
+                    ),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
@@ -614,7 +615,10 @@ class PartnerPage extends ConsumerWidget {
           children: [
             const Icon(Icons.error_outline, size: 48, color: Colors.red),
             const SizedBox(height: 16),
-            Text('Gagal mengambil data mitra', style: AppTextStyles.title()),
+            Text(
+              'Gagal mengambil data mitra',
+              style: AppTextStyles.title(),
+            ),
             const SizedBox(height: 8),
             Text(
               error.toString(),
@@ -639,7 +643,12 @@ class PartnerPage extends ConsumerWidget {
     if (parts.length >= 2) {
       return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
     }
-    return parts[0].substring(0, parts[0].length.clamp(0, 2)).toUpperCase();
+    return parts[0]
+        .substring(
+          0,
+          parts[0].length.clamp(0, 2),
+        )
+        .toUpperCase();
   }
 
   // ─── Aktivitas Tab ────────────────────────────────────────────────────────
@@ -709,19 +718,22 @@ class PartnerPage extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(item['title'] as String,
-                          style:
-                              AppTextStyles.body(fontWeight: FontWeight.w700)),
+                      Text(
+                        item['title'] as String,
+                        style: AppTextStyles.body(fontWeight: FontWeight.w700),
+                      ),
                       const SizedBox(height: 4),
-                      Text(item['desc'] as String,
-                          style: AppTextStyles.body(
-                              fontSize: 12,
-                              color: colorScheme.onSurfaceVariant)),
+                      Text(
+                        item['desc'] as String,
+                        style: AppTextStyles.body(
+                            fontSize: 12, color: colorScheme.onSurfaceVariant),
+                      ),
                       const SizedBox(height: 6),
-                      Text(item['date'] as String,
-                          style: AppTextStyles.label(
-                              fontSize: 10,
-                              color: colorScheme.onSurfaceVariant)),
+                      Text(
+                        item['date'] as String,
+                        style: AppTextStyles.label(
+                            fontSize: 10, color: colorScheme.onSurfaceVariant),
+                      ),
                     ],
                   ),
                 ),
@@ -841,12 +853,16 @@ class PartnerPage extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label,
-            style: const TextStyle(color: Colors.white70, fontSize: 11)),
+        Text(
+          label,
+          style: const TextStyle(color: Colors.white70, fontSize: 11),
+        ),
         const SizedBox(height: 2),
-        Text(value,
-            style: const TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold)),
+        Text(
+          value,
+          style:
+              const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
       ],
     );
   }
@@ -871,29 +887,38 @@ class PartnerPage extends ConsumerWidget {
               color: const Color(0xFFE1F5EE),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.account_balance_wallet_outlined,
-                size: 20, color: Color(0xFF0F6E56)),
+            child: const Icon(
+              Icons.account_balance_wallet_outlined,
+              size: 20,
+              color: Color(0xFF0F6E56),
+            ),
           ),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title,
-                    style: AppTextStyles.body(
-                        fontWeight: FontWeight.w600, fontSize: 13)),
+                Text(
+                  title,
+                  style: AppTextStyles.body(
+                      fontWeight: FontWeight.w600, fontSize: 13),
+                ),
                 const SizedBox(height: 2),
-                Text(date,
-                    style: AppTextStyles.label(
-                        fontSize: 11, color: colorScheme.onSurfaceVariant)),
+                Text(
+                  date,
+                  style: AppTextStyles.label(
+                      fontSize: 11, color: colorScheme.onSurfaceVariant),
+                ),
               ],
             ),
           ),
-          Text(amount,
-              style: const TextStyle(
-                  color: Color(0xFF0F6E56),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14)),
+          Text(
+            amount,
+            style: const TextStyle(
+                color: Color(0xFF0F6E56),
+                fontWeight: FontWeight.bold,
+                fontSize: 14),
+          ),
         ],
       ),
     );

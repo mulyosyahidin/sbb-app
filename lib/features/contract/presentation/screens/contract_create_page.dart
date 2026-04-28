@@ -222,7 +222,10 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
           children: [
             const Icon(Icons.error_outline, size: 48, color: Colors.red),
             const SizedBox(height: 16),
-            Text('Gagal mengambil data mitra', style: AppTextStyles.title()),
+            Text(
+              'Gagal mengambil data mitra',
+              style: AppTextStyles.title(),
+            ),
             const SizedBox(height: 8),
             Text(
               error.toString(),
@@ -404,7 +407,9 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.amber.withValues(alpha: 0.1),
-                border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
+                border: Border.all(
+                  color: Colors.amber.withValues(alpha: 0.3),
+                ),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
@@ -494,13 +499,16 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
     );
   }
 
-  void _showBankAccountPicker(BuildContext context, List<BankAccount> accounts) {
+  void _showBankAccountPicker(
+      BuildContext context, List<BankAccount> accounts) {
     final colorScheme = Theme.of(context).colorScheme;
 
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(24),
+        ),
       ),
       builder: (context) {
         return Container(
@@ -616,13 +624,18 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
       decoration: BoxDecoration(
         color: colorScheme.primary.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: colorScheme.primary.withValues(alpha: 0.1)),
+        border: Border.all(
+          color: colorScheme.primary.withValues(alpha: 0.1),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _buildCalcRow(
-              context, 'Harga Satuan', currencyFormat.format(currentPrice)),
+            context,
+            'Harga Satuan',
+            currencyFormat.format(currentPrice),
+          ),
           const SizedBox(height: 12),
           _buildCalcRow(context, 'Jumlah', '$quantity Ekor'),
           Divider(height: 24, color: colorScheme.outline),

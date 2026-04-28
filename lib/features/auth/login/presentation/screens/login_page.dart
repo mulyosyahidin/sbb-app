@@ -319,8 +319,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     return Row(
       children: [
         Expanded(
-            child:
-                Divider(color: Theme.of(context).colorScheme.outlineVariant)),
+          child: Divider(color: Theme.of(context).colorScheme.outlineVariant),
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Text(
@@ -333,8 +333,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           ),
         ),
         Expanded(
-            child:
-                Divider(color: Theme.of(context).colorScheme.outlineVariant)),
+          child: Divider(color: Theme.of(context).colorScheme.outlineVariant),
+        ),
       ],
     );
   }

@@ -18,8 +18,12 @@ class DioClient {
       ),
     );
 
-    dio.interceptors.add(ref.read(authInterceptorProvider));
-    dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
+    dio.interceptors.add(
+      ref.read(authInterceptorProvider),
+    );
+    dio.interceptors.add(
+      LogInterceptor(requestBody: true, responseBody: true),
+    );
 
     return dio;
   }

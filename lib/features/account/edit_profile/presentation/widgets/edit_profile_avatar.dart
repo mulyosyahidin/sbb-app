@@ -67,7 +67,9 @@ class _EditProfileAvatarState extends ConsumerState<EditProfileAvatar> {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
       ),
       builder: (ctx) {
         return SafeArea(
@@ -112,7 +114,10 @@ class _EditProfileAvatarState extends ConsumerState<EditProfileAvatar> {
               shape: BoxShape.circle,
               color: Theme.of(context).colorScheme.surfaceContainerHighest,
               border: Border.all(
-                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+                color: Theme.of(context)
+                    .colorScheme
+                    .primary
+                    .withValues(alpha: 0.5),
                 width: 2,
               ),
             ),

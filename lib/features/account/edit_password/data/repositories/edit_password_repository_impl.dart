@@ -24,7 +24,9 @@ class EditPasswordRepositoryImpl implements EditPasswordRepository {
     if (handled is DataException) {
       return ServerFailure(handled.message, code: handled.code);
     }
-    return ServerFailure(handled.toString());
+    return ServerFailure(
+      handled.toString(),
+    );
   }
 
   @override
@@ -44,7 +46,9 @@ class EditPasswordRepositoryImpl implements EditPasswordRepository {
 
       return Right(response.message);
     } catch (e) {
-      return Left(_mapExceptionToFailure(e, 'EditPasswordRepositoryImpl'));
+      return Left(
+        _mapExceptionToFailure(e, 'EditPasswordRepositoryImpl'),
+      );
     }
   }
 }

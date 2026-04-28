@@ -39,7 +39,8 @@ class _PartnerEditPageState extends ConsumerState<PartnerEditPage> {
     _addressController = TextEditingController(text: widget.partner.address);
     _phoneController = TextEditingController(text: widget.partner.phoneNumber);
     _joinDateController = TextEditingController(
-        text: DateFormat('yyyy-MM-dd').format(widget.partner.joinDate));
+      text: DateFormat('yyyy-MM-dd').format(widget.partner.joinDate),
+    );
   }
 
   @override

@@ -37,7 +37,8 @@ class RegisterRemoteDataSourceImpl implements RegisterRemoteDataSource {
     } on DioException catch (e) {
       LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
 
-      if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
+      if (e.response?.data != null &&
+          e.response?.data is Map<String, dynamic>) {
         dto = RegisterResponseDto.fromJson(e.response!.data);
       } else {
         rethrow;
@@ -57,5 +58,7 @@ class RegisterRemoteDataSourceImpl implements RegisterRemoteDataSource {
 
 @riverpod
 RegisterRemoteDataSource registerRemoteDataSource(Ref ref) {
-  return RegisterRemoteDataSourceImpl(ref.watch(dioProvider));
+  return RegisterRemoteDataSourceImpl(
+    ref.watch(dioProvider),
+  );
 }

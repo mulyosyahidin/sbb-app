@@ -45,7 +45,8 @@ class PartnerRemoteDataSourceImpl implements PartnerRemoteDataSource {
     } on DioException catch (e) {
       LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
 
-      if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
+      if (e.response?.data != null &&
+          e.response?.data is Map<String, dynamic>) {
         final dto = CheckPartnerResponseDto.fromJson(e.response!.data);
         throw dto.toException();
       } else {
@@ -79,7 +80,8 @@ class PartnerRemoteDataSourceImpl implements PartnerRemoteDataSource {
     } on DioException catch (e) {
       LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
 
-      if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
+      if (e.response?.data != null &&
+          e.response?.data is Map<String, dynamic>) {
         final dto = GetPartnerResponseDto.fromJson(e.response!.data);
         throw dto.toException();
       } else {
@@ -97,8 +99,15 @@ class PartnerRemoteDataSourceImpl implements PartnerRemoteDataSource {
     const endpoint = ApiEndpoint.registerPartner;
 
     try {
-      LoggerUtil.api("POST", endpoint, data: dto.toJson());
-      final response = await _dio.post(endpoint, data: dto.toJson());
+      LoggerUtil.api(
+        "POST",
+        endpoint,
+        data: dto.toJson(),
+      );
+      final response = await _dio.post(
+        endpoint,
+        data: dto.toJson(),
+      );
 
       if (response.data is! Map<String, dynamic>) {
         throw const FormatException("Invalid response format");
@@ -114,7 +123,8 @@ class PartnerRemoteDataSourceImpl implements PartnerRemoteDataSource {
     } on DioException catch (e) {
       LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
 
-      if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
+      if (e.response?.data != null &&
+          e.response?.data is Map<String, dynamic>) {
         final dto = GetPartnerResponseDto.fromJson(e.response!.data);
         throw dto.toException();
       } else {
@@ -132,8 +142,15 @@ class PartnerRemoteDataSourceImpl implements PartnerRemoteDataSource {
     const endpoint = ApiEndpoint.updatePartner;
 
     try {
-      LoggerUtil.api("PUT", endpoint, data: dto.toJson());
-      final response = await _dio.put(endpoint, data: dto.toJson());
+      LoggerUtil.api(
+        "PUT",
+        endpoint,
+        data: dto.toJson(),
+      );
+      final response = await _dio.put(
+        endpoint,
+        data: dto.toJson(),
+      );
 
       if (response.data is! Map<String, dynamic>) {
         throw const FormatException("Invalid response format");
@@ -149,7 +166,8 @@ class PartnerRemoteDataSourceImpl implements PartnerRemoteDataSource {
     } on DioException catch (e) {
       LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
 
-      if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
+      if (e.response?.data != null &&
+          e.response?.data is Map<String, dynamic>) {
         final dto = GetPartnerResponseDto.fromJson(e.response!.data);
         throw dto.toException();
       } else {
@@ -164,5 +182,7 @@ class PartnerRemoteDataSourceImpl implements PartnerRemoteDataSource {
 
 @riverpod
 PartnerRemoteDataSource partnerRemoteDataSource(Ref ref) {
-  return PartnerRemoteDataSourceImpl(ref.watch(dioProvider));
+  return PartnerRemoteDataSourceImpl(
+    ref.watch(dioProvider),
+  );
 }

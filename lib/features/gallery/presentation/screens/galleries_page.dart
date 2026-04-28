@@ -13,7 +13,7 @@ class GalleriesPage extends StatelessWidget {
       {
         'title': 'Kandang Brahman',
         'location': 'Cariu, Jawa Barat',
-        'image': 'assets/images/galleries/kandang-sapi-sbb-2.png',
+        'image': 'assets/images/galleries/kandang-sapi-sbb-2.jpg',
       },
       {
         'title': 'Blok D7 — Simental',
@@ -33,7 +33,7 @@ class GalleriesPage extends StatelessWidget {
       {
         'title': 'Kunjungan ke PT. Cianjur Arta Makmur',
         'location': 'Kab. Bogor',
-        'image': 'assets/images/galleries/kunjungan-ke-pt.png',
+        'image': 'assets/images/galleries/kunjungan-ke-pt.jpg',
       },
     ];
 
@@ -60,7 +60,10 @@ class GalleriesPage extends StatelessWidget {
                   final item = galleries[index];
                   return InkWell(
                     onTap: () => context.push(
-                      Routes.galleryDetail.replaceAll(':id', index.toString()),
+                      Routes.galleryDetail.replaceAll(
+                        ':id',
+                        index.toString(),
+                      ),
                     ),
                     child: _buildGalleryCard(context, item),
                   );
@@ -93,8 +96,9 @@ class GalleriesPage extends StatelessWidget {
           Expanded(
             flex: 6,
             child: ClipRRect(
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(20)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20),
+              ),
               child: Image.asset(
                 item['image']!,
                 fit: BoxFit.cover,

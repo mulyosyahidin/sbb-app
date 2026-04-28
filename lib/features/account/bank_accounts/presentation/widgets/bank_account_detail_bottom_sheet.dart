@@ -82,7 +82,9 @@ class BankAccountDetailBottomSheet extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(28),
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -222,7 +224,9 @@ class BankAccountDetailBottomSheet extends ConsumerWidget {
               if (isCopyable)
                 IconButton(
                   onPressed: () {
-                    Clipboard.setData(ClipboardData(text: value));
+                    Clipboard.setData(
+                      ClipboardData(text: value),
+                    );
                     ToastUtil.showSuccess(
                       context,
                       title: 'Disalin',

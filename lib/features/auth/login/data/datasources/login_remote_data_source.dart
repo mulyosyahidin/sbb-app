@@ -26,9 +26,16 @@ class LoginRemoteDataSourceImpl implements LoginRemoteDataSource {
     LoginResponseDto? responseDto;
 
     try {
-      LoggerUtil.api("POST", endpoint, data: dto.toJson());
+      LoggerUtil.api(
+        "POST",
+        endpoint,
+        data: dto.toJson(),
+      );
 
-      final response = await _dio.post(endpoint, data: dto.toJson());
+      final response = await _dio.post(
+        endpoint,
+        data: dto.toJson(),
+      );
 
       if (response.data is! Map<String, dynamic>) {
         throw const FormatException("Invalid response format");
@@ -38,7 +45,8 @@ class LoginRemoteDataSourceImpl implements LoginRemoteDataSource {
     } on DioException catch (e) {
       LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
 
-      if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
+      if (e.response?.data != null &&
+          e.response?.data is Map<String, dynamic>) {
         responseDto = LoginResponseDto.fromJson(e.response!.data);
       } else {
         rethrow;
@@ -61,9 +69,16 @@ class LoginRemoteDataSourceImpl implements LoginRemoteDataSource {
     LoginResponseDto? responseDto;
 
     try {
-      LoggerUtil.api("POST", endpoint, data: dto.toJson());
+      LoggerUtil.api(
+        "POST",
+        endpoint,
+        data: dto.toJson(),
+      );
 
-      final response = await _dio.post(endpoint, data: dto.toJson());
+      final response = await _dio.post(
+        endpoint,
+        data: dto.toJson(),
+      );
 
       if (response.data is! Map<String, dynamic>) {
         throw const FormatException("Invalid response format");
@@ -73,7 +88,8 @@ class LoginRemoteDataSourceImpl implements LoginRemoteDataSource {
     } on DioException catch (e) {
       LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
 
-      if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
+      if (e.response?.data != null &&
+          e.response?.data is Map<String, dynamic>) {
         responseDto = LoginResponseDto.fromJson(e.response!.data);
       } else {
         rethrow;
@@ -93,5 +109,7 @@ class LoginRemoteDataSourceImpl implements LoginRemoteDataSource {
 
 @riverpod
 LoginRemoteDataSource loginRemoteDataSource(Ref ref) {
-  return LoginRemoteDataSourceImpl(ref.watch(dioProvider));
+  return LoginRemoteDataSourceImpl(
+    ref.watch(dioProvider),
+  );
 }

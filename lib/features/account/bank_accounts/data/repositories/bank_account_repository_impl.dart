@@ -28,7 +28,9 @@ class BankAccountRepositoryImpl implements BankAccountRepository {
     if (handled is DataException) {
       return ServerFailure(handled.message, code: handled.code);
     }
-    return ServerFailure(handled.toString());
+    return ServerFailure(
+      handled.toString(),
+    );
   }
 
   @override
@@ -46,18 +48,23 @@ class BankAccountRepositoryImpl implements BankAccountRepository {
 
       return Right(response.data!);
     } catch (e) {
-      return Left(_mapExceptionToFailure(e, 'BankAccountRepositoryImpl.getBankAccounts'));
+      return Left(
+        _mapExceptionToFailure(e, 'BankAccountRepositoryImpl.getBankAccounts'),
+      );
     }
   }
 
   @override
-  Future<Either<Failure, MarkAsPrimaryResponseData>> markAsPrimary(String id) async {
+  Future<Either<Failure, MarkAsPrimaryResponseData>> markAsPrimary(
+      String id) async {
     try {
       final response = await _bankAccountRemoteDataSource.markAsPrimary(id);
 
       return Right(response.data!);
     } catch (e) {
-      return Left(_mapExceptionToFailure(e, 'BankAccountRepositoryImpl.markAsPrimary'));
+      return Left(
+        _mapExceptionToFailure(e, 'BankAccountRepositoryImpl.markAsPrimary'),
+      );
     }
   }
 
@@ -65,11 +72,15 @@ class BankAccountRepositoryImpl implements BankAccountRepository {
   Future<Either<Failure, CreateBankAccountResponseData>> createBankAccount(
       CreateBankAccountRequestDto dto) async {
     try {
-      final response = await _bankAccountRemoteDataSource.createBankAccount(dto);
+      final response =
+          await _bankAccountRemoteDataSource.createBankAccount(dto);
 
       return Right(response.data!);
     } catch (e) {
-      return Left(_mapExceptionToFailure(e, 'BankAccountRepositoryImpl.createBankAccount'));
+      return Left(
+        _mapExceptionToFailure(
+            e, 'BankAccountRepositoryImpl.createBankAccount'),
+      );
     }
   }
 
@@ -77,11 +88,15 @@ class BankAccountRepositoryImpl implements BankAccountRepository {
   Future<Either<Failure, CreateBankAccountResponseData>> updateBankAccount(
       String id, UpdateBankAccountRequestDto dto) async {
     try {
-      final response = await _bankAccountRemoteDataSource.updateBankAccount(id, dto);
+      final response =
+          await _bankAccountRemoteDataSource.updateBankAccount(id, dto);
 
       return Right(response.data!);
     } catch (e) {
-      return Left(_mapExceptionToFailure(e, 'BankAccountRepositoryImpl.updateBankAccount'));
+      return Left(
+        _mapExceptionToFailure(
+            e, 'BankAccountRepositoryImpl.updateBankAccount'),
+      );
     }
   }
 
@@ -91,12 +106,17 @@ class BankAccountRepositoryImpl implements BankAccountRepository {
       await _bankAccountRemoteDataSource.deleteBankAccount(id);
       return const Right(null);
     } catch (e) {
-      return Left(_mapExceptionToFailure(e, 'BankAccountRepositoryImpl.deleteBankAccount'));
+      return Left(
+        _mapExceptionToFailure(
+            e, 'BankAccountRepositoryImpl.deleteBankAccount'),
+      );
     }
   }
 }
 
 @riverpod
 BankAccountRepository bankAccountRepository(Ref ref) {
-  return BankAccountRepositoryImpl(ref.watch(bankAccountRemoteDataSourceProvider));
+  return BankAccountRepositoryImpl(
+    ref.watch(bankAccountRemoteDataSourceProvider),
+  );
 }

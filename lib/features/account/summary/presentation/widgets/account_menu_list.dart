@@ -40,10 +40,20 @@ class AccountMenuList extends ConsumerWidget {
           const Color(0xFF325B84),
           onTap: () => context.push(Routes.bankAccounts),
         ),
-        _buildMenuItem(context, Icons.notifications, 'Notifikasi',
-            const Color(0xFFFFF8F0), const Color(0xFF846432)),
-        _buildMenuItem(context, Icons.description, 'Dokumen & Kontrak',
-            const Color(0xFFF7F0F0), const Color(0xFF843232)),
+        _buildMenuItem(
+          context,
+          Icons.notifications,
+          'Notifikasi',
+          const Color(0xFFFFF8F0),
+          const Color(0xFF846432),
+        ),
+        _buildMenuItem(
+          context,
+          Icons.description,
+          'Dokumen & Kontrak',
+          const Color(0xFFF7F0F0),
+          const Color(0xFF843232),
+        ),
         _buildMenuItem(
           context,
           Icons.logout,
@@ -68,7 +78,10 @@ class AccountMenuList extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Batal', style: AppTextStyles.body(color: AppColors.textSecondaryLight)),
+            child: Text(
+              'Batal',
+              style: AppTextStyles.body(color: AppColors.textSecondaryLight),
+            ),
           ),
           ElevatedButton(
             onPressed: () {
@@ -106,7 +119,8 @@ class AccountMenuList extends ConsumerWidget {
         color: isDark ? AppColors.surfaceDark : AppColors.surfaceLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-            color: colorScheme.outline.withValues(alpha: isDark ? 0.3 : 0.5)),
+          color: colorScheme.outline.withValues(alpha: isDark ? 0.3 : 0.5),
+        ),
       ),
       child: ListTile(
         onTap: isLoading ? null : onTap,
@@ -132,8 +146,8 @@ class AccountMenuList extends ConsumerWidget {
             ? const SizedBox(
                 width: 16,
                 height: 16,
-                child:
-                    CircularProgressIndicator(strokeWidth: 2, color: Colors.red),
+                child: CircularProgressIndicator(
+                    strokeWidth: 2, color: Colors.red),
               )
             : Icon(
                 Icons.chevron_right,
@@ -143,7 +157,9 @@ class AccountMenuList extends ConsumerWidget {
                 size: 16,
               ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
       ),
     );
   }

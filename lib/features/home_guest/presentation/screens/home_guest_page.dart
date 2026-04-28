@@ -25,11 +25,13 @@ class HomeGuestPage extends StatelessWidget {
                   const SizedBox(height: 20),
                   const HomeBanner(),
                   const SizedBox(height: 24),
-                  Text('Menu Utama',
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: colorScheme.onSurface)),
+                  Text(
+                    'Menu Utama',
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: colorScheme.onSurface),
+                  ),
                   const SizedBox(height: 16),
                   const HomeMenuGrid(),
                   const SizedBox(height: 32),

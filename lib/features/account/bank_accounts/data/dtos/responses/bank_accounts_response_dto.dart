@@ -14,7 +14,9 @@ class BankAccountsResponseData {
   factory BankAccountsResponseData.fromJson(Map<String, dynamic> json) {
     return BankAccountsResponseData(
       bankAccounts: (json['bank_accounts'] as List)
-          .map((e) => BankAccountDto.fromJson(e))
+          .map(
+            (e) => BankAccountDto.fromJson(e),
+          )
           .toList(),
       pagination: PaginationDto.fromJson(json['pagination']),
     );

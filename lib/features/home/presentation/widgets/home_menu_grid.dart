@@ -107,7 +107,9 @@ class HomeMenuGrid extends StatelessWidget {
             decoration: BoxDecoration(
               color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: color.withValues(alpha: 0.1)),
+              border: Border.all(
+                color: color.withValues(alpha: 0.1),
+              ),
             ),
             child: Icon(icon, color: color, size: 24),
           ),

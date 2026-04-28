@@ -133,8 +133,8 @@ class CompanyProfilePage extends StatelessWidget {
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-            color:
-                Theme.of(context).colorScheme.outline.withValues(alpha: 0.1)),
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.1),
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.03),
@@ -161,7 +161,9 @@ class CompanyProfilePage extends StatelessWidget {
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.1)),
+        border: Border.all(
+          color: colorScheme.outline.withValues(alpha: 0.1),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -199,7 +201,9 @@ class CompanyProfilePage extends StatelessWidget {
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.1)),
+        border: Border.all(
+          color: colorScheme.outline.withValues(alpha: 0.1),
+        ),
       ),
       child: Column(
         children: keunggulan.map((item) {
@@ -262,8 +266,9 @@ class CompanyProfilePage extends StatelessWidget {
           decoration: BoxDecoration(
             color: colorScheme.surface,
             borderRadius: BorderRadius.circular(20),
-            border:
-                Border.all(color: colorScheme.outline.withValues(alpha: 0.1)),
+            border: Border.all(
+              color: colorScheme.outline.withValues(alpha: 0.1),
+            ),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -322,7 +327,9 @@ class CompanyProfilePage extends StatelessWidget {
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.1)),
+        border: Border.all(
+          color: colorScheme.outline.withValues(alpha: 0.1),
+        ),
       ),
       child: Column(
         children: items.map((item) {
@@ -414,7 +421,9 @@ class CompanyProfilePage extends StatelessWidget {
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.1)),
+        border: Border.all(
+          color: colorScheme.outline.withValues(alpha: 0.1),
+        ),
       ),
       child: Column(
         children: [

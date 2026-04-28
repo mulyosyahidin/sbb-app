@@ -34,7 +34,8 @@ class AccountPage extends ConsumerWidget {
                   children: [
                     const SizedBox(height: 16),
                     const AccountStatsRow(),
-                    if (partner?.level == 'partner_consultant') ...[
+                    if (partner?.level == 'consultant' ||
+                        partner?.level == 'partner_consultant') ...[
                       const SizedBox(height: 24),
                       _buildSectionTitle(context, 'Panel Konsultan'),
                       const SizedBox(height: 12),

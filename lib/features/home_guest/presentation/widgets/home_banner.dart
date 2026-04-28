@@ -93,22 +93,28 @@ class _HomeBannerState extends State<HomeBanner> {
                         color: Colors.orangeAccent.shade400,
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      child: Text(item.badgeText,
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold)),
+                      child: Text(
+                        item.badgeText,
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
                     const Spacer(),
-                    Text(item.title,
-                        style: AppTextStyles.heading(
-                            color: Colors.white, fontWeight: FontWeight.bold)),
+                    Text(
+                      item.title,
+                      style: AppTextStyles.heading(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
                     const SizedBox(height: 6),
-                    Text(item.subtitle,
-                        style: AppTextStyles.label(
-                            color: Colors.white70,
-                            fontWeight: FontWeight.normal,
-                            letterSpacing: 0)),
+                    Text(
+                      item.subtitle,
+                      style: AppTextStyles.label(
+                          color: Colors.white70,
+                          fontWeight: FontWeight.normal,
+                          letterSpacing: 0),
+                    ),
                   ],
                 ),
               );

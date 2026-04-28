@@ -1,4 +1,3 @@
-
 import 'package:app/core/errors/api_exception.dart';
 
 class ApiResponseDto<T> {
@@ -23,9 +22,15 @@ class ApiResponseDto<T> {
     if (errors != null) {
       errorMap = errors!.map((key, value) {
         if (value is List) {
-          return MapEntry(key, value.first.toString());
+          return MapEntry(
+            key,
+            value.first.toString(),
+          );
         }
-        return MapEntry(key, value.toString());
+        return MapEntry(
+          key,
+          value.toString(),
+        );
       });
     }
     return ApiException(message, errors: errorMap);

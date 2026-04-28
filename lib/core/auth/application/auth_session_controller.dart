@@ -136,7 +136,9 @@ class AuthSessionController extends _$AuthSessionController {
     }
 
     await tokenStorage.clearAll();
-    state = AsyncData(AuthSession.unauthenticated());
+    state = AsyncData(
+      AuthSession.unauthenticated(),
+    );
     LoggerUtil.info("AuthSession: User logged out and session cleared.");
   }
 
@@ -147,7 +149,9 @@ class AuthSessionController extends _$AuthSessionController {
 
   void updateUser(User user) {
     state.whenData((session) {
-      state = AsyncData(session.copyWith(user: user));
+      state = AsyncData(
+        session.copyWith(user: user),
+      );
     });
     LoggerUtil.info("AuthSession: User updated manually.");
   }

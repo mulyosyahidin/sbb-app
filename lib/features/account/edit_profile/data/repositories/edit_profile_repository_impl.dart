@@ -26,7 +26,9 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
     if (handled is DataException) {
       return ServerFailure(handled.message, code: handled.code);
     }
-    return ServerFailure(handled.toString());
+    return ServerFailure(
+      handled.toString(),
+    );
   }
 
   @override
@@ -46,7 +48,9 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
 
       return Right(response.data!);
     } catch (e) {
-      return Left(_mapExceptionToFailure(e, 'EditProfileRepositoryImpl'));
+      return Left(
+        _mapExceptionToFailure(e, 'EditProfileRepositoryImpl'),
+      );
     }
   }
 
@@ -54,11 +58,14 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
   Future<Either<Failure, UpdateProfileResponseData>> updateProfilePicture(
       File image) async {
     try {
-      final response = await _editProfileRemoteDataSource.updateProfilePicture(image);
+      final response =
+          await _editProfileRemoteDataSource.updateProfilePicture(image);
 
       return Right(response.data!);
     } catch (e) {
-      return Left(_mapExceptionToFailure(e, 'EditProfileRepositoryImpl'));
+      return Left(
+        _mapExceptionToFailure(e, 'EditProfileRepositoryImpl'),
+      );
     }
   }
 }

@@ -28,7 +28,11 @@ class EditProfileRemoteDataSourceImpl implements EditProfileRemoteDataSource {
     UpdateProfileResponseDto? responseDto;
 
     try {
-      LoggerUtil.api("PUT", endpoint, data: dto.toJson());
+      LoggerUtil.api(
+        "PUT",
+        endpoint,
+        data: dto.toJson(),
+      );
 
       final response = await _dio.put(
         endpoint,
@@ -111,5 +115,7 @@ class EditProfileRemoteDataSourceImpl implements EditProfileRemoteDataSource {
 
 @riverpod
 EditProfileRemoteDataSource editProfileRemoteDataSource(Ref ref) {
-  return EditProfileRemoteDataSourceImpl(ref.watch(dioProvider));
+  return EditProfileRemoteDataSourceImpl(
+    ref.watch(dioProvider),
+  );
 }

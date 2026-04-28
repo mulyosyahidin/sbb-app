@@ -56,16 +56,22 @@ class _ContractPreviewPageState extends State<ContractPreviewPage> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gagal memilih file: $e')),
+          SnackBar(
+            content: Text('Gagal memilih file: $e'),
+          ),
         );
       }
     }
   }
 
   void _copyToClipboard(String text) {
-    Clipboard.setData(ClipboardData(text: text));
+    Clipboard.setData(
+      ClipboardData(text: text),
+    );
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Nomor rekening disalin')),
+      const SnackBar(
+        content: Text('Nomor rekening disalin'),
+      ),
     );
   }
 
@@ -231,7 +237,9 @@ class _ContractPreviewPageState extends State<ContractPreviewPage> {
       decoration: BoxDecoration(
         color: colorScheme.primary.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: colorScheme.primary.withValues(alpha: 0.1)),
+        border: Border.all(
+          color: colorScheme.primary.withValues(alpha: 0.1),
+        ),
       ),
       child: Column(
         children: [
@@ -291,8 +299,9 @@ class _ContractPreviewPageState extends State<ContractPreviewPage> {
             decoration: BoxDecoration(
               color: colorScheme.surfaceContainerLowest,
               borderRadius: BorderRadius.circular(16),
-              border:
-                  Border.all(color: colorScheme.outline.withValues(alpha: 0.1)),
+              border: Border.all(
+                color: colorScheme.outline.withValues(alpha: 0.1),
+              ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -6,7 +6,7 @@ import 'package:app/features/partner/application/partner_form_controller.dart';
 import 'package:app/shared/widgets/app_bar_header.dart';
 import 'package:app/shared/forms/app_text_field.dart';
 import 'package:app/shared/forms/app_textarea_field.dart';
-import 'package:app/shared/forms/app_choice_field.dart';
+import 'package:app/shared/forms/app_dropdown_field.dart';
 import 'package:app/shared/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -39,7 +39,9 @@ class _PartnerRegisterPageState extends ConsumerState<PartnerRegisterPage> {
       _nameController.text = user.name;
       _phoneController.text = user.phoneNumber ?? '';
     }
-    _joinDateController.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    _joinDateController.text = DateFormat('yyyy-MM-dd').format(
+      DateTime.now(),
+    );
   }
 
   @override
@@ -157,7 +159,9 @@ class _PartnerRegisterPageState extends ConsumerState<PartnerRegisterPage> {
             ),
             Expanded(
               child: sessionState.when(
-                loading: () => const Center(child: CircularProgressIndicator()),
+                loading: () => const Center(
+                  child: CircularProgressIndicator(),
+                ),
                 error: (error, stack) => Center(
                   child: Text('Gagal memuat data user: $error'),
                 ),
@@ -242,18 +246,31 @@ class _PartnerRegisterPageState extends ConsumerState<PartnerRegisterPage> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      AppChoiceField<String>(
+                      AppDropdownField<String>(
                         label: 'Level Kemitraan',
-                        options: const [
-                          ChoiceOption(label: 'Mitra', value: 'partner'),
-                          ChoiceOption(
-                              label: 'Mitra + Konsultan',
-                              value: 'partner_consultant'),
+                        hint: 'Pilih level kemitraan',
+                        prefixIcon: const Icon(Icons.stars_outlined),
+                        items: const [
+                          DropdownMenuItem(
+                            value: 'partner',
+                            child: Text('Mitra'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'consultant',
+                            child: Text('Konsultan'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'partner_consultant',
+                            child: Text('Mitra & Konsultan'),
+                          ),
                         ],
-                        selected: _selectedLevel,
-                        onSelected: (val) =>
-                            setState(() => _selectedLevel = val),
-                      ),
+                        value: _selectedLevel,
+                        onChanged: (val) {
+                          if (val != null) {
+                            setState(() => _selectedLevel = val);
+                          }
+                        },
+      ),
                       const SizedBox(height: 32),
                       PrimaryButton(
                         onPressed: isLoading ? null : _handleSubmit,
@@ -272,4 +289,3 @@ class _PartnerRegisterPageState extends ConsumerState<PartnerRegisterPage> {
     );
   }
 }
-

@@ -25,7 +25,9 @@ class AuthRepositoryImpl implements AuthRepository {
     if (handled is DataException) {
       return ServerFailure(handled.message, code: handled.code);
     }
-    return ServerFailure(handled.toString());
+    return ServerFailure(
+      handled.toString(),
+    );
   }
 
   @override
@@ -35,7 +37,9 @@ class AuthRepositoryImpl implements AuthRepository {
 
       return Right(response.data!);
     } catch (e) {
-      return Left(_mapExceptionToFailure(e, 'AuthRepositoryImpl.getMe'));
+      return Left(
+        _mapExceptionToFailure(e, 'AuthRepositoryImpl.getMe'),
+      );
     }
   }
 
@@ -46,7 +50,9 @@ class AuthRepositoryImpl implements AuthRepository {
 
       return const Right(null);
     } catch (e) {
-      return Left(_mapExceptionToFailure(e, 'AuthRepositoryImpl.logout'));
+      return Left(
+        _mapExceptionToFailure(e, 'AuthRepositoryImpl.logout'),
+      );
     }
   }
 
@@ -58,12 +64,16 @@ class AuthRepositoryImpl implements AuthRepository {
 
       return Right(response.data!);
     } catch (e) {
-      return Left(_mapExceptionToFailure(e, 'AuthRepositoryImpl.refreshToken'));
+      return Left(
+        _mapExceptionToFailure(e, 'AuthRepositoryImpl.refreshToken'),
+      );
     }
   }
 }
 
 @riverpod
 AuthRepository authRepository(Ref ref) {
-  return AuthRepositoryImpl(ref.watch(authRemoteDatasourceProvider));
+  return AuthRepositoryImpl(
+    ref.watch(authRemoteDatasourceProvider),
+  );
 }

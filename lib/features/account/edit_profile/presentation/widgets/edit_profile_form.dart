@@ -65,7 +65,7 @@ class _EditProfileFormState extends ConsumerState<EditProfileForm> {
   @override
   Widget build(BuildContext context) {
     final sessionState = ref.watch(authSessionControllerProvider);
-    
+
     // Listen for session data to populate controllers if they were empty
     ref.listen(authSessionControllerProvider, (previous, next) {
       if (next.hasValue && _nameController.text.isEmpty) {
@@ -91,7 +91,9 @@ class _EditProfileFormState extends ConsumerState<EditProfileForm> {
       data: (session) {
         final user = session.user;
         if (user == null) {
-          return const Center(child: Text('Data pengguna tidak ditemukan'));
+          return const Center(
+            child: Text('Data pengguna tidak ditemukan'),
+          );
         }
 
         final isEmailEditable = user.driver == 'email';

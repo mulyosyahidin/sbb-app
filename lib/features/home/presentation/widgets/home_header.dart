@@ -156,13 +156,21 @@ class HomeHeader extends ConsumerWidget {
                             if (homeData?.partner != null)
                               Row(
                                 children: [
-                                  _buildBadge('MITRA', AppColors.primaryLight),
+                                  if (homeData?.partner?.level == 'partner' ||
+                                      homeData?.partner?.level ==
+                                          'partner_consultant')
+                                    _buildBadge(
+                                        'MITRA', AppColors.primaryLight),
                                   if (homeData?.partner?.level ==
-                                      'partner_consultant') ...[
-                                    const SizedBox(width: 6),
+                                          'consultant' ||
+                                      homeData?.partner?.level ==
+                                          'partner_consultant') ...[
+                                    if (homeData?.partner?.level ==
+                                        'partner_consultant')
+                                      const SizedBox(width: 6),
                                     _buildBadge(
                                       'KONSULTAN',
-                                      AppColors.primaryLight,
+                                      AppColors.warning,
                                     ),
                                   ],
                                 ],
@@ -207,7 +215,9 @@ class HomeHeader extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.2),
+        ),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Icon(icon, color: Colors.white, size: 20),
