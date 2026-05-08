@@ -1,41 +1,46 @@
 import 'package:app/app/app_router.dart';
 import 'package:app/core/theme/app_text_style.dart';
+import 'package:app/features/gallery/application/gallery_controller.dart';
+import 'package:app/features/gallery/domain/entities/gallery.dart';
 import 'package:app/shared/widgets/app_bar_header.dart';
+import 'package:app/shared/widgets/app_network_image.dart';
+import 'package:app/shared/widgets/app_shimmer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class GalleriesPage extends StatelessWidget {
+class GalleriesPage extends ConsumerStatefulWidget {
   const GalleriesPage({super.key});
 
   @override
+  ConsumerState<GalleriesPage> createState() => _GalleriesPageState();
+}
+
+class _GalleriesPageState extends ConsumerState<GalleriesPage> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      ref.read(galleryControllerProvider.notifier).loadMore();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final galleries = [
-      {
-        'title': 'Kandang Brahman',
-        'location': 'Cariu, Jawa Barat',
-        'image': 'assets/images/galleries/kandang-sapi-sbb-2.jpg',
-      },
-      {
-        'title': 'Blok D7 — Simental',
-        'location': 'Cariu, Jawa Barat',
-        'image': 'assets/images/galleries/kandang-sapi-sbb-1.png',
-      },
-      {
-        'title': 'Tahap Penimbangan',
-        'location': 'Cariu, Jawa Barat',
-        'image': 'assets/images/galleries/tahap-penimbangan.png',
-      },
-      {
-        'title': 'Tahap Pengemasan',
-        'location': 'Kab. Bogor',
-        'image': 'assets/images/galleries/tahap-pengemasan.png',
-      },
-      {
-        'title': 'Kunjungan ke PT. Cianjur Arta Makmur',
-        'location': 'Kab. Bogor',
-        'image': 'assets/images/galleries/kunjungan-ke-pt.jpg',
-      },
-    ];
+    final state = ref.watch(galleryControllerProvider);
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -47,27 +52,24 @@ class GalleriesPage extends StatelessWidget {
               subtitle: 'Dokumentasi lapangan SBB',
             ),
             Expanded(
-              child: GridView.builder(
-                padding: const EdgeInsets.all(16),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  childAspectRatio: 0.85,
-                ),
-                itemCount: galleries.length,
-                itemBuilder: (context, index) {
-                  final item = galleries[index];
-                  return InkWell(
-                    onTap: () => context.push(
-                      Routes.galleryDetail.replaceAll(
-                        ':id',
-                        index.toString(),
+              child: state.when(
+                data: (data) => _buildContent(context, data),
+                error: (error, stack) => Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Terjadi kesalahan: $error'),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () => ref
+                            .read(galleryControllerProvider.notifier)
+                            .refresh(),
+                        child: const Text('Coba Lagi'),
                       ),
-                    ),
-                    child: _buildGalleryCard(context, item),
-                  );
-                },
+                    ],
+                  ),
+                ),
+                loading: () => _buildLoading(context),
               ),
             ),
           ],
@@ -76,7 +78,74 @@ class GalleriesPage extends StatelessWidget {
     );
   }
 
-  Widget _buildGalleryCard(BuildContext context, Map<String, String> item) {
+  Widget _buildContent(BuildContext context, GalleryState state) {
+    if (state.galleries.isEmpty) {
+      return const Center(
+        child: Text('Belum ada data galeri'),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: () => ref.read(galleryControllerProvider.notifier).refresh(),
+      child: GridView.builder(
+        controller: _scrollController,
+        padding: const EdgeInsets.all(16),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+          childAspectRatio: 0.85,
+        ),
+        itemCount: state.galleries.length + (state.isLoadingMore ? 2 : 0),
+        itemBuilder: (context, index) {
+          if (index >= state.galleries.length) {
+            return const AppShimmer(
+              child: Card(
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+              ),
+            );
+          }
+
+          final gallery = state.galleries[index];
+          return InkWell(
+            onTap: () => context.push(
+              Routes.galleryDetail.replaceAll(
+                ':id',
+                gallery.id.toString(),
+              ),
+            ),
+            child: _buildGalleryCard(context, gallery),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildLoading(BuildContext context) {
+    return GridView.builder(
+      padding: const EdgeInsets.all(16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        childAspectRatio: 0.85,
+      ),
+      itemCount: 6,
+      itemBuilder: (context, index) => const AppShimmer(
+        child: Card(
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGalleryCard(BuildContext context, Gallery gallery) {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
@@ -96,16 +165,12 @@ class GalleriesPage extends StatelessWidget {
           Expanded(
             flex: 6,
             child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(
+              borderRadius: BorderRadius.vertical(
                 top: Radius.circular(20),
               ),
-              child: Image.asset(
-                item['image']!,
+              child: AppNetworkImage(
+                imageUrl: gallery.featuredImageUrl,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  color: Colors.grey[200],
-                  child: const Icon(Icons.image, color: Colors.grey),
-                ),
               ),
             ),
           ),
@@ -118,7 +183,7 @@ class GalleriesPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    item['title']!,
+                    gallery.title,
                     style: AppTextStyles.body(
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
@@ -133,16 +198,15 @@ class GalleriesPage extends StatelessWidget {
                       const Icon(
                         Icons.push_pin,
                         size: 10,
-                        color: Color(0xFFE91E63), // Pinkish color from image
+                        color: Color(0xFFE91E63),
                       ),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
-                          item['location']!,
+                          gallery.tag,
                           style: AppTextStyles.body(
                             fontSize: 10,
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,

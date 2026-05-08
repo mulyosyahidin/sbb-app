@@ -6,8 +6,8 @@ part of 'bank_account_dto.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-BankAccountDto _$BankAccountDtoFromJson(Map<String, dynamic> json) =>
-    BankAccountDto(
+_BankAccountDto _$BankAccountDtoFromJson(Map<String, dynamic> json) =>
+    _BankAccountDto(
       id: json['id'] as String,
       userId: json['user_id'] as String,
       isPrimary: json['is_primary'] as bool,
@@ -19,7 +19,7 @@ BankAccountDto _$BankAccountDtoFromJson(Map<String, dynamic> json) =>
       updatedAt: json['updated_at'] as String,
     );
 
-Map<String, dynamic> _$BankAccountDtoToJson(BankAccountDto instance) =>
+Map<String, dynamic> _$BankAccountDtoToJson(_BankAccountDto instance) =>
     <String, dynamic>{
       'id': instance.id,
       'user_id': instance.userId,

@@ -175,7 +175,10 @@ GoRouter router(Ref ref) {
       ),
       GoRoute(
         path: Routes.galleryDetail,
-        builder: (context, state) => const GalleryPage(),
+        builder: (context, state) {
+          final id = int.parse(state.pathParameters['id']!);
+          return GalleryPage(id: id);
+        },
       ),
       GoRoute(
         path: Routes.calculator,

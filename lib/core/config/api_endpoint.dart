@@ -28,4 +28,8 @@ class ApiEndpoint {
 
   // Home Page
   static const String getSliders = '/home-page/sliders';
+
+  // Gallery
+  static const String getAllGalleries = '/photo-galleries';
+  static const String getGalleryById = '/photo-galleries/{id}';
 }

@@ -1,177 +1,177 @@
 import 'package:app/core/theme/app_text_style.dart';
+import 'package:app/features/gallery/application/gallery_controller.dart';
+import 'package:app/features/gallery/domain/entities/gallery.dart';
+import 'package:app/shared/widgets/app_network_image.dart';
+import 'package:app/shared/widgets/app_shimmer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:string_to_icon/string_to_icon.dart';
 
-class GalleryPage extends StatelessWidget {
-  const GalleryPage({super.key});
+class GalleryPage extends ConsumerWidget {
+  final int id;
+  const GalleryPage({super.key, required this.id});
 
   @override
-  Widget build(BuildContext context) {
-    const String dummyImage = 'assets/images/galleries/kandang-sapi-sbb-1.png';
-    const String dummyTitle = 'Cariu Brahman Batch #4';
-    const String dummyDate = '20 April 2024';
-    const String dummyLocation = 'Cariu, Jawa Barat';
-    const String dummyDescription =
-        'Dokumentasi rutin untuk Batch #4 Sapi Brahman di peternakan Cariu. '
-        'Kondisi kesehatan sapi terpantau sangat baik dengan rata-rata kenaikan berat badan yang signifikan. '
-        'Pemberian pakan konsentrat dan hijauan dilakukan secara terjadwal untuk memastikan nutrisi optimal.';
-
-    final List<String> dummyPhotos = [
-      'assets/images/galleries/kandang-sapi-sbb-1.png',
-      'assets/images/galleries/kandang-sapi-sbb-2.jpg',
-      'assets/images/galleries/kunjungan-ke-pt.jpg',
-      'assets/images/galleries/kunjungan-ke-pt-2.jpg',
-      'assets/images/galleries/tahap-pengemasan.png',
-      'assets/images/galleries/tahap-penimbangan.png',
-    ];
+  Widget build(BuildContext context, WidgetRef ref) {
+    final galleryAsync = ref.watch(galleryDetailProvider(id));
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      body: CustomScrollView(
-        slivers: [
-          // Hero Image Header
-          SliverAppBar(
-            expandedHeight: 350,
-            pinned: true,
-            leadingWidth: 70,
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            leading: Padding(
-              padding: const EdgeInsets.only(left: 16),
-              child: Center(
-                child: InkWell(
-                  onTap: () => context.pop(),
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .surface
-                          .withValues(alpha: 0.9),
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Icon(Icons.chevron_left,
-                        color: Theme.of(context).colorScheme.onSurface),
-                  ),
-                ),
+      body: galleryAsync.when(
+        data: (gallery) => _buildContent(context, gallery),
+        error: (error, stack) => Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Terjadi kesalahan: $error'),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => ref.invalidate(galleryDetailProvider(id)),
+                child: const Text('Coba Lagi'),
               ),
-            ),
-            flexibleSpace: FlexibleSpaceBar(
-              background: Stack(
-                fit: StackFit.expand,
-                children: [
-                  InkWell(
-                    onTap: () => _showFullScreenImage(
-                        context, dummyImage, 'header_$dummyImage'),
-                    child: Hero(
-                      tag: 'header_$dummyImage',
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(0),
-                        child: Image.asset(
-                          dummyImage,
-                          fit: BoxFit.cover,
-                        ),
+            ],
+          ),
+        ),
+        loading: () => _buildLoading(context),
+      ),
+    );
+  }
+
+  Widget _buildContent(BuildContext context, Gallery gallery) {
+    final displayImage =
+        gallery.featuredImageUrl ?? gallery.items?.firstOrNull?.imageUrl;
+
+    return CustomScrollView(
+      slivers: [
+        // Hero Image Header
+        SliverAppBar(
+          expandedHeight: 350,
+          pinned: true,
+          leadingWidth: 70,
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 16),
+            child: Center(
+              child: InkWell(
+                onTap: () => context.pop(),
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .surface
+                        .withValues(alpha: 0.9),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
                       ),
-                    ),
+                    ],
                   ),
-                  const DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.transparent,
-                          Colors.black26,
-                          Colors.black54,
-                        ],
-                        stops: [0.6, 0.8, 1.0],
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 20,
-                    left: 20,
-                    right: 20,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF4CAF50),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            'Kesehatan Sapi',
-                            style: AppTextStyles.label(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          dummyTitle,
-                          style: AppTextStyles.hero(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ).copyWith(fontSize: 24, letterSpacing: 0),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                  child: Icon(Icons.chevron_left,
+                      color: Theme.of(context).colorScheme.onSurface),
+                ),
               ),
             ),
           ),
-
-          // Content
-          SliverToBoxAdapter(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(30),
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Info Row
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildInfoItem(
-                            context,
-                            icon: Icons.calendar_today_outlined,
-                            label: 'Tanggal',
-                            value: dummyDate,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: _buildInfoItem(
-                            context,
-                            icon: Icons.location_on_outlined,
-                            label: 'Lokasi',
-                            value: dummyLocation,
-                          ),
-                        ),
-                      ],
+          flexibleSpace: FlexibleSpaceBar(
+            background: Stack(
+              fit: StackFit.expand,
+              children: [
+                if (displayImage != null)
+                  InkWell(
+                    onTap: () => _showFullScreenImage(
+                        context, displayImage, 'header_$displayImage'),
+                    child: Hero(
+                      tag: 'header_$displayImage',
+                      child: AppNetworkImage(
+                        imageUrl: displayImage,
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                    const SizedBox(height: 32),
+                  )
+                else
+                  Container(
+                      color: Theme.of(context).colorScheme.surfaceVariant),
+                const DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Colors.black26,
+                        Colors.black54,
+                      ],
+                      stops: [0.6, 0.8, 1.0],
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: 20,
+                  left: 20,
+                  right: 20,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF4CAF50),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          gallery.tag,
+                          style: AppTextStyles.label(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        gallery.title,
+                        style: AppTextStyles.hero(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ).copyWith(fontSize: 24, letterSpacing: 0),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
 
-                    // Description Section
+        // Content
+        SliverToBoxAdapter(
+          child: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(30),
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Info Row (Metas)
+                  if (gallery.metas != null && gallery.metas!.isNotEmpty) ...[
+                    _buildMetasGrid(context, gallery.metas!),
+                    const SizedBox(height: 32),
+                  ],
+
+                  // Description Section
+                  if (gallery.content != null &&
+                      gallery.content!.isNotEmpty) ...[
                     Text(
                       'Deskripsi',
                       style: AppTextStyles.title(
@@ -182,15 +182,17 @@ class GalleryPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      dummyDescription,
+                      gallery.content!,
                       style: AppTextStyles.body(
                         color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 15,
                       ).copyWith(height: 1.6),
                     ),
                     const SizedBox(height: 32),
+                  ],
 
-                    // Photo Gallery Section
+                  // Photo Gallery Section
+                  if (gallery.items != null && gallery.items!.isNotEmpty) ...[
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -203,7 +205,7 @@ class GalleryPage extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '${dummyPhotos.length} Foto',
+                          '${gallery.items!.length} Foto',
                           style: AppTextStyles.body(
                             color:
                                 Theme.of(context).colorScheme.onSurfaceVariant,
@@ -225,19 +227,19 @@ class GalleryPage extends StatelessWidget {
                         mainAxisSpacing: 12,
                         childAspectRatio: 1.2,
                       ),
-                      itemCount: dummyPhotos.length,
+                      itemCount: gallery.items!.length,
                       itemBuilder: (context, index) {
-                        final imageUrl = dummyPhotos[index];
+                        final item = gallery.items![index];
                         return InkWell(
-                          onTap: () => _showFullScreenImage(
-                              context, imageUrl, 'photo_${imageUrl}_$index'),
+                          onTap: () => _showFullScreenImage(context,
+                              item.imageUrl, 'photo_${item.imageUrl}_$index'),
                           borderRadius: BorderRadius.circular(16),
                           child: Hero(
-                            tag: 'photo_${imageUrl}_$index',
+                            tag: 'photo_${item.imageUrl}_$index',
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(16),
-                              child: Image.asset(
-                                imageUrl,
+                              child: AppNetworkImage(
+                                imageUrl: item.imageUrl,
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -247,13 +249,86 @@ class GalleryPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 40),
                   ],
-                ),
+                ],
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
+  }
+
+  Widget _buildLoading(BuildContext context) {
+    return CustomScrollView(
+      slivers: [
+        const SliverAppBar(
+          expandedHeight: 350,
+          flexibleSpace: AppShimmer(
+            child: DecoratedBox(
+              decoration: BoxDecoration(color: Colors.white),
+            ),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppShimmer(
+                  child: Container(
+                    height: 20,
+                    width: 150,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                AppShimmer(
+                  child: Container(
+                    height: 100,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMetasGrid(BuildContext context, List metas) {
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        mainAxisExtent: 60,
+      ),
+      itemCount: metas.length,
+      itemBuilder: (context, index) {
+        final meta = metas[index];
+        return _buildInfoItem(
+          context,
+          icon: _getIconData(meta.icon),
+          label: meta.title,
+          value: meta.content,
+        );
+      },
+    );
+  }
+
+  IconData _getIconData(String iconName) {
+    return IconMapper.getIconData(iconName);
   }
 
   void _showFullScreenImage(
@@ -274,8 +349,8 @@ class GalleryPage extends StatelessWidget {
                   maxScale: 4.0,
                   child: Hero(
                     tag: heroTag,
-                    child: Image.asset(
-                      imageUrl,
+                    child: AppNetworkImage(
+                      imageUrl: imageUrl,
                       fit: BoxFit.contain,
                       width: double.infinity,
                       height: double.infinity,
@@ -319,6 +394,7 @@ class GalleryPage extends StatelessWidget {
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 label,

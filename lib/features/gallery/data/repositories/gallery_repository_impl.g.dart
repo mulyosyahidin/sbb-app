@@ -1,26 +1,28 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'app_router.dart';
+part of 'gallery_repository_impl.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$routerHash() => r'699359ec926ca083398af5453d8c014dccac5739';
+String _$galleryRepositoryHash() => r'33aef91c5dfb391c8c1627e994878652ccee9caa';
 
-/// See also [router].
-@ProviderFor(router)
-final routerProvider = AutoDisposeProvider<GoRouter>.internal(
-  router,
-  name: r'routerProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$routerHash,
+/// See also [galleryRepository].
+@ProviderFor(galleryRepository)
+final galleryRepositoryProvider =
+    AutoDisposeProvider<GalleryRepository>.internal(
+  galleryRepository,
+  name: r'galleryRepositoryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$galleryRepositoryHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef RouterRef = AutoDisposeProviderRef<GoRouter>;
+typedef GalleryRepositoryRef = AutoDisposeProviderRef<GalleryRepository>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
