@@ -10,7 +10,6 @@ RegisterRequestDto _$RegisterRequestDtoFromJson(Map<String, dynamic> json) =>
     RegisterRequestDto(
       name: json['name'] as String,
       email: json['email'] as String,
-      phoneNumber: json['phone_number'] as String,
       password: json['password'] as String,
       passwordConfirmation: json['password_confirmation'] as String,
       fcmToken: json['fcm_token'] as String,
@@ -25,7 +24,6 @@ Map<String, dynamic> _$RegisterRequestDtoToJson(RegisterRequestDto instance) =>
     <String, dynamic>{
       'name': instance.name,
       'email': instance.email,
-      'phone_number': instance.phoneNumber,
       'password': instance.password,
       'password_confirmation': instance.passwordConfirmation,
       'fcm_token': instance.fcmToken,

@@ -8,7 +8,7 @@ part of 'user_device_dto.dart';
 
 _UserDeviceDto _$UserDeviceDtoFromJson(Map<String, dynamic> json) =>
     _UserDeviceDto(
-      id: json['id'] as String,
+      id: (json['id'] as num).toInt(),
       deviceId: json['device_id'] as String,
       deviceBrand: json['device_brand'] as String,
       deviceModel: json['device_model'] as String,

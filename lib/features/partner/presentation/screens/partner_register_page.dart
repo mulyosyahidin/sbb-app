@@ -25,7 +25,6 @@ class _PartnerRegisterPageState extends ConsumerState<PartnerRegisterPage> {
   final _nameController = TextEditingController();
   final _nikController = TextEditingController();
   final _addressController = TextEditingController();
-  final _phoneController = TextEditingController();
   final _joinDateController = TextEditingController();
   String _selectedLevel = 'partner';
   Map<String, String> _fieldErrors = {};
@@ -37,7 +36,6 @@ class _PartnerRegisterPageState extends ConsumerState<PartnerRegisterPage> {
     final user = ref.read(authSessionControllerProvider).value?.user;
     if (user != null) {
       _nameController.text = user.name;
-      _phoneController.text = user.phoneNumber ?? '';
     }
     _joinDateController.text = DateFormat('yyyy-MM-dd').format(
       DateTime.now(),
@@ -49,7 +47,6 @@ class _PartnerRegisterPageState extends ConsumerState<PartnerRegisterPage> {
     _nameController.dispose();
     _nikController.dispose();
     _addressController.dispose();
-    _phoneController.dispose();
     _joinDateController.dispose();
     super.dispose();
   }
@@ -60,7 +57,6 @@ class _PartnerRegisterPageState extends ConsumerState<PartnerRegisterPage> {
     if (_nameController.text.isEmpty ||
         _nikController.text.isEmpty ||
         _addressController.text.isEmpty ||
-        _phoneController.text.isEmpty ||
         _joinDateController.text.isEmpty) {
       ToastUtil.showError(
         context,
@@ -74,7 +70,6 @@ class _PartnerRegisterPageState extends ConsumerState<PartnerRegisterPage> {
           name: _nameController.text,
           nik: _nikController.text,
           address: _addressController.text,
-          phoneNumber: _phoneController.text,
           joinDate: _joinDateController.text,
           level: _selectedLevel,
         );
@@ -107,7 +102,6 @@ class _PartnerRegisterPageState extends ConsumerState<PartnerRegisterPage> {
         final user = next.value?.user;
         if (user != null) {
           _nameController.text = user.name;
-          _phoneController.text = user.phoneNumber ?? '';
         }
       }
     });
@@ -222,14 +216,6 @@ class _PartnerRegisterPageState extends ConsumerState<PartnerRegisterPage> {
                         label: 'Alamat',
                         minLines: 4,
                         errorText: _fieldErrors['address'],
-                      ),
-                      const SizedBox(height: 20),
-                      AppTextField(
-                        controller: _phoneController,
-                        label: 'Nomor Telepon',
-                        keyboardType: TextInputType.phone,
-                        prefixIcon: const Icon(Icons.phone_outlined),
-                        errorText: _fieldErrors['phone_number'],
                       ),
                       const SizedBox(height: 20),
                       GestureDetector(

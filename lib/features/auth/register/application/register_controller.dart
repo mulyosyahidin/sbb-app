@@ -23,7 +23,6 @@ class RegisterController extends _$RegisterController {
   Future<void> register({
     required String name,
     required String email,
-    required String phoneNumber,
     required String password,
     required String passwordConfirmation,
   }) async {
@@ -40,7 +39,6 @@ class RegisterController extends _$RegisterController {
       final registerRequestDto = RegisterRequestDto(
         name: name,
         email: email,
-        phoneNumber: phoneNumber,
         password: password,
         passwordConfirmation: passwordConfirmation,
         fcmToken: fcmToken,

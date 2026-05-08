@@ -1,9 +1,8 @@
 class User {
-  final String id;
+  final int id;
   final String name;
   final String email;
-  final String? avatarUrl;
-  final String? phoneNumber;
+  final String? profilePictureUrl;
   final String? driver;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -12,8 +11,7 @@ class User {
     required this.id,
     required this.name,
     required this.email,
-    this.avatarUrl,
-    this.phoneNumber,
+    this.profilePictureUrl,
     this.driver,
     required this.createdAt,
     required this.updatedAt,

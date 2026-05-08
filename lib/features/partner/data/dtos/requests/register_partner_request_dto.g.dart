@@ -12,7 +12,6 @@ RegisterPartnerRequestDto _$RegisterPartnerRequestDtoFromJson(
       name: json['name'] as String,
       nik: json['nik'] as String,
       address: json['address'] as String,
-      phoneNumber: json['phone_number'] as String,
       joinDate: json['join_date'] as String,
       level: json['level'] as String,
     );
@@ -23,7 +22,6 @@ Map<String, dynamic> _$RegisterPartnerRequestDtoToJson(
       'name': instance.name,
       'nik': instance.nik,
       'address': instance.address,
-      'phone_number': instance.phoneNumber,
       'join_date': instance.joinDate,
       'level': instance.level,
     };

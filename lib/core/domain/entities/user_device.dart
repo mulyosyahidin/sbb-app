@@ -1,5 +1,5 @@
 class UserDevice {
-  final String id;
+  final int id;
   final String deviceId;
   final String deviceBrand;
   final String deviceModel;

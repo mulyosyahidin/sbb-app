@@ -122,9 +122,9 @@ class _EditProfileAvatarState extends ConsumerState<EditProfileAvatar> {
               ),
             ),
             child: ClipOval(
-              child: user?.avatarUrl != null
+              child: user?.profilePictureUrl != null
                   ? CachedNetworkImage(
-                      imageUrl: user!.avatarUrl!,
+                      imageUrl: user!.profilePictureUrl!,
                       fit: BoxFit.cover,
                       placeholder: (context, url) =>
                           const CircularProgressIndicator(),

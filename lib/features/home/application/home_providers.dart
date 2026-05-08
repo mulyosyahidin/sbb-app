@@ -1,6 +1,8 @@
 import 'package:app/core/auth/application/token_storage.dart';
 import 'package:app/core/auth/domain/entities/user.dart';
 import 'package:app/core/domain/entities/user_device.dart';
+import 'package:app/features/home/data/repositories/slider_repository_impl.dart';
+import 'package:app/features/home/domain/entities/slider.dart';
 import 'package:app/features/partner/application/partner_controller.dart';
 import 'package:app/features/partner/domain/entities/partner.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,5 +38,16 @@ Future<HomeState> fetchHomeData(Ref ref) async {
     device: device,
     accessToken: token,
     partner: partner,
+  );
+}
+
+@Riverpod(keepAlive: true)
+Future<List<Slider>> sliders(Ref ref) async {
+  final repository = ref.watch(sliderRepositoryProvider);
+  final result = await repository.getSliders();
+
+  return result.fold(
+    (failure) => throw failure,
+    (sliders) => sliders,
   );
 }

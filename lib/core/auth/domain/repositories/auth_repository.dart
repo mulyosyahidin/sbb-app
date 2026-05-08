@@ -6,5 +6,5 @@ import 'package:fpdart/fpdart.dart';
 abstract class AuthRepository {
   Future<Either<Failure, GetMeResponseData>> getMe();
   Future<Either<Failure, RefreshAccessTokenResponseData>> refreshToken(String accessToken);
-  Future<Either<Failure, void>> logout(String deviceId);
+  Future<Either<Failure, void>> logout(int deviceId);
 }

@@ -101,7 +101,6 @@ flutter:
     - assets/images/galleries/
     - assets/images/cows/
     - assets/icons/
-    - assets/banners/
     - assets/sounds/
 
   # An image asset can refer to one or more resolution-specific "variants", see

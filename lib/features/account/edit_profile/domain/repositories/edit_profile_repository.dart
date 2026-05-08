@@ -7,7 +7,6 @@ abstract class EditProfileRepository {
   Future<Either<Failure, UpdateProfileResponseData>> updateProfile({
     required String name,
     required String email,
-    required String phoneNumber,
   });
 
   Future<Either<Failure, UpdateProfileResponseData>> updateProfilePicture(

@@ -35,14 +35,12 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
   Future<Either<Failure, UpdateProfileResponseData>> updateProfile({
     required String name,
     required String email,
-    required String phoneNumber,
   }) async {
     try {
       final response = await _editProfileRemoteDataSource.updateProfile(
         UpdateProfileRequestDto(
           name: name,
           email: email,
-          phoneNumber: phoneNumber,
         ),
       );
 

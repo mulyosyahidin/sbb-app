@@ -20,7 +20,6 @@ class PartnerFormController extends _$PartnerFormController {
     required String name,
     required String nik,
     required String address,
-    required String phoneNumber,
     required String joinDate,
     required String level,
   }) async {
@@ -30,7 +29,6 @@ class PartnerFormController extends _$PartnerFormController {
       name: name,
       nik: nik,
       address: address,
-      phoneNumber: phoneNumber,
       joinDate: joinDate,
       level: level,
     );

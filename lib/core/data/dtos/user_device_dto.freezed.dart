@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$UserDeviceDto {
-  String get id;
+  int get id;
   String get deviceId;
   String get deviceBrand;
   String get deviceModel;
@@ -71,7 +71,7 @@ abstract mixin class $UserDeviceDtoCopyWith<$Res> {
       _$UserDeviceDtoCopyWithImpl;
   @useResult
   $Res call(
-      {String id,
+      {int id,
       String deviceId,
       String deviceBrand,
       String deviceModel,
@@ -105,7 +105,7 @@ class _$UserDeviceDtoCopyWithImpl<$Res>
       id: null == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       deviceId: null == deviceId
           ? _self.deviceId
           : deviceId // ignore: cast_nullable_to_non_nullable
@@ -149,7 +149,7 @@ class _UserDeviceDto implements UserDeviceDto {
       _$UserDeviceDtoFromJson(json);
 
   @override
-  final String id;
+  final int id;
   @override
   final String deviceId;
   @override
@@ -217,7 +217,7 @@ abstract mixin class _$UserDeviceDtoCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id,
+      {int id,
       String deviceId,
       String deviceBrand,
       String deviceModel,
@@ -251,7 +251,7 @@ class __$UserDeviceDtoCopyWithImpl<$Res>
       id: null == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       deviceId: null == deviceId
           ? _self.deviceId
           : deviceId // ignore: cast_nullable_to_non_nullable

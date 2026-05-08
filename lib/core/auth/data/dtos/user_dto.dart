@@ -6,11 +6,10 @@ part 'user_dto.g.dart';
 @freezed
 abstract class UserDto with _$UserDto {
   const factory UserDto({
-    required String id,
+    required int id,
     required String name,
     required String email,
-    String? avatarUrl,
-    String? phoneNumber,
+    String? profilePictureUrl,
     String? driver,
     required DateTime createdAt,
     required DateTime updatedAt,

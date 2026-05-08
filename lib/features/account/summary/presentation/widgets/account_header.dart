@@ -37,7 +37,7 @@ class AccountHeader extends ConsumerWidget {
                   color: Colors.white.withValues(alpha: 0.5), width: 2),
             ),
             child: AppNetworkImage(
-              imageUrl: user?.avatarUrl,
+              imageUrl: user?.profilePictureUrl,
               width: 80,
               height: 80,
               borderRadius: 40,

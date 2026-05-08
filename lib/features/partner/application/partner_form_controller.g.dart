@@ -7,7 +7,7 @@ part of 'partner_form_controller.dart';
 // **************************************************************************
 
 String _$partnerFormControllerHash() =>
-    r'f5e62c865e4cd38b29667fb34dd623b0080a8951';
+    r'684d3ca7a81b4f52f3e50dc33b694a2a7949c61f';
 
 /// See also [PartnerFormController].
 @ProviderFor(PartnerFormController)

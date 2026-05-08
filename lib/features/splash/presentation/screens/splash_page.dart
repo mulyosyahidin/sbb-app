@@ -1,13 +1,15 @@
+import 'package:app/features/home/application/home_providers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SplashPage extends StatefulWidget {
+class SplashPage extends ConsumerStatefulWidget {
   const SplashPage({super.key});
 
   @override
-  State<SplashPage> createState() => _SplashPageState();
+  ConsumerState<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage>
+class _SplashPageState extends ConsumerState<SplashPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scale;
@@ -31,6 +33,9 @@ class _SplashPageState extends State<SplashPage>
     );
 
     _controller.forward();
+
+    // Pre-fetch sliders while showing splash screen
+    ref.read(slidersProvider.future);
   }
 
   @override
@@ -79,9 +84,7 @@ class _SplashPageState extends State<SplashPage>
                 ),
               ),
             ),
-
             const SizedBox(height: 48),
-
             FadeTransition(
               opacity: _opacity,
               child: SizedBox(
@@ -93,13 +96,11 @@ class _SplashPageState extends State<SplashPage>
                 ),
               ),
             ),
-
             const SizedBox(height: 24),
-
             FadeTransition(
               opacity: _opacity,
               child: Text(
-                "Getting things ready...",
+                "Mohon tunggu...",
                 style: TextStyle(
                   color: Theme.of(context)
                       .colorScheme

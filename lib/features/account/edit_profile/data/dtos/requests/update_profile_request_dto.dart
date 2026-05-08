@@ -6,12 +6,10 @@ part 'update_profile_request_dto.g.dart';
 class UpdateProfileRequestDto {
   final String name;
   final String email;
-  final String phoneNumber;
 
   UpdateProfileRequestDto({
     required this.name,
     required this.email,
-    required this.phoneNumber,
   });
 
   factory UpdateProfileRequestDto.fromJson(Map<String, dynamic> json) =>

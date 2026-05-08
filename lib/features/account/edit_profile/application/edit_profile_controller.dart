@@ -23,14 +23,12 @@ class EditProfileController extends _$EditProfileController {
   Future<void> updateProfile({
     required String name,
     required String email,
-    required String phoneNumber,
   }) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       final result = await _repository.updateProfile(
         name: name,
         email: email,
-        phoneNumber: phoneNumber,
       );
 
       return result.fold(

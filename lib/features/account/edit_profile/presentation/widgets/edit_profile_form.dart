@@ -30,7 +30,6 @@ class _EditProfileFormState extends ConsumerState<EditProfileForm> {
     if (user != null) {
       _nameController.text = user.name;
       _emailController.text = user.email;
-      _phoneController.text = user.phoneNumber ?? '';
     }
   }
 
@@ -58,7 +57,6 @@ class _EditProfileFormState extends ConsumerState<EditProfileForm> {
     ref.read(editProfileControllerProvider.notifier).updateProfile(
           name: _nameController.text,
           email: _emailController.text,
-          phoneNumber: _phoneController.text,
         );
   }
 
@@ -73,7 +71,6 @@ class _EditProfileFormState extends ConsumerState<EditProfileForm> {
         if (user != null) {
           _nameController.text = user.name;
           _emailController.text = user.email;
-          _phoneController.text = user.phoneNumber ?? '';
         }
       }
     });
@@ -168,13 +165,6 @@ class _EditProfileFormState extends ConsumerState<EditProfileForm> {
                   : null,
             ),
             const SizedBox(height: 16),
-            AppTextField(
-              controller: _phoneController,
-              label: 'NOMOR HANDPHONE',
-              hint: 'Masukkan nomor HP',
-              keyboardType: TextInputType.phone,
-              errorText: _fieldErrors['phone_number'],
-            ),
             const SizedBox(height: 32),
             PrimaryButton(
               label: 'Simpan',

@@ -7,7 +7,6 @@ class RegisterPartnerRequestDto {
   final String name;
   final String nik;
   final String address;
-  final String phoneNumber;
   final String joinDate;
   final String level;
 
@@ -15,7 +14,6 @@ class RegisterPartnerRequestDto {
     required this.name,
     required this.nik,
     required this.address,
-    required this.phoneNumber,
     required this.joinDate,
     required this.level,
   });

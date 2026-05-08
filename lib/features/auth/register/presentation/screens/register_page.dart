@@ -20,7 +20,6 @@ class RegisterPage extends ConsumerStatefulWidget {
 class _RegisterPageState extends ConsumerState<RegisterPage> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
-  final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _passwordConfirmController = TextEditingController();
 
@@ -31,7 +30,6 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
-    _phoneController.dispose();
     _passwordController.dispose();
     _passwordConfirmController.dispose();
     super.dispose();
@@ -64,7 +62,6 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
     ref.read(registerControllerProvider.notifier).register(
           name: _nameController.text,
           email: _emailController.text,
-          phoneNumber: _phoneController.text,
           password: _passwordController.text,
           passwordConfirmation: _passwordConfirmController.text,
         );
@@ -218,7 +215,6 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                                 AppTextField(
                                   controller: _nameController,
                                   label: 'NAMA',
-                                  hint: 'Masukkan nama sesuai KTP',
                                   prefixIcon: const Icon(Icons.badge_outlined,
                                       size: 20),
                                   textCapitalization: TextCapitalization.words,
@@ -229,29 +225,15 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                                 AppTextField(
                                   controller: _emailController,
                                   label: 'EMAIL',
-                                  hint: 'Masukkan alamat email',
                                   prefixIcon: const Icon(Icons.email_outlined,
                                       size: 20),
                                   keyboardType: TextInputType.emailAddress,
                                   errorText: _fieldErrors['email'],
                                 ),
                                 const SizedBox(height: 20),
-
-                                AppTextField(
-                                  controller: _phoneController,
-                                  label: 'No. HP',
-                                  hint: 'Masukkan nomor HP',
-                                  prefixIcon: const Icon(Icons.phone_outlined,
-                                      size: 20),
-                                  keyboardType: TextInputType.phone,
-                                  errorText: _fieldErrors['phone_number'],
-                                ),
-                                const SizedBox(height: 20),
-
                                 AppTextPassword(
                                   controller: _passwordController,
                                   label: 'PASSWORD',
-                                  hint: 'Buat password minimal 8 karakter',
                                   prefixIcon:
                                       const Icon(Icons.lock_outline, size: 20),
                                   errorText: _fieldErrors['password'],
@@ -261,7 +243,6 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                                 AppTextPassword(
                                   controller: _passwordConfirmController,
                                   label: 'KONFIRMASI PASSWORD',
-                                  hint: 'Ulangi password Anda',
                                   prefixIcon: const Icon(
                                       Icons.lock_reset_outlined,
                                       size: 20),

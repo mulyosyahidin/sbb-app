@@ -44,7 +44,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, void>> logout(String deviceId) async {
+  Future<Either<Failure, void>> logout(int deviceId) async {
     try {
       await _authRemoteDatasource.logout(deviceId);
 

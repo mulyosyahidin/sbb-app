@@ -6,6 +6,7 @@ import 'package:app/core/auth/domain/repositories/auth_repository.dart';
 import 'package:app/core/utils/logger_util.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:app/features/home/application/home_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_session_controller.g.dart';
@@ -49,6 +50,8 @@ class AuthSessionController extends _$AuthSessionController {
   Future<AuthSession> build() async {
     final tokenStorage = ref.watch(tokenStorageProvider);
     final accessToken = await tokenStorage.getAccessToken();
+    
+    ref.read(slidersProvider.future);
 
     if (accessToken == null) {
       LoggerUtil.debug("AuthSession: No token found. Unauthenticated.");

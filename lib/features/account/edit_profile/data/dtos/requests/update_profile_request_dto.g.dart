@@ -11,7 +11,6 @@ UpdateProfileRequestDto _$UpdateProfileRequestDtoFromJson(
     UpdateProfileRequestDto(
       name: json['name'] as String,
       email: json['email'] as String,
-      phoneNumber: json['phone_number'] as String,
     );
 
 Map<String, dynamic> _$UpdateProfileRequestDtoToJson(
@@ -19,5 +18,4 @@ Map<String, dynamic> _$UpdateProfileRequestDtoToJson(
     <String, dynamic>{
       'name': instance.name,
       'email': instance.email,
-      'phone_number': instance.phoneNumber,
     };

@@ -6,7 +6,6 @@ part 'register_request_dto.g.dart';
 class RegisterRequestDto {
   final String name;
   final String email;
-  final String phoneNumber;
   final String password;
   final String passwordConfirmation;
   final String fcmToken;
@@ -19,7 +18,6 @@ class RegisterRequestDto {
   RegisterRequestDto({
     required this.name,
     required this.email,
-    required this.phoneNumber,
     required this.password,
     required this.passwordConfirmation,
     required this.fcmToken,

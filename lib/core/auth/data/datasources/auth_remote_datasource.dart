@@ -13,7 +13,7 @@ part 'auth_remote_datasource.g.dart';
 abstract class AuthRemoteDatasource {
   Future<RefreshAccessTokenResponseDto> refreshToken(String accessToken);
   Future<GetMeResponseDto> getMe();
-  Future<void> logout(String deviceId);
+  Future<void> logout(int deviceId);
 }
 
 class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
@@ -94,7 +94,7 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
   }
 
   @override
-  Future<void> logout(String deviceId) async {
+  Future<void> logout(int deviceId) async {
     const endpoint = ApiEndpoint.logout;
 
     try {

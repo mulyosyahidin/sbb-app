@@ -13,7 +13,7 @@ class HomeHeader extends ConsumerWidget {
     final homeData = ref.watch(fetchHomeDataProvider).value;
     final user = homeData?.user;
     final userName = user?.name ?? 'User';
-    final avatarUrl = user?.avatarUrl;
+    final profilePictureUrl = user?.profilePictureUrl;
     final userInitial = userName.isNotEmpty ? userName[0].toUpperCase() : '?';
 
     return Container(
@@ -117,9 +117,10 @@ class HomeHeader extends ConsumerWidget {
                           width: 50,
                           height: 50,
                           color: Colors.white.withValues(alpha: 0.2),
-                          child: (avatarUrl != null && avatarUrl.isNotEmpty)
+                          child: (profilePictureUrl != null &&
+                                  profilePictureUrl.isNotEmpty)
                               ? CachedNetworkImage(
-                                  imageUrl: avatarUrl,
+                                  imageUrl: profilePictureUrl,
                                   fit: BoxFit.cover,
                                   placeholder: (context, url) => const Center(
                                     child: CircularProgressIndicator(

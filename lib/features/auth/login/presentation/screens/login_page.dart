@@ -207,8 +207,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                 const SizedBox(height: 8),
                                 AppTextField(
                                   controller: _emailController,
-                                  label: 'EMAIL ATAU NO. HP',
-                                  hint: 'Masukkan email atau nomor HP',
+                                  label: 'EMAIL',
                                   prefixIcon: const Icon(Icons.email_outlined,
                                       size: 20),
                                   keyboardType: TextInputType.emailAddress,
@@ -219,7 +218,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                 AppTextPassword(
                                   controller: _passwordController,
                                   label: 'PASSWORD',
-                                  hint: 'Masukkan password Anda',
                                   prefixIcon:
                                       const Icon(Icons.lock_outline, size: 20),
                                   errorText: _fieldErrors['password'],
