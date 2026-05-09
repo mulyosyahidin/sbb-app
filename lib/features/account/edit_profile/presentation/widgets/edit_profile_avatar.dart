@@ -114,10 +114,12 @@ class _EditProfileAvatarState extends ConsumerState<EditProfileAvatar> {
               shape: BoxShape.circle,
               color: Theme.of(context).colorScheme.surfaceContainerHighest,
               border: Border.all(
-                color: Theme.of(context)
-                    .colorScheme
-                    .primary
-                    .withValues(alpha: 0.5),
+                color: (user != null && user.emailVerifiedAt == null)
+                    ? Colors.yellow
+                    : Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .withValues(alpha: 0.5),
                 width: 2,
               ),
             ),

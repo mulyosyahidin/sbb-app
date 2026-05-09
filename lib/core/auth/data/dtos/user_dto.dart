@@ -9,11 +9,16 @@ abstract class UserDto with _$UserDto {
     required int id,
     required String name,
     required String email,
+    int? profilePictureFileId,
+    String? role,
     String? profilePictureUrl,
     String? driver,
+    DateTime? emailVerifiedAt,
+    DateTime? twoFactorConfirmedAt,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) = _UserDto;
+
 
   factory UserDto.fromJson(Map<String, dynamic> json) => _$UserDtoFromJson(json);
 }

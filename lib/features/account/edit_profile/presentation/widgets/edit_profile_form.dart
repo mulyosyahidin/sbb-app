@@ -1,3 +1,4 @@
+import 'package:app/core/auth/domain/entities/auth_driver.dart';
 import 'package:app/core/auth/application/auth_session_controller.dart';
 import 'package:app/core/errors/failure.dart';
 import 'package:app/core/utils/toast_util.dart';
@@ -93,8 +94,8 @@ class _EditProfileFormState extends ConsumerState<EditProfileForm> {
           );
         }
 
-        final isEmailEditable = user.driver == 'email';
-        final isGoogleUser = user.driver == 'google';
+        final isEmailEditable = user.driver == AuthDriver.email;
+        final isGoogleUser = user.driver == AuthDriver.google;
 
         ref.listen(editProfileControllerProvider, (previous, next) {
           if (next is AsyncError) {
@@ -164,13 +165,59 @@ class _EditProfileFormState extends ConsumerState<EditProfileForm> {
                     )
                   : null,
             ),
-            const SizedBox(height: 16),
+            if (user.emailVerifiedAt == null && isEmailEditable) ...[
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  const Icon(Icons.warning_amber_rounded,
+                      color: Colors.orange, size: 16),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Email Anda belum terverifikasi. Silakan cek kotak masuk email Anda.',
+                      style: TextStyle(
+                        color: Colors.orange.shade900,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
             const SizedBox(height: 32),
+            if (user.emailVerifiedAt == null && isEmailEditable) ...[
+              OutlinedButton(
+                onPressed: isLoading
+                    ? null
+                    : () async {
+                        final success = await ref
+                            .read(editProfileControllerProvider.notifier)
+                            .resendVerification();
+                        if (success && context.mounted) {
+                          ToastUtil.showSuccess(
+                            context,
+                            title: 'Berhasil',
+                            description: 'Email verifikasi telah dikirim ulang',
+                          );
+                        }
+                      },
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text('Kirim Ulang Email Verifikasi'),
+              ),
+              const SizedBox(height: 12),
+            ],
             PrimaryButton(
               label: 'Simpan',
               isLoading: isLoading,
               onPressed: isLoading ? null : _handleSubmit,
             ),
+
           ],
         );
       },

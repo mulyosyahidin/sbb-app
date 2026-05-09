@@ -1,3 +1,4 @@
+import 'package:app/core/auth/domain/entities/auth_driver.dart';
 import 'package:app/core/auth/application/auth_session_controller.dart';
 import 'package:app/core/errors/failure.dart';
 import 'package:app/core/theme/app_text_style.dart';
@@ -66,7 +67,8 @@ class _EditPasswordPageState extends ConsumerState<EditPasswordPage> {
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(authSessionControllerProvider).value?.user;
-    final isEmailUser = user?.driver == 'email';
+    final isEmailUser = user?.driver == AuthDriver.email;
+
 
     ref.listen(editPasswordControllerProvider, (previous, next) {
       if (next is AsyncError) {
@@ -140,7 +142,8 @@ class _EditPasswordPageState extends ConsumerState<EditPasswordPage> {
                             ),
                             const SizedBox(height: 12),
                             Text(
-                              'Anda masuk menggunakan akun ${user?.driver?.toUpperCase()}. Password hanya dapat diubah melalui penyedia layanan tersebut atau jika Anda mendaftar menggunakan Email.',
+                              'Anda masuk menggunakan akun ${user?.driver.value.toUpperCase()}. Password hanya dapat diubah melalui penyedia layanan tersebut atau jika Anda mendaftar menggunakan Email.',
+
                               style: AppTextStyles.body(
                                 color: AppColors.textSecondaryLight,
                               ),

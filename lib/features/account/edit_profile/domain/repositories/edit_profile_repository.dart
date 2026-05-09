@@ -11,4 +11,6 @@ abstract class EditProfileRepository {
 
   Future<Either<Failure, UpdateProfileResponseData>> updateProfilePicture(
       File image);
+
+  Future<Either<Failure, bool>> resendVerificationEmail();
 }

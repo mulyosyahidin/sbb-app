@@ -4,6 +4,7 @@ import 'package:app/core/networks/dio_client.dart';
 import 'package:app/core/utils/logger_util.dart';
 import 'package:app/features/account/edit_profile/data/dtos/requests/update_profile_request_dto.dart';
 import 'package:app/features/account/edit_profile/data/dtos/responses/update_profile_response_dto.dart';
+import 'package:app/features/account/edit_profile/data/dtos/responses/resend_verification_response_dto.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -14,6 +15,8 @@ abstract class EditProfileRemoteDataSource {
   Future<UpdateProfileResponseDto> updateProfile(UpdateProfileRequestDto dto);
 
   Future<UpdateProfileResponseDto> updateProfilePicture(File image);
+
+  Future<ResendVerificationResponseDto> resendVerificationEmail();
 }
 
 class EditProfileRemoteDataSourceImpl implements EditProfileRemoteDataSource {
@@ -28,88 +31,86 @@ class EditProfileRemoteDataSourceImpl implements EditProfileRemoteDataSource {
     UpdateProfileResponseDto? responseDto;
 
     try {
-      LoggerUtil.api(
-        "PUT",
-        endpoint,
-        data: dto.toJson(),
-      );
+      LoggerUtil.api("PUT", endpoint, data: dto.toJson());
 
-      final response = await _dio.put(
-        endpoint,
-        data: dto.toJson(),
-      );
-
-      if (response.data is! Map<String, dynamic>) {
-        throw const FormatException("Invalid response format");
-      }
-
+      final response = await _dio.put(endpoint, data: dto.toJson());
       responseDto = UpdateProfileResponseDto.fromJson(response.data);
     } on DioException catch (e) {
       LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
-
-      if (e.response?.data != null &&
-          e.response?.data is Map<String, dynamic>) {
+      if (e.response != null) {
         responseDto = UpdateProfileResponseDto.fromJson(e.response!.data);
-      } else {
-        rethrow;
       }
-    } catch (e) {
-      LoggerUtil.error("Unexpected error on endpoint $endpoint: $e");
-      rethrow;
     }
 
-    if (!responseDto.success) {
-      throw responseDto.toException();
+    if (responseDto != null) {
+      if (responseDto.success) {
+        return responseDto;
+      } else {
+        throw responseDto.toException();
+      }
     }
 
-    return responseDto;
+    throw Exception('Gagal memperbarui profil');
   }
 
   @override
   Future<UpdateProfileResponseDto> updateProfilePicture(File image) async {
     const endpoint = ApiEndpoint.updateProfilePicture;
-    UpdateProfileResponseDto? dto;
+    UpdateProfileResponseDto? responseDto;
 
     try {
-      LoggerUtil.api("PUT", endpoint);
+      LoggerUtil.api("POST", endpoint);
 
       final formData = FormData.fromMap({
-        'picture': await MultipartFile.fromFile(
-          image.path,
-          filename: image.path.split('/').last,
-        ),
-        '_method': 'PUT'
+        'picture': await MultipartFile.fromFile(image.path),
       });
 
-      final response = await _dio.post(
-        endpoint,
-        data: formData,
-      );
-
-      if (response.data is! Map<String, dynamic>) {
-        throw const FormatException("Invalid response format");
-      }
-
-      dto = UpdateProfileResponseDto.fromJson(response.data);
+      final response = await _dio.post(endpoint, data: formData);
+      responseDto = UpdateProfileResponseDto.fromJson(response.data);
     } on DioException catch (e) {
       LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
-
-      if (e.response?.data != null &&
-          e.response?.data is Map<String, dynamic>) {
-        dto = UpdateProfileResponseDto.fromJson(e.response!.data);
-      } else {
-        rethrow;
+      if (e.response != null) {
+        responseDto = UpdateProfileResponseDto.fromJson(e.response!.data);
       }
-    } catch (e) {
-      LoggerUtil.error("Unexpected error on endpoint $endpoint: $e");
-      rethrow;
     }
 
-    if (!dto.success) {
-      throw dto.toException();
+    if (responseDto != null) {
+      if (responseDto.success) {
+        return responseDto;
+      } else {
+        throw responseDto.toException();
+      }
     }
 
-    return dto;
+    throw Exception('Gagal memperbarui foto profil');
+  }
+
+  @override
+  Future<ResendVerificationResponseDto> resendVerificationEmail() async {
+    const endpoint = ApiEndpoint.resendVerificationEmail;
+    ResendVerificationResponseDto? responseDto;
+
+    try {
+      LoggerUtil.api("POST", endpoint);
+
+      final response = await _dio.post(endpoint);
+      responseDto = ResendVerificationResponseDto.fromJson(response.data);
+    } on DioException catch (e) {
+      LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
+      if (e.response != null) {
+        responseDto = ResendVerificationResponseDto.fromJson(e.response!.data);
+      }
+    }
+
+    if (responseDto != null) {
+      if (responseDto.success) {
+        return responseDto;
+      } else {
+        throw responseDto.toException();
+      }
+    }
+
+    throw Exception('Gagal mengirim email verifikasi');
   }
 }
 

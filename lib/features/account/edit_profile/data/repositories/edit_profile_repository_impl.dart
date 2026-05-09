@@ -66,7 +66,22 @@ class EditProfileRepositoryImpl implements EditProfileRepository {
       );
     }
   }
+
+  @override
+  Future<Either<Failure, bool>> resendVerificationEmail() async {
+    try {
+      final response =
+          await _editProfileRemoteDataSource.resendVerificationEmail();
+
+      return Right(response.success);
+    } catch (e) {
+      return Left(
+        _mapExceptionToFailure(e, 'EditProfileRepositoryImpl'),
+      );
+    }
+  }
 }
+
 
 @riverpod
 EditProfileRepository editProfileRepository(Ref ref) {

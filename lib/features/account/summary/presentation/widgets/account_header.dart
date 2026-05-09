@@ -34,7 +34,9 @@ class AccountHeader extends ConsumerWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.5), width: 2),
+                color: Colors.white.withValues(alpha: 0.5),
+                width: 2,
+              ),
             ),
             child: AppNetworkImage(
               imageUrl: user?.profilePictureUrl,
@@ -68,12 +70,29 @@ class AccountHeader extends ConsumerWidget {
                 color: Colors.white, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 4),
-          Text(
-            email,
-            style: AppTextStyles.body(
-              color: Colors.white.withValues(alpha: 0.7),
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                email,
+                style: AppTextStyles.body(
+                  color: Colors.white.withValues(alpha: 0.7),
+                ),
+              ),
+              if (user != null && user.emailVerifiedAt == null) ...[
+                const SizedBox(width: 6),
+                Container(
+                  width: 6,
+                  height: 6,
+                  decoration: const BoxDecoration(
+                    color: Colors.yellow,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ],
+            ],
           ),
+
           const SizedBox(height: 16),
           if (partner != null)
             Row(

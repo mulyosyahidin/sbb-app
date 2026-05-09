@@ -18,8 +18,12 @@ mixin _$UserDto {
   int get id;
   String get name;
   String get email;
+  int? get profilePictureFileId;
+  String? get role;
   String? get profilePictureUrl;
   String? get driver;
+  DateTime? get emailVerifiedAt;
+  DateTime? get twoFactorConfirmedAt;
   DateTime get createdAt;
   DateTime get updatedAt;
 
@@ -41,9 +45,16 @@ mixin _$UserDto {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.email, email) || other.email == email) &&
+            (identical(other.profilePictureFileId, profilePictureFileId) ||
+                other.profilePictureFileId == profilePictureFileId) &&
+            (identical(other.role, role) || other.role == role) &&
             (identical(other.profilePictureUrl, profilePictureUrl) ||
                 other.profilePictureUrl == profilePictureUrl) &&
             (identical(other.driver, driver) || other.driver == driver) &&
+            (identical(other.emailVerifiedAt, emailVerifiedAt) ||
+                other.emailVerifiedAt == emailVerifiedAt) &&
+            (identical(other.twoFactorConfirmedAt, twoFactorConfirmedAt) ||
+                other.twoFactorConfirmedAt == twoFactorConfirmedAt) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -52,12 +63,23 @@ mixin _$UserDto {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, email,
-      profilePictureUrl, driver, createdAt, updatedAt);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      name,
+      email,
+      profilePictureFileId,
+      role,
+      profilePictureUrl,
+      driver,
+      emailVerifiedAt,
+      twoFactorConfirmedAt,
+      createdAt,
+      updatedAt);
 
   @override
   String toString() {
-    return 'UserDto(id: $id, name: $name, email: $email, profilePictureUrl: $profilePictureUrl, driver: $driver, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'UserDto(id: $id, name: $name, email: $email, profilePictureFileId: $profilePictureFileId, role: $role, profilePictureUrl: $profilePictureUrl, driver: $driver, emailVerifiedAt: $emailVerifiedAt, twoFactorConfirmedAt: $twoFactorConfirmedAt, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }
 
@@ -70,8 +92,12 @@ abstract mixin class $UserDtoCopyWith<$Res> {
       {int id,
       String name,
       String email,
+      int? profilePictureFileId,
+      String? role,
       String? profilePictureUrl,
       String? driver,
+      DateTime? emailVerifiedAt,
+      DateTime? twoFactorConfirmedAt,
       DateTime createdAt,
       DateTime updatedAt});
 }
@@ -91,8 +117,12 @@ class _$UserDtoCopyWithImpl<$Res> implements $UserDtoCopyWith<$Res> {
     Object? id = null,
     Object? name = null,
     Object? email = null,
+    Object? profilePictureFileId = freezed,
+    Object? role = freezed,
     Object? profilePictureUrl = freezed,
     Object? driver = freezed,
+    Object? emailVerifiedAt = freezed,
+    Object? twoFactorConfirmedAt = freezed,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -109,6 +139,14 @@ class _$UserDtoCopyWithImpl<$Res> implements $UserDtoCopyWith<$Res> {
           ? _self.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
+      profilePictureFileId: freezed == profilePictureFileId
+          ? _self.profilePictureFileId
+          : profilePictureFileId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      role: freezed == role
+          ? _self.role
+          : role // ignore: cast_nullable_to_non_nullable
+              as String?,
       profilePictureUrl: freezed == profilePictureUrl
           ? _self.profilePictureUrl
           : profilePictureUrl // ignore: cast_nullable_to_non_nullable
@@ -117,6 +155,14 @@ class _$UserDtoCopyWithImpl<$Res> implements $UserDtoCopyWith<$Res> {
           ? _self.driver
           : driver // ignore: cast_nullable_to_non_nullable
               as String?,
+      emailVerifiedAt: freezed == emailVerifiedAt
+          ? _self.emailVerifiedAt
+          : emailVerifiedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      twoFactorConfirmedAt: freezed == twoFactorConfirmedAt
+          ? _self.twoFactorConfirmedAt
+          : twoFactorConfirmedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       createdAt: null == createdAt
           ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -136,8 +182,12 @@ class _UserDto implements UserDto {
       {required this.id,
       required this.name,
       required this.email,
+      this.profilePictureFileId,
+      this.role,
       this.profilePictureUrl,
       this.driver,
+      this.emailVerifiedAt,
+      this.twoFactorConfirmedAt,
       required this.createdAt,
       required this.updatedAt});
   factory _UserDto.fromJson(Map<String, dynamic> json) =>
@@ -150,9 +200,17 @@ class _UserDto implements UserDto {
   @override
   final String email;
   @override
+  final int? profilePictureFileId;
+  @override
+  final String? role;
+  @override
   final String? profilePictureUrl;
   @override
   final String? driver;
+  @override
+  final DateTime? emailVerifiedAt;
+  @override
+  final DateTime? twoFactorConfirmedAt;
   @override
   final DateTime createdAt;
   @override
@@ -181,9 +239,16 @@ class _UserDto implements UserDto {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.email, email) || other.email == email) &&
+            (identical(other.profilePictureFileId, profilePictureFileId) ||
+                other.profilePictureFileId == profilePictureFileId) &&
+            (identical(other.role, role) || other.role == role) &&
             (identical(other.profilePictureUrl, profilePictureUrl) ||
                 other.profilePictureUrl == profilePictureUrl) &&
             (identical(other.driver, driver) || other.driver == driver) &&
+            (identical(other.emailVerifiedAt, emailVerifiedAt) ||
+                other.emailVerifiedAt == emailVerifiedAt) &&
+            (identical(other.twoFactorConfirmedAt, twoFactorConfirmedAt) ||
+                other.twoFactorConfirmedAt == twoFactorConfirmedAt) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -192,12 +257,23 @@ class _UserDto implements UserDto {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, email,
-      profilePictureUrl, driver, createdAt, updatedAt);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      name,
+      email,
+      profilePictureFileId,
+      role,
+      profilePictureUrl,
+      driver,
+      emailVerifiedAt,
+      twoFactorConfirmedAt,
+      createdAt,
+      updatedAt);
 
   @override
   String toString() {
-    return 'UserDto(id: $id, name: $name, email: $email, profilePictureUrl: $profilePictureUrl, driver: $driver, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'UserDto(id: $id, name: $name, email: $email, profilePictureFileId: $profilePictureFileId, role: $role, profilePictureUrl: $profilePictureUrl, driver: $driver, emailVerifiedAt: $emailVerifiedAt, twoFactorConfirmedAt: $twoFactorConfirmedAt, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }
 
@@ -211,8 +287,12 @@ abstract mixin class _$UserDtoCopyWith<$Res> implements $UserDtoCopyWith<$Res> {
       {int id,
       String name,
       String email,
+      int? profilePictureFileId,
+      String? role,
       String? profilePictureUrl,
       String? driver,
+      DateTime? emailVerifiedAt,
+      DateTime? twoFactorConfirmedAt,
       DateTime createdAt,
       DateTime updatedAt});
 }
@@ -232,8 +312,12 @@ class __$UserDtoCopyWithImpl<$Res> implements _$UserDtoCopyWith<$Res> {
     Object? id = null,
     Object? name = null,
     Object? email = null,
+    Object? profilePictureFileId = freezed,
+    Object? role = freezed,
     Object? profilePictureUrl = freezed,
     Object? driver = freezed,
+    Object? emailVerifiedAt = freezed,
+    Object? twoFactorConfirmedAt = freezed,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -250,6 +334,14 @@ class __$UserDtoCopyWithImpl<$Res> implements _$UserDtoCopyWith<$Res> {
           ? _self.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
+      profilePictureFileId: freezed == profilePictureFileId
+          ? _self.profilePictureFileId
+          : profilePictureFileId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      role: freezed == role
+          ? _self.role
+          : role // ignore: cast_nullable_to_non_nullable
+              as String?,
       profilePictureUrl: freezed == profilePictureUrl
           ? _self.profilePictureUrl
           : profilePictureUrl // ignore: cast_nullable_to_non_nullable
@@ -258,6 +350,14 @@ class __$UserDtoCopyWithImpl<$Res> implements _$UserDtoCopyWith<$Res> {
           ? _self.driver
           : driver // ignore: cast_nullable_to_non_nullable
               as String?,
+      emailVerifiedAt: freezed == emailVerifiedAt
+          ? _self.emailVerifiedAt
+          : emailVerifiedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      twoFactorConfirmedAt: freezed == twoFactorConfirmedAt
+          ? _self.twoFactorConfirmedAt
+          : twoFactorConfirmedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       createdAt: null == createdAt
           ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable

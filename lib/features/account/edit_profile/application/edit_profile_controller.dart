@@ -69,4 +69,23 @@ class EditProfileController extends _$EditProfileController {
 
     LoggerUtil.info('Profile updated success: ${user.email}');
   }
+
+  Future<bool> resendVerification() async {
+    state = const AsyncLoading();
+    bool success = false;
+
+    state = await AsyncValue.guard(() async {
+      final result = await _repository.resendVerificationEmail();
+
+      return result.fold(
+        (failure) => throw failure,
+        (data) {
+          success = data;
+        },
+      );
+    });
+
+    return success;
+  }
 }
+

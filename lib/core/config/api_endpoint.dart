@@ -11,6 +11,7 @@ class ApiEndpoint {
   static const String updateProfilePicture = '/user/update-profile-picture';
   static const String updateProfile = '/user/update-profile';
   static const String updatePassword = '/user/update-password';
+  static const String resendVerificationEmail = '/user/resend-verification-email';
 
   // Bank Accounts
   static const String getAllPaginatedBankAccounts = '/user/bank-accounts';
@@ -35,4 +36,4 @@ class ApiEndpoint {
 
   // Web View
   static const String companyProfileWebView = '/webview/company-profile';
-}
+}
