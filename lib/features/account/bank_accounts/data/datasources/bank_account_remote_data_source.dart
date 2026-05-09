@@ -19,15 +19,15 @@ abstract class BankAccountRemoteDataSource {
     String? search,
   });
 
-  Future<MarkAsPrimaryResponseDto> markAsPrimary(String id);
+  Future<MarkAsPrimaryResponseDto> markAsPrimary(int id);
 
   Future<CreateBankAccountResponseDto> createBankAccount(
       CreateBankAccountRequestDto dto);
 
   Future<CreateBankAccountResponseDto> updateBankAccount(
-      String id, UpdateBankAccountRequestDto dto);
+      int id, UpdateBankAccountRequestDto dto);
 
-  Future<void> deleteBankAccount(String id);
+  Future<void> deleteBankAccount(int id);
 }
 
 class BankAccountRemoteDataSourceImpl implements BankAccountRemoteDataSource {
@@ -84,8 +84,8 @@ class BankAccountRemoteDataSourceImpl implements BankAccountRemoteDataSource {
   }
 
   @override
-  Future<MarkAsPrimaryResponseDto> markAsPrimary(String id) async {
-    final endpoint = ApiEndpoint.markAsPrimary.replaceAll('{id}', id);
+  Future<MarkAsPrimaryResponseDto> markAsPrimary(int id) async {
+    final endpoint = ApiEndpoint.markAsPrimary.replaceAll('{id}', id.toString());
 
     try {
       LoggerUtil.api("PATCH", endpoint);
@@ -165,8 +165,9 @@ class BankAccountRemoteDataSourceImpl implements BankAccountRemoteDataSource {
 
   @override
   Future<CreateBankAccountResponseDto> updateBankAccount(
-      String id, UpdateBankAccountRequestDto dto) async {
-    final endpoint = ApiEndpoint.updateBankAccount.replaceAll('{id}', id);
+      int id, UpdateBankAccountRequestDto dto) async {
+    final endpoint =
+        ApiEndpoint.updateBankAccount.replaceAll('{id}', id.toString());
 
     try {
       LoggerUtil.api(
@@ -208,8 +209,9 @@ class BankAccountRemoteDataSourceImpl implements BankAccountRemoteDataSource {
   }
 
   @override
-  Future<void> deleteBankAccount(String id) async {
-    final endpoint = ApiEndpoint.deleteBankAccount.replaceAll('{id}', id);
+  Future<void> deleteBankAccount(int id) async {
+    final endpoint =
+        ApiEndpoint.deleteBankAccount.replaceAll('{id}', id.toString());
 
     try {
       LoggerUtil.api("DELETE", endpoint);

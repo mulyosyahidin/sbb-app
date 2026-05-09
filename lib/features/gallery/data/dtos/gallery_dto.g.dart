@@ -18,8 +18,8 @@ _GalleryDto _$GalleryDtoFromJson(Map<String, dynamic> json) => _GalleryDto(
       metas: (json['metas'] as List<dynamic>?)
           ?.map((e) => GalleryMetaDto.fromJson(e as Map<String, dynamic>))
           .toList(),
-      createdAt: json['created_at'] as String,
-      updatedAt: json['updated_at'] as String,
+      createdAt: DateTime.parse(json['created_at'] as String),
+      updatedAt: DateTime.parse(json['updated_at'] as String),
     );
 
 Map<String, dynamic> _$GalleryDtoToJson(_GalleryDto instance) =>
@@ -31,6 +31,6 @@ Map<String, dynamic> _$GalleryDtoToJson(_GalleryDto instance) =>
       'featured_image_url': instance.featuredImageUrl,
       'items': instance.items,
       'metas': instance.metas,
-      'created_at': instance.createdAt,
-      'updated_at': instance.updatedAt,
+      'created_at': instance.createdAt.toIso8601String(),
+      'updated_at': instance.updatedAt.toIso8601String(),
     };

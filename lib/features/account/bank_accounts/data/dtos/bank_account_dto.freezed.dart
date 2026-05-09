@@ -15,8 +15,8 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$BankAccountDto {
-  String get id;
-  String get userId;
+  int get id;
+  int get userId;
   bool get isPrimary;
   String get accountName;
   String get accountNumber;
@@ -76,8 +76,8 @@ abstract mixin class $BankAccountDtoCopyWith<$Res> {
       _$BankAccountDtoCopyWithImpl;
   @useResult
   $Res call(
-      {String id,
-      String userId,
+      {int id,
+      int userId,
       bool isPrimary,
       String accountName,
       String accountNumber,
@@ -114,11 +114,11 @@ class _$BankAccountDtoCopyWithImpl<$Res>
       id: null == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       userId: null == userId
           ? _self.userId
           : userId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       isPrimary: null == isPrimary
           ? _self.isPrimary
           : isPrimary // ignore: cast_nullable_to_non_nullable
@@ -168,9 +168,9 @@ class _BankAccountDto implements BankAccountDto {
       _$BankAccountDtoFromJson(json);
 
   @override
-  final String id;
+  final int id;
   @override
-  final String userId;
+  final int userId;
   @override
   final bool isPrimary;
   @override
@@ -243,8 +243,8 @@ abstract mixin class _$BankAccountDtoCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id,
-      String userId,
+      {int id,
+      int userId,
       bool isPrimary,
       String accountName,
       String accountNumber,
@@ -281,11 +281,11 @@ class __$BankAccountDtoCopyWithImpl<$Res>
       id: null == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       userId: null == userId
           ? _self.userId
           : userId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       isPrimary: null == isPrimary
           ? _self.isPrimary
           : isPrimary // ignore: cast_nullable_to_non_nullable

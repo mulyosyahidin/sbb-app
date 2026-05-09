@@ -13,13 +13,13 @@ abstract class BankAccountRepository {
     String? search,
   });
 
-  Future<Either<Failure, MarkAsPrimaryResponseData>> markAsPrimary(String id);
+  Future<Either<Failure, MarkAsPrimaryResponseData>> markAsPrimary(int id);
 
   Future<Either<Failure, CreateBankAccountResponseData>> createBankAccount(
       CreateBankAccountRequestDto dto);
 
   Future<Either<Failure, CreateBankAccountResponseData>> updateBankAccount(
-      String id, UpdateBankAccountRequestDto dto);
+      int id, UpdateBankAccountRequestDto dto);
 
-  Future<Either<Failure, void>> deleteBankAccount(String id);
+  Future<Either<Failure, void>> deleteBankAccount(int id);
 }

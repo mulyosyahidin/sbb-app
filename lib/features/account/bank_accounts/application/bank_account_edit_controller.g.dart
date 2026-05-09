@@ -7,7 +7,7 @@ part of 'bank_account_edit_controller.dart';
 // **************************************************************************
 
 String _$bankAccountEditControllerHash() =>
-    r'6f8931cbc0db7cf2c63da54de2d1ab598b928bcb';
+    r'b0fd31077025672cf4468c03fd799d11f724e83e';
 
 /// See also [BankAccountEditController].
 @ProviderFor(BankAccountEditController)

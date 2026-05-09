@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 
 class BankAccount extends Equatable {
-  final String id;
-  final String userId;
+  final int id;
+  final int userId;
   final bool isPrimary;
   final String accountName;
   final String accountNumber;

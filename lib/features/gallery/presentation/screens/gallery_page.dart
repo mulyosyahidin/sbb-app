@@ -95,7 +95,7 @@ class GalleryPage extends ConsumerWidget {
                   )
                 else
                   Container(
-                      color: Theme.of(context).colorScheme.surfaceVariant),
+                      color: Theme.of(context).colorScheme.surfaceContainerHighest),
                 const DecoratedBox(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(

@@ -8,8 +8,8 @@ part of 'bank_account_dto.dart';
 
 _BankAccountDto _$BankAccountDtoFromJson(Map<String, dynamic> json) =>
     _BankAccountDto(
-      id: json['id'] as String,
-      userId: json['user_id'] as String,
+      id: (json['id'] as num).toInt(),
+      userId: (json['user_id'] as num).toInt(),
       isPrimary: json['is_primary'] as bool,
       accountName: json['account_name'] as String,
       accountNumber: json['account_number'] as String,

@@ -12,7 +12,10 @@ class GetGalleryByIdResponse extends ApiResponseDto<GalleryDto> {
   factory GetGalleryByIdResponse.fromJson(Map<String, dynamic> json) {
     final base = ApiResponseDto.fromJson(
       json,
-      (data) => GalleryDto.fromJson(data as Map<String, dynamic>),
+      (data) {
+        final dataMap = data as Map<String, dynamic>;
+        return GalleryDto.fromJson(dataMap['gallery'] as Map<String, dynamic>);
+      },
     );
 
     return GetGalleryByIdResponse(

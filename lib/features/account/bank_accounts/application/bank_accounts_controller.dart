@@ -11,7 +11,7 @@ class BankAccountsState {
   final List<BankAccount> accounts;
   final PaginationDto? pagination;
   final bool isLoadingMore;
-  final String? processingId;
+  final int? processingId;
   final String? searchQuery;
 
   BankAccountsState({
@@ -26,7 +26,7 @@ class BankAccountsState {
     List<BankAccount>? accounts,
     PaginationDto? pagination,
     bool? isLoadingMore,
-    String? processingId,
+    int? processingId,
     String? searchQuery,
   }) {
     return BankAccountsState(
@@ -115,7 +115,7 @@ class BankAccountsController extends _$BankAccountsController {
     );
   }
 
-  Future<void> setPrimary(String id) async {
+  Future<void> setPrimary(int id) async {
     final currentState = state.value;
     if (currentState == null) return;
 
@@ -143,7 +143,7 @@ class BankAccountsController extends _$BankAccountsController {
     );
   }
 
-  Future<void> deleteAccount(String id) async {
+  Future<void> deleteAccount(int id) async {
     final currentState = state.value;
     if (currentState == null) return;
 

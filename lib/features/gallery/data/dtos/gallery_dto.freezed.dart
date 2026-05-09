@@ -22,8 +22,8 @@ mixin _$GalleryDto {
   String? get featuredImageUrl;
   List<GalleryItemDto>? get items;
   List<GalleryMetaDto>? get metas;
-  String get createdAt;
-  String get updatedAt;
+  DateTime get createdAt;
+  DateTime get updatedAt;
 
   /// Create a copy of GalleryDto
   /// with the given fields replaced by the non-null parameter values.
@@ -88,8 +88,8 @@ abstract mixin class $GalleryDtoCopyWith<$Res> {
       String? featuredImageUrl,
       List<GalleryItemDto>? items,
       List<GalleryMetaDto>? metas,
-      String createdAt,
-      String updatedAt});
+      DateTime createdAt,
+      DateTime updatedAt});
 }
 
 /// @nodoc
@@ -146,11 +146,11 @@ class _$GalleryDtoCopyWithImpl<$Res> implements $GalleryDtoCopyWith<$Res> {
       createdAt: null == createdAt
           ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
-              as String,
+              as DateTime,
       updatedAt: null == updatedAt
           ? _self.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
-              as String,
+              as DateTime,
     ));
   }
 }
@@ -204,9 +204,9 @@ class _GalleryDto implements GalleryDto {
   }
 
   @override
-  final String createdAt;
+  final DateTime createdAt;
   @override
-  final String updatedAt;
+  final DateTime updatedAt;
 
   /// Create a copy of GalleryDto
   /// with the given fields replaced by the non-null parameter values.
@@ -278,8 +278,8 @@ abstract mixin class _$GalleryDtoCopyWith<$Res>
       String? featuredImageUrl,
       List<GalleryItemDto>? items,
       List<GalleryMetaDto>? metas,
-      String createdAt,
-      String updatedAt});
+      DateTime createdAt,
+      DateTime updatedAt});
 }
 
 /// @nodoc
@@ -336,11 +336,11 @@ class __$GalleryDtoCopyWithImpl<$Res> implements _$GalleryDtoCopyWith<$Res> {
       createdAt: null == createdAt
           ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
-              as String,
+              as DateTime,
       updatedAt: null == updatedAt
           ? _self.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
-              as String,
+              as DateTime,
     ));
   }
 }

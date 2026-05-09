@@ -15,8 +15,8 @@ abstract class GalleryDto with _$GalleryDto {
     String? featuredImageUrl,
     List<GalleryItemDto>? items,
     List<GalleryMetaDto>? metas,
-    required String createdAt,
-    required String updatedAt,
+    required DateTime createdAt,
+    required DateTime updatedAt,
   }) = _GalleryDto;
 
   factory GalleryDto.fromJson(Map<String, dynamic> json) =>

@@ -32,4 +32,7 @@ class ApiEndpoint {
   // Gallery
   static const String getAllGalleries = '/photo-galleries';
   static const String getGalleryById = '/photo-galleries/{id}';
-}
+
+  // Web View
+  static const String companyProfileWebView = '/webview/company-profile';
+}

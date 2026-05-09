@@ -13,7 +13,7 @@ class BankAccountEditController extends _$BankAccountEditController {
   }
 
   Future<void> updateAccount({
-    required String id,
+    required int id,
     required String bankName,
     required String accountName,
     required String accountNumber,

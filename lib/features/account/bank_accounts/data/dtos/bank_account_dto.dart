@@ -6,8 +6,8 @@ part 'bank_account_dto.g.dart';
 @freezed
 abstract class BankAccountDto with _$BankAccountDto {
   const factory BankAccountDto({
-    required String id,
-    required String userId,
+    required int id,
+    required int userId,
     required bool isPrimary,
     required String accountName,
     required String accountNumber,

@@ -30,14 +30,9 @@ class GetGalleriesResponseDto extends ApiResponseDto<GetGalleriesResponseData> {
   });
 
   factory GetGalleriesResponseDto.fromJson(Map<String, dynamic> json) {
-    final dataMap = {
-      'galleries': json['data'] ?? [],
-      'pagination': json['meta'] ?? {},
-    };
-
     final base = ApiResponseDto.fromJson(
       json,
-      (data) => GetGalleriesResponseData.fromJson(dataMap),
+      (data) => GetGalleriesResponseData.fromJson(data as Map<String, dynamic>),
     );
 
     return GetGalleriesResponseDto(

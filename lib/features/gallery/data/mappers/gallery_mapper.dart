@@ -15,8 +15,8 @@ class GalleryMapper {
       featuredImageUrl: dto.featuredImageUrl,
       items: dto.items?.map(toItemEntity).toList(),
       metas: dto.metas?.map(toMetaEntity).toList(),
-      createdAt: DateTime.parse(dto.createdAt),
-      updatedAt: DateTime.parse(dto.updatedAt),
+      createdAt: dto.createdAt,
+      updatedAt: dto.updatedAt,
     );
   }
 

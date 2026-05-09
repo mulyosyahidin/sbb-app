@@ -56,7 +56,7 @@ class BankAccountRepositoryImpl implements BankAccountRepository {
 
   @override
   Future<Either<Failure, MarkAsPrimaryResponseData>> markAsPrimary(
-      String id) async {
+      int id) async {
     try {
       final response = await _bankAccountRemoteDataSource.markAsPrimary(id);
 
@@ -86,7 +86,7 @@ class BankAccountRepositoryImpl implements BankAccountRepository {
 
   @override
   Future<Either<Failure, CreateBankAccountResponseData>> updateBankAccount(
-      String id, UpdateBankAccountRequestDto dto) async {
+      int id, UpdateBankAccountRequestDto dto) async {
     try {
       final response =
           await _bankAccountRemoteDataSource.updateBankAccount(id, dto);
@@ -101,7 +101,7 @@ class BankAccountRepositoryImpl implements BankAccountRepository {
   }
 
   @override
-  Future<Either<Failure, void>> deleteBankAccount(String id) async {
+  Future<Either<Failure, void>> deleteBankAccount(int id) async {
     try {
       await _bankAccountRemoteDataSource.deleteBankAccount(id);
       return const Right(null);
