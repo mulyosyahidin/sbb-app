@@ -6,6 +6,7 @@ import 'package:app/core/utils/toast_util.dart';
 import 'package:app/features/account/bank_accounts/application/bank_accounts_controller.dart';
 import 'package:app/features/account/bank_accounts/domain/entities/bank_account.dart';
 import 'package:app/features/contract/application/contract_draft_controller.dart';
+import 'package:app/features/contract/application/contract_list_controller.dart';
 import 'package:app/features/contract/data/dtos/requests/save_draft_request_dto.dart';
 import 'package:app/features/contract/presentation/widgets/contract_create_skeleton.dart';
 import 'package:app/shared/forms/app_dropdown_field.dart';
@@ -43,6 +44,7 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
   bool _isInitialCheckDone = false;
   String? _initialKycFileName;
   bool _isKycDeleted = false;
+  bool isLoading = false;
 
   final currencyFormat = NumberFormat.currency(
     locale: 'id_ID',
@@ -239,24 +241,11 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
           ),
           const SizedBox(height: 16),
           PrimaryButton(
-            label: 'Submit Kontrak',
+            label: 'Selanjutnya',
+            isLoading: isLoading,
             onPressed: (selectedBankAccount == null || currentPrice == 0)
                 ? null
-                : () {
-                    final data = {
-                      'quantity': quantity,
-                      'cowType': selectedCowType,
-                      'price': currentPrice,
-                      'bankAccount': selectedBankAccount,
-                      'program': selectedProgram,
-                      'duration': selectedDuration,
-                      'subtotal': subtotal,
-                      'name': _nameController.text,
-                      'nik': _nikController.text,
-                      'kycFile': _kycFile,
-                    };
-                    context.push(Routes.contractPreview, extra: data);
-                  },
+                : _handleSubmit,
           ),
           const SizedBox(height: 40),
         ],
@@ -730,6 +719,30 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
   }
 
   Future<void> _handleSaveDraft() async {
+    setState(() => isLoading = true);
+    final success = await _saveProcess();
+    setState(() => isLoading = false);
+
+    if (success && mounted) {
+      ToastUtil.showSuccess(
+        context,
+        title: 'Berhasil',
+        description: 'Draft kontrak berhasil disimpan',
+      );
+    }
+  }
+
+  Future<void> _handleSubmit() async {
+    setState(() => isLoading = true);
+    final success = await _saveProcess();
+    setState(() => isLoading = false);
+
+    if (success && mounted) {
+      context.push(Routes.contractPreview);
+    }
+  }
+
+  Future<bool> _saveProcess() async {
     final dto = SaveDraftRequestDto(
       userName: _nameController.text,
       userIdentityNumber: _nikController.text,
@@ -746,12 +759,10 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
     final result =
         await ref.read(contractDraftControllerProvider.notifier).saveDraft(dto);
 
-    if (result != null && mounted) {
-      ToastUtil.showSuccess(
-        context,
-        title: 'Berhasil',
-        description: 'Draft kontrak berhasil disimpan',
-      );
+    if (result != null) {
+      ref.invalidate(contractListControllerProvider);
+      return true;
     }
+    return false;
   }
 }

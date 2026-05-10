@@ -64,4 +64,20 @@ class ContractDraftController extends _$ContractDraftController {
       },
     );
   }
+
+  Future<Contract?> submitContract() async {
+    final result = await _repository.submitContract();
+
+    return result.fold(
+      (l) {
+        state = AsyncValue.error(l, StackTrace.current);
+        return null;
+      },
+      (r) {
+        final contract = ContractMapper.toEntity(r.contract);
+        state = AsyncValue.data(contract);
+        return contract;
+      },
+    );
+  }
 }

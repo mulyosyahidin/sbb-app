@@ -36,12 +36,12 @@ class ContractListController extends _$ContractListController {
   ContractRepository get _repository => ref.watch(contractRepositoryProvider);
 
   @override
-  FutureOr<ContractListState> build() async {
-    return _fetchInitial();
+  FutureOr<ContractListState> build(String? status) async {
+    return _fetchInitial(status);
   }
 
-  Future<ContractListState> _fetchInitial() async {
-    final result = await _repository.getContracts(page: 1);
+  Future<ContractListState> _fetchInitial(String? status) async {
+    final result = await _repository.getContracts(page: 1, status: status);
 
     return result.fold(
       (l) => throw l,
@@ -65,6 +65,7 @@ class ContractListController extends _$ContractListController {
 
     final result = await _repository.getContracts(
       page: currentState.pagination!.currentPage + 1,
+      status: status,
     );
 
     result.fold(
@@ -88,6 +89,6 @@ class ContractListController extends _$ContractListController {
 
   Future<void> refresh() async {
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() => _fetchInitial());
+    state = await AsyncValue.guard(() => _fetchInitial(status));
   }
 }

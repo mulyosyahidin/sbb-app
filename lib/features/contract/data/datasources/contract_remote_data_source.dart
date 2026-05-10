@@ -16,6 +16,7 @@ abstract class ContractRemoteDataSource {
   Future<CheckDraftResponseDto> checkDraft();
   Future<GetDraftContractResponseDto> getDraftContract();
   Future<SaveContractDraftResponseDto> saveDraft(SaveDraftRequestDto request);
+  Future<SaveContractDraftResponseDto> submitContract();
   Future<GetContractsResponseDto> getContracts({int page = 1, String? status});
 }
 
@@ -116,6 +117,33 @@ class ContractRemoteDataSourceImpl implements ContractRemoteDataSource {
     }
 
     throw Exception('Gagal menyimpan draft kontrak');
+  }
+
+  @override
+  Future<SaveContractDraftResponseDto> submitContract() async {
+    const endpoint = ApiEndpoint.submitContract;
+    SaveContractDraftResponseDto? responseDto;
+
+    try {
+      LoggerUtil.api("POST", endpoint);
+      final response = await _dio.post(endpoint);
+      responseDto = SaveContractDraftResponseDto.fromJson(response.data);
+    } on DioException catch (e) {
+      LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
+      if (e.response != null) {
+        responseDto = SaveContractDraftResponseDto.fromJson(e.response!.data);
+      }
+    }
+
+    if (responseDto != null) {
+      if (responseDto.success && responseDto.data != null) {
+        return responseDto;
+      } else {
+        throw responseDto.toException();
+      }
+    }
+
+    throw Exception('Gagal mengajukan kontrak');
   }
 
   @override

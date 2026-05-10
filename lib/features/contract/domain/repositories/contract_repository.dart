@@ -11,5 +11,9 @@ abstract class ContractRepository {
   Future<Either<Failure, SaveContractDraftResponseData>> saveDraft(
     SaveDraftRequestDto request,
   );
-  Future<Either<Failure, GetContractsResponseData>> getContracts({int page = 1});
+  Future<Either<Failure, SaveContractDraftResponseData>> submitContract();
+  Future<Either<Failure, GetContractsResponseData>> getContracts({
+    int page = 1,
+    String? status,
+  });
 }

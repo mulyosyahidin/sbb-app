@@ -69,6 +69,7 @@ dependencies:
   path_provider: ^2.1.5
   string_to_icon: ^1.0.0
   webview_flutter: ^4.10.0
+  url_launcher: ^6.3.2
 
 
 dev_dependencies:

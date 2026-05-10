@@ -194,10 +194,7 @@ GoRouter router(Ref ref) {
       ),
       GoRoute(
         path: Routes.contractPreview,
-        builder: (context, state) {
-          final data = state.extra as Map<String, dynamic>;
-          return ContractPreviewPage(data: data);
-        },
+        builder: (context, state) => const ContractPreviewPage(),
       ),
 
       // AUTHENTICATED TABS

@@ -72,11 +72,29 @@ class ContractRepositoryImpl implements ContractRepository {
   }
 
   @override
+  Future<Either<Failure, SaveContractDraftResponseData>>
+      submitContract() async {
+    try {
+      final responseDto = await _remoteDataSource.submitContract();
+
+      return Right(responseDto.data!);
+    } catch (e) {
+      return Left(
+        _mapExceptionToFailure(e, 'ContractRepositoryImpl.submitContract'),
+      );
+    }
+  }
+
+  @override
   Future<Either<Failure, GetContractsResponseData>> getContracts({
     int page = 1,
+    String? status,
   }) async {
     try {
-      final responseDto = await _remoteDataSource.getContracts(page: page);
+      final responseDto = await _remoteDataSource.getContracts(
+        page: page,
+        status: status,
+      );
 
       return Right(responseDto.data!);
     } catch (e) {

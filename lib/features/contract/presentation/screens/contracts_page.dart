@@ -17,7 +17,7 @@ class ContractsPage extends ConsumerStatefulWidget {
 
 class _ContractsPageState extends ConsumerState<ContractsPage> {
   String selectedFilter = 'Semua';
-  final filters = ['Semua', 'Aktif', 'Proses', 'Selesai', 'Qurban'];
+  final filters = ['Semua', 'Draft', 'Aktif', 'Selesai'];
   late final ScrollController _scrollController;
 
   final currencyFormat = NumberFormat.currency(
@@ -41,13 +41,16 @@ class _ContractsPageState extends ConsumerState<ContractsPage> {
   void _onScroll() {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
-      ref.read(contractListControllerProvider.notifier).loadMore();
+      ref
+          .read(contractListControllerProvider(selectedFilter).notifier)
+          .loadMore();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final contractState = ref.watch(contractListControllerProvider);
+    final contractState =
+        ref.watch(contractListControllerProvider(selectedFilter));
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -58,8 +61,10 @@ class _ContractsPageState extends ConsumerState<ContractsPage> {
             _buildFilters(),
             Expanded(
               child: RefreshIndicator(
-                onRefresh: () =>
-                    ref.read(contractListControllerProvider.notifier).refresh(),
+                onRefresh: () => ref
+                    .read(
+                        contractListControllerProvider(selectedFilter).notifier)
+                    .refresh(),
                 child: contractState.when(
                   data: (state) {
                     if (state.contracts.isEmpty) {
@@ -97,6 +102,7 @@ class _ContractsPageState extends ConsumerState<ContractsPage> {
 
                     return ListView.builder(
                       controller: _scrollController,
+                      physics: const AlwaysScrollableScrollPhysics(),
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       itemCount: state.contracts.length +
                           (state.isLoadingMore ? 1 : 0),
@@ -111,22 +117,40 @@ class _ContractsPageState extends ConsumerState<ContractsPage> {
                       },
                     );
                   },
-                  loading: () => const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                  error: (error, stack) => Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('Gagal memuat data: $error'),
-                        TextButton(
-                          onPressed: () => ref
-                              .read(contractListControllerProvider.notifier)
-                              .refresh(),
-                          child: const Text('Coba Lagi'),
+                  loading: () => ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.6,
+                        child: const Center(
+                          child: CircularProgressIndicator(),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
+                  ),
+                  error: (error, stack) => ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.6,
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Gagal memuat data: $error'),
+                              TextButton(
+                                onPressed: () => ref
+                                    .read(contractListControllerProvider(
+                                            selectedFilter)
+                                        .notifier)
+                                    .refresh(),
+                                child: const Text('Coba Lagi'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

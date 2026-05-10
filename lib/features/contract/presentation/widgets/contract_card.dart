@@ -79,7 +79,7 @@ class ContractCard extends StatelessWidget {
                       isBold: true),
                 ),
                 Expanded(
-                  flex: 3,
+                  flex: isDraft ? 1 : 3,
                   child: _buildDetailItem(
                     context,
                     'Modal',
@@ -87,17 +87,18 @@ class ContractCard extends StatelessWidget {
                     isBold: true,
                   ),
                 ),
-                Expanded(
-                  flex: 2,
-                  child: _buildDetailItem(
-                    context,
-                    'Bagi Hasil',
-                    item.profitSharingPercentage != null
-                        ? '${item.profitSharingPercentage!.toInt()}%'
-                        : '-',
-                    isBold: true,
+                if (!isDraft)
+                  Expanded(
+                    flex: 2,
+                    child: _buildDetailItem(
+                      context,
+                      'Bagi Hasil',
+                      item.profitSharingPercentage != null
+                          ? '${item.profitSharingPercentage!.toInt()}%'
+                          : '-',
+                      isBold: true,
+                    ),
                   ),
-                ),
               ],
             ),
             const SizedBox(height: 20),

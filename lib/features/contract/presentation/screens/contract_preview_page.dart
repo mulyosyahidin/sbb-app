@@ -1,29 +1,26 @@
-import 'dart:io';
-
 import 'package:app/app/app_router.dart';
 import 'package:app/core/theme/app_text_style.dart';
-import 'package:app/features/account/bank_accounts/domain/entities/bank_account.dart';
-import 'package:app/features/partner/domain/entities/partner.dart';
+import 'package:app/core/utils/toast_util.dart';
+import 'package:app/features/contract/application/contract_draft_controller.dart';
+import 'package:app/features/contract/application/contract_list_controller.dart';
 import 'package:app/shared/widgets/app_bar_header.dart';
 import 'package:app/shared/widgets/primary_button.dart';
-import 'package:file_picker/file_picker.dart' as fp;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class ContractPreviewPage extends StatefulWidget {
-  final Map<String, dynamic> data;
-
-  const ContractPreviewPage({super.key, required this.data});
+class ContractPreviewPage extends ConsumerStatefulWidget {
+  const ContractPreviewPage({super.key});
 
   @override
-  State<ContractPreviewPage> createState() => _ContractPreviewPageState();
+  ConsumerState<ContractPreviewPage> createState() =>
+      _ContractPreviewPageState();
 }
 
-class _ContractPreviewPageState extends State<ContractPreviewPage> {
-  File? selectedFile;
-  String? fileName;
+class _ContractPreviewPageState extends ConsumerState<ContractPreviewPage> {
+  bool isLoading = false;
 
   final currencyFormat = NumberFormat.currency(
     locale: 'id_ID',
@@ -31,53 +28,10 @@ class _ContractPreviewPageState extends State<ContractPreviewPage> {
     decimalDigits: 0,
   );
 
-  Partner get partner => widget.data['partner'] as Partner;
-  int get quantity => widget.data['quantity'] as int;
-  String get cowType => widget.data['cowType'] as String;
-  int get price => widget.data['price'] as int;
-  BankAccount? get bankAccount => widget.data['bankAccount'] as BankAccount?;
-  String get program => widget.data['program'] as String;
-  String get duration => widget.data['duration'] as String;
-  int get subtotal => widget.data['subtotal'] as int;
-
-  Future<void> _pickFile() async {
-    try {
-      final result = await fp.FilePicker.pickFiles(
-        type: fp.FileType.custom,
-        allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png'],
-      );
-
-      if (result != null && result.files.single.path != null) {
-        setState(() {
-          selectedFile = File(result.files.single.path!);
-          fileName = result.files.single.name;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Gagal memilih file: $e'),
-          ),
-        );
-      }
-    }
-  }
-
-  void _copyToClipboard(String text) {
-    Clipboard.setData(
-      ClipboardData(text: text),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Nomor rekening disalin'),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final draftState = ref.watch(contractDraftControllerProvider);
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -85,53 +39,78 @@ class _ContractPreviewPageState extends State<ContractPreviewPage> {
         child: Column(
           children: [
             const AppBarHeader(
-              title: 'Konfirmasi & Pembayaran',
-              subtitle: 'Periksa kembali data dan lakukan pembayaran',
+              title: 'Preview Kontrak',
+              subtitle: 'Periksa kembali data-data sebelum dikirim',
             ),
             Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _buildSectionHeader(context, 'Ringkasan Kontrak'),
-                    const SizedBox(height: 12),
-                    _buildSummaryCard(context),
-                    const SizedBox(height: 32),
-                    _buildSectionHeader(context, 'Rekening Penerima'),
-                    const SizedBox(height: 12),
-                    _buildRecipientBankCard(context),
-                    const SizedBox(height: 32),
-                    _buildSectionHeader(context, 'Bukti Pembayaran'),
-                    const SizedBox(height: 12),
-                    _buildUploadCard(context),
-                    const SizedBox(height: 48),
-                    PrimaryButton(
-                      label: 'KONFIRMASI PEMBAYARAN',
-                      onPressed: selectedFile == null
-                          ? null
-                          : () {
-                              // Action here
-                              showDialog(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  title: const Text('Pembayaran Dikonfirmasi'),
-                                  content: const Text(
-                                      'Terima kasih! Admin akan segera memverifikasi bukti pembayaran Anda.'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        context.go(Routes.contract);
-                                      },
-                                      child: const Text('OK'),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
+              child: draftState.when(
+                data: (contract) {
+                  if (contract == null) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('Tidak ada draft kontrak'),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () => context.pop(),
+                            child: const Text('Kembali'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  return SingleChildScrollView(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _buildSectionHeader(context, 'Data Diri'),
+                        const SizedBox(height: 12),
+                        _buildUserCard(context, contract),
+                        if (contract.userIdentityNumberFile != null) ...[
+                          const SizedBox(height: 12),
+                          _buildKycCard(
+                              context, contract.userIdentityNumberFile!),
+                        ],
+                        const SizedBox(height: 24),
+                        _buildSectionHeader(context, 'Data Sapi'),
+                        const SizedBox(height: 12),
+                        _buildCowCard(context, contract),
+                        const SizedBox(height: 24),
+                        _buildSectionHeader(context, 'Program Kontrak'),
+                        const SizedBox(height: 12),
+                        _buildProgramCard(context, contract),
+                        const SizedBox(height: 24),
+                        _buildSectionHeader(context, 'Rekening'),
+                        const SizedBox(height: 12),
+                        _buildBankCard(context, contract),
+                        const SizedBox(height: 24),
+                        _buildSectionHeader(context, 'Ringkasan Pembayaran'),
+                        const SizedBox(height: 12),
+                        _buildPaymentSummaryCard(context, contract),
+                        const SizedBox(height: 24),
+                        _buildValidationMessage(context, contract),
+                        const SizedBox(height: 24),
+                        PrimaryButton(
+                          label: 'SUBMIT KONTRAK',
+                          isLoading: isLoading,
+                          onPressed:
+                              isLoading || _isMissingRequiredFields(contract)
+                                  ? null
+                                  : () => _handleSubmit(contract),
+                        ),
+                        const SizedBox(height: 40),
+                      ],
                     ),
-                    const SizedBox(height: 40),
-                  ],
+                  );
+                },
+                loading: () => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                error: (error, stack) => Center(
+                  child: Text('Gagal memuat draft: $error'),
                 ),
               ),
             ),
@@ -139,6 +118,28 @@ class _ContractPreviewPageState extends State<ContractPreviewPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _handleSubmit(dynamic contract) async {
+    setState(() => isLoading = true);
+
+    final result = await ref
+        .read(contractDraftControllerProvider.notifier)
+        .submitContract();
+
+    if (result != null && mounted) {
+      ref.invalidate(contractListControllerProvider);
+
+      context.go('${Routes.contract}/${result.id}');
+
+      ToastUtil.showSuccess(
+        context,
+        title: 'Berhasil',
+        description: 'Kontrak Anda telah berhasil diajukan',
+      );
+    }
+
+    if (mounted) setState(() => isLoading = false);
   }
 
   Widget _buildSectionHeader(BuildContext context, String title) {
@@ -152,7 +153,7 @@ class _ContractPreviewPageState extends State<ContractPreviewPage> {
     );
   }
 
-  Widget _buildSummaryCard(BuildContext context) {
+  Widget _buildUserCard(BuildContext context, dynamic contract) {
     final colorScheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(20),
@@ -164,19 +165,93 @@ class _ContractPreviewPageState extends State<ContractPreviewPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _buildSummaryRow('Mitra', partner.name),
-          _buildSummaryRow('Program', '$program ($duration)'),
-          _buildSummaryRow('Jenis Sapi', cowType),
-          _buildSummaryRow('Jumlah', '$quantity Ekor'),
-          if (bankAccount != null)
-            _buildSummaryRow('Rekening Anda',
-                '${bankAccount!.bankName} - ${bankAccount!.accountNumber}'),
+          _buildSummaryRow('Nama Lengkap', contract.userName ?? '-'),
+          _buildSummaryRow('NIK', contract.userIdentityNumber ?? '-'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCowCard(BuildContext context, dynamic contract) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: colorScheme.outline),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildSummaryRow('Jenis Sapi', contract.cowName ?? '-'),
+          _buildSummaryRow('Berat Sapi', '${contract.cowWeightKg ?? 0} Kg'),
+          _buildSummaryRow(
+              'Harga Per Ekor', currencyFormat.format(contract.cowPrice ?? 0)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBankCard(BuildContext context, dynamic contract) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: colorScheme.outline),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildSummaryRow('Nama Bank', contract.bankName ?? '-'),
+          _buildSummaryRow('Nomor Rekening', contract.bankAccountNumber ?? '-'),
+          _buildSummaryRow('Atas Nama', contract.bankAccountName ?? '-'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProgramCard(BuildContext context, dynamic contract) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: colorScheme.outline),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildSummaryRow('Program', contract.program?.value ?? '-'),
+          _buildSummaryRow(
+              'Durasi', '${contract.contractMonthDuration ?? 0} Bulan'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPaymentSummaryCard(BuildContext context, dynamic contract) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: colorScheme.primary.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: colorScheme.primary.withValues(alpha: 0.1)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildSummaryRow('Jumlah Sapi', '${contract.cowQuantity ?? 0} Ekor'),
           const Divider(height: 32),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Total Pembayaran',
+                'Total Modal',
                 style: AppTextStyles.body(
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
@@ -184,7 +259,7 @@ class _ContractPreviewPageState extends State<ContractPreviewPage> {
                 ),
               ),
               Text(
-                currencyFormat.format(subtotal),
+                currencyFormat.format(contract.cowTotalPrice ?? 0),
                 style: AppTextStyles.title(
                   fontWeight: FontWeight.bold,
                   color: colorScheme.primary,
@@ -194,6 +269,143 @@ class _ContractPreviewPageState extends State<ContractPreviewPage> {
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  bool _isMissingRequiredFields(dynamic contract) {
+    return contract.userName == null ||
+        contract.userIdentityNumber == null ||
+        contract.userIdentityNumberFile == null ||
+        contract.cowId == null ||
+        contract.cowQuantity == null ||
+        contract.bankAccountId == null ||
+        contract.contractMonthDuration == null ||
+        contract.program == null;
+  }
+
+  Widget _buildValidationMessage(BuildContext context, dynamic contract) {
+    final missing = <String>[];
+    if (contract.userName == null) missing.add('Nama');
+    if (contract.userIdentityNumber == null) missing.add('NIK');
+    if (contract.userIdentityNumberFile == null) missing.add('File KTP');
+    if (contract.cowId == null) missing.add('Sapi');
+    if (contract.cowQuantity == null) missing.add('Jumlah Sapi');
+    if (contract.bankAccountId == null) missing.add('Bank');
+    if (contract.contractMonthDuration == null) missing.add('Durasi');
+    if (contract.program == null) missing.add('Program');
+
+    if (missing.isEmpty) return const SizedBox.shrink();
+
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: colorScheme.error.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: colorScheme.error.withValues(alpha: 0.1)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.error_outline_rounded,
+                  color: colorScheme.error, size: 20),
+              const SizedBox(width: 8),
+              Text(
+                'Lengkapi Data Kontrak',
+                style: AppTextStyles.body(
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.error,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Informasi berikut wajib diisi: ${missing.join(", ")}',
+            style: AppTextStyles.body(
+              color: colorScheme.error,
+              fontSize: 13,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildKycCard(BuildContext context, dynamic file) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return InkWell(
+      onTap: () async {
+        final url = Uri.parse(file.fileUrl);
+        try {
+          final launched = await launchUrl(
+            url,
+            mode: LaunchMode.inAppBrowserView,
+          );
+          if (!launched) {
+            await launchUrl(url, mode: LaunchMode.externalApplication);
+          }
+        } catch (e) {
+          await launchUrl(url, mode: LaunchMode.externalApplication);
+        }
+      },
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: colorScheme.outline),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: colorScheme.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                Icons.assignment_ind_rounded,
+                color: colorScheme.primary,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Kartu Tanda Penduduk (KTP)',
+                    style: AppTextStyles.body(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    file.fileName,
+                    style: AppTextStyles.body(
+                      fontSize: 12,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.open_in_new_rounded,
+              size: 18,
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -224,216 +436,6 @@ class _ContractPreviewPageState extends State<ContractPreviewPage> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildRecipientBankCard(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    const String accountNumber = '1230012345678';
-
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: colorScheme.primary.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: colorScheme.primary.withValues(alpha: 0.1),
-        ),
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: colorScheme.surfaceContainerLowest,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 10,
-                    ),
-                  ],
-                ),
-                child: Center(
-                  child: Text(
-                    'Bank',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 10,
-                      color: Colors.blue.shade900,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Bank Mandiri',
-                      style: AppTextStyles.body(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                    Text(
-                      'PT. Sarana Bahagia Berkah',
-                      style: AppTextStyles.body(
-                        fontSize: 13,
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: colorScheme.surfaceContainerLowest,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: colorScheme.outline.withValues(alpha: 0.1),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  accountNumber,
-                  style: AppTextStyles.title(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.2,
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.copy_rounded, size: 20),
-                  onPressed: () => _copyToClipboard(accountNumber),
-                  style: IconButton.styleFrom(
-                    foregroundColor: colorScheme.primary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildUploadCard(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return InkWell(
-      onTap: _pickFile,
-      borderRadius: BorderRadius.circular(24),
-      child: Container(
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: colorScheme.surface,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color: selectedFile != null
-                ? colorScheme.primary
-                : colorScheme.outline,
-            style: selectedFile != null ? BorderStyle.solid : BorderStyle.solid,
-          ),
-        ),
-        child: Column(
-          children: [
-            if (selectedFile == null) ...[
-              Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  color: colorScheme.primary.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.upload_file_rounded,
-                  size: 28,
-                  color: colorScheme.primary,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Unggah Bukti Transfer',
-                style: AppTextStyles.body(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'Dukung format JPG, PNG, atau PDF',
-                style: AppTextStyles.body(
-                  color: colorScheme.onSurfaceVariant,
-                  fontSize: 12,
-                ),
-              ),
-            ] else ...[
-              Row(
-                children: [
-                  Container(
-                    width: 48,
-                    height: 48,
-                    decoration: BoxDecoration(
-                      color: Colors.green.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(
-                      Icons.check_circle_rounded,
-                      color: Colors.green,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          fileName ?? 'File terpilih',
-                          style: AppTextStyles.body(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Text(
-                          'Ketuk untuk mengganti file',
-                          style: AppTextStyles.body(
-                            color: colorScheme.primary,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close_rounded, size: 20),
-                    onPressed: () => setState(() {
-                      selectedFile = null;
-                      fileName = null;
-                    }),
-                    style: IconButton.styleFrom(
-                      foregroundColor: Colors.red,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ],
-        ),
       ),
     );
   }
