@@ -5,6 +5,7 @@ import 'package:app/features/account/bank_accounts/data/dtos/requests/create_ban
 import 'package:app/features/account/bank_accounts/data/dtos/requests/update_bank_account_request_dto.dart';
 import 'package:app/features/account/bank_accounts/data/dtos/responses/bank_accounts_response_dto.dart';
 import 'package:app/features/account/bank_accounts/data/dtos/responses/create_bank_account_response_dto.dart';
+import 'package:app/features/account/bank_accounts/data/dtos/responses/delete_bank_account_response_dto.dart';
 import 'package:app/features/account/bank_accounts/data/dtos/responses/mark_as_primary_response_dto.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,7 +28,7 @@ abstract class BankAccountRemoteDataSource {
   Future<CreateBankAccountResponseDto> updateBankAccount(
       int id, UpdateBankAccountRequestDto dto);
 
-  Future<void> deleteBankAccount(int id);
+  Future<DeleteBankAccountResponseDto> deleteBankAccount(int id);
 }
 
 class BankAccountRemoteDataSourceImpl implements BankAccountRemoteDataSource {
@@ -209,7 +210,7 @@ class BankAccountRemoteDataSourceImpl implements BankAccountRemoteDataSource {
   }
 
   @override
-  Future<void> deleteBankAccount(int id) async {
+  Future<DeleteBankAccountResponseDto> deleteBankAccount(int id) async {
     final endpoint =
         ApiEndpoint.deleteBankAccount.replaceAll('{id}', id.toString());
 
@@ -222,10 +223,17 @@ class BankAccountRemoteDataSourceImpl implements BankAccountRemoteDataSource {
         throw const FormatException("Invalid response format");
       }
 
-      // No special DTO needed for delete if it only returns success:true
+      return DeleteBankAccountResponseDto.fromJson(response.data);
     } on DioException catch (e) {
       LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
-      rethrow;
+
+      if (e.response?.data != null &&
+          e.response?.data is Map<String, dynamic>) {
+        final dto = DeleteBankAccountResponseDto.fromJson(e.response!.data);
+        throw dto.toException();
+      } else {
+        rethrow;
+      }
     } catch (e) {
       LoggerUtil.error("Unexpected error on endpoint $endpoint: $e");
       rethrow;

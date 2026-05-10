@@ -6,15 +6,15 @@ part of 'update_profile_request_dto.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-UpdateProfileRequestDto _$UpdateProfileRequestDtoFromJson(
+_UpdateProfileRequestDto _$UpdateProfileRequestDtoFromJson(
         Map<String, dynamic> json) =>
-    UpdateProfileRequestDto(
+    _UpdateProfileRequestDto(
       name: json['name'] as String,
       email: json['email'] as String,
     );
 
 Map<String, dynamic> _$UpdateProfileRequestDtoToJson(
-        UpdateProfileRequestDto instance) =>
+        _UpdateProfileRequestDto instance) =>
     <String, dynamic>{
       'name': instance.name,
       'email': instance.email,

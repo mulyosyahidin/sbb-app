@@ -6,9 +6,9 @@ part of 'update_partner_request_dto.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-UpdatePartnerRequestDto _$UpdatePartnerRequestDtoFromJson(
+_UpdatePartnerRequestDto _$UpdatePartnerRequestDtoFromJson(
         Map<String, dynamic> json) =>
-    UpdatePartnerRequestDto(
+    _UpdatePartnerRequestDto(
       name: json['name'] as String,
       nik: json['nik'] as String,
       address: json['address'] as String,
@@ -17,7 +17,7 @@ UpdatePartnerRequestDto _$UpdatePartnerRequestDtoFromJson(
     );
 
 Map<String, dynamic> _$UpdatePartnerRequestDtoToJson(
-        UpdatePartnerRequestDto instance) =>
+        _UpdatePartnerRequestDto instance) =>
     <String, dynamic>{
       'name': instance.name,
       'nik': instance.nik,

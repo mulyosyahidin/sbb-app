@@ -1,6 +1,4 @@
-import 'package:app/features/partner/data/mappers/partner_mapper.dart';
 import 'package:app/features/partner/data/repositories/partner_repository_impl.dart';
-import 'package:app/features/partner/domain/entities/partner.dart';
 import 'package:app/features/partner/domain/repositories/partner_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -11,26 +9,17 @@ class PartnerController extends _$PartnerController {
   PartnerRepository get _repository => ref.watch(partnerRepositoryProvider);
 
   @override
-  FutureOr<Partner?> build() async {
-    return _init();
-  }
+  FutureOr<bool?> build() => null;
 
-  Future<Partner?> _init() async {
-    final checkResult = await _repository.checkPartner();
+  Future<bool?> checkPartner() async {
+    state = await AsyncValue.guard(() async {
+      final result = await _repository.checkPartner();
 
-    return await checkResult.fold(
-      (l) => throw l,
-      (r) async {
-        if (!r.hasPartner) {
-          return null;
-        }
-
-        final partnerResult = await _repository.getPartner();
-        return partnerResult.fold(
-          (l) => throw l,
-          (r) => PartnerMapper.fromDto(r.partner),
-        );
-      },
-    );
+      return result.fold(
+        (l) => throw l,
+        (r) => r.hasPartner,
+      );
+    });
+    return state.value;
   }
 }

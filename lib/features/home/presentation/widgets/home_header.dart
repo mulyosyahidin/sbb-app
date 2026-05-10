@@ -1,4 +1,4 @@
-import 'package:app/features/home/application/home_providers.dart';
+import 'package:app/features/home/application/home_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:app/core/theme/app_theme.dart';
@@ -154,28 +154,28 @@ class HomeHeader extends ConsumerWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (homeData?.partner != null)
-                              Row(
-                                children: [
-                                  if (homeData?.partner?.level == 'partner' ||
-                                      homeData?.partner?.level ==
-                                          'partner_consultant')
-                                    _buildBadge(
-                                        'MITRA', AppColors.primaryLight),
-                                  if (homeData?.partner?.level ==
-                                          'consultant' ||
-                                      homeData?.partner?.level ==
-                                          'partner_consultant') ...[
-                                    if (homeData?.partner?.level ==
-                                        'partner_consultant')
-                                      const SizedBox(width: 6),
-                                    _buildBadge(
-                                      'KONSULTAN',
-                                      AppColors.warning,
-                                    ),
-                                  ],
-                                ],
-                              ),
+                            // if (homeData?.hasPartner ?? false)
+                            //   Row(
+                            //     children: [
+                            //       if (homeData?.partner?.level == 'partner' ||
+                            //           homeData?.partner?.level ==
+                            //               'partner_consultant')
+                            //         _buildBadge(
+                            //             'MITRA', AppColors.primaryLight),
+                            //       if (homeData?.partner?.level ==
+                            //               'consultant' ||
+                            //           homeData?.partner?.level ==
+                            //               'partner_consultant') ...[
+                            //         if (homeData?.partner?.level ==
+                            //             'partner_consultant')
+                            //           const SizedBox(width: 6),
+                            //         _buildBadge(
+                            //           'KONSULTAN',
+                            //           AppColors.warning,
+                            //         ),
+                            //       ],
+                            //     ],
+                            //   ),
                             const SizedBox(height: 6),
                             Text(
                               'Halo, $userName!',
@@ -225,22 +225,22 @@ class HomeHeader extends ConsumerWidget {
     );
   }
 
-  Widget _buildBadge(String text, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 8,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 0.5,
-        ),
-      ),
-    );
-  }
+  // Widget _buildBadge(String text, Color color) {
+  //   return Container(
+  //     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+  //     decoration: BoxDecoration(
+  //       color: color,
+  //       borderRadius: BorderRadius.circular(4),
+  //     ),
+  //     child: Text(
+  //       text,
+  //       style: const TextStyle(
+  //         color: Colors.white,
+  //         fontSize: 8,
+  //         fontWeight: FontWeight.bold,
+  //         letterSpacing: 0.5,
+  //       ),
+  //     ),
+  //   );
+  // }
 }

@@ -99,6 +99,6 @@ Future<Gallery> galleryDetail(Ref ref, int id) async {
 
   return result.fold(
     (l) => throw l,
-    (r) => r,
+    (r) => GalleryMapper.toEntity(r.gallery),
   );
 }

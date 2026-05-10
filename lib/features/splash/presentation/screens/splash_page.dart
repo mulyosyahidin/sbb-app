@@ -1,4 +1,4 @@
-import 'package:app/features/home/application/home_providers.dart';
+import 'package:app/features/home/application/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

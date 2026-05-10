@@ -1,8 +1,8 @@
 import 'package:app/core/config/api_endpoint.dart';
-import 'package:app/core/models/api_response_dto.dart';
 import 'package:app/core/networks/dio_client.dart';
 import 'package:app/core/utils/logger_util.dart';
 import 'package:app/features/account/edit_password/data/dtos/requests/update_password_request_dto.dart';
+import 'package:app/features/account/edit_password/data/dtos/responses/update_password_response_dto.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -10,7 +10,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'edit_password_remote_data_source.g.dart';
 
 abstract class EditPasswordRemoteDataSource {
-  Future<ApiResponseDto<void>> updatePassword(UpdatePasswordRequestDto dto);
+  Future<UpdatePasswordResponseDto> updatePassword(
+      UpdatePasswordRequestDto dto);
 }
 
 class EditPasswordRemoteDataSourceImpl implements EditPasswordRemoteDataSource {
@@ -19,8 +20,7 @@ class EditPasswordRemoteDataSourceImpl implements EditPasswordRemoteDataSource {
   EditPasswordRemoteDataSourceImpl(this._dio);
 
   @override
-  Future<ApiResponseDto<void>> updatePassword(
-      UpdatePasswordRequestDto dto) async {
+  Future<UpdatePasswordResponseDto> updatePassword(UpdatePasswordRequestDto dto) async {
     const endpoint = ApiEndpoint.updatePassword;
 
     try {
@@ -39,10 +39,7 @@ class EditPasswordRemoteDataSourceImpl implements EditPasswordRemoteDataSource {
         throw const FormatException("Invalid response format");
       }
 
-      final responseDto = ApiResponseDto<void>.fromJson(
-        response.data,
-        (_) {},
-      );
+      final responseDto = UpdatePasswordResponseDto.fromJson(response.data);
 
       if (!responseDto.success) {
         throw responseDto.toException();
@@ -54,10 +51,7 @@ class EditPasswordRemoteDataSourceImpl implements EditPasswordRemoteDataSource {
 
       if (e.response?.data != null &&
           e.response?.data is Map<String, dynamic>) {
-        final dto = ApiResponseDto<void>.fromJson(
-          e.response!.data,
-          (_) {},
-        );
+        final dto = UpdatePasswordResponseDto.fromJson(e.response!.data);
         throw dto.toException();
       } else {
         rethrow;

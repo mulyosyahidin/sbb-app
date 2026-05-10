@@ -31,18 +31,26 @@ You are acting as a Senior Flutter Developer working on this specific project. B
 ### C. Repository & Error Handling
 - All domain repositories must return `Future<Either<Failure, T>>` using the `fpdart` package.
 - `Failure` class is already defined globally. Use it for the `Left` side.
-- **The `Right` side MUST be the `*Data` class (e.g., `GetSlidersResponseData`) or a Domain Entity.** NEVER pass the wrapper `*Dto` class (e.g., `GetSlidersResponseDto`) to the Repository or Domain layer.
+- **The `Right` side MUST be the `*Data` class (e.g., `GetSlidersResponseData`) or a Domain Entity.** NEVER return the wrapper `*Dto` class (e.g., `GetSlidersResponseDto`) from the Repository Interface to the Application layer.
 
 ### D. Data Sources
 - Every remote data source MUST have an `abstract class` interface.
 - Implementations MUST use `Dio` for network requests.
-- The Data Source layer is responsible for unpacking the `*Dto` and returning only the `*Data` (or throwing a mapped exception if the base `ApiResponseDto` indicates failure) to the Repository layer.
+- **Remote Data Sources MUST return the full `*Dto` class** (e.g., `GetSlidersResponseDto`).
+- The **Repository Implementation** layer is responsible for unpacking the `*Dto` and returning only the `*Data` (or throwing/mapping a `Failure` if the base `ApiResponseDto` indicates failure) to the Application layer.
 
 ### E. Entities
 - All domain entities MUST extend `Equatable` to ensure value equality.
 
 ### F. UI Components & Images
 - **Network Images (CRITICAL):** ALWAYS use the custom wrapper `AppNetworkImage` imported from `lib/shared/widgets/app_network_image.dart` when displaying network images. NEVER use raw `Image.network` or `CachedNetworkImage` directly inside presentation layers.
+- **Input Fields & Forms:** When creating `TextField`, `TextFormField`, or any custom input components, **DO NOT** include hints or placeholders (e.g., do not use `hintText` inside `InputDecoration`). Omit them entirely by default.
+
+### G. Import Management (CRITICAL)
+- **BE EXTREMELY CAREFUL when modifying imports.** 
+- NEVER delete an existing import unless you are 100% certain it is no longer used in the file. 
+- Always cross-check the usage of classes, functions, or constants before removing their corresponding import. 
+- When adding new imports, place them alphabetically or follow the existing project's grouping (e.g., package imports first, then relative project imports).
 
 ## 3. ARCHITECTURE & DIRECTORY STRUCTURE
 Every full module must strictly follow this folder hierarchy. Do not invent new directories or place files outside this structure:

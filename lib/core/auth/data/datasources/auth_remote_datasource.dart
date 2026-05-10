@@ -1,4 +1,5 @@
 import 'package:app/core/auth/data/dtos/responses/get_me_response_dto.dart';
+import 'package:app/core/auth/data/dtos/responses/logout_response_dto.dart';
 import 'package:app/core/auth/data/dtos/responses/refresh_access_token_response_dto.dart';
 import 'package:app/core/config/api_endpoint.dart';
 import 'package:app/core/models/api_response_dto.dart';
@@ -13,7 +14,7 @@ part 'auth_remote_datasource.g.dart';
 abstract class AuthRemoteDatasource {
   Future<RefreshAccessTokenResponseDto> refreshToken(String accessToken);
   Future<GetMeResponseDto> getMe();
-  Future<void> logout(int deviceId);
+  Future<LogoutResponseDto> logout(int deviceId);
 }
 
 class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
@@ -94,7 +95,7 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
   }
 
   @override
-  Future<void> logout(int deviceId) async {
+  Future<LogoutResponseDto> logout(int deviceId) async {
     const endpoint = ApiEndpoint.logout;
 
     try {
@@ -116,6 +117,8 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
       if (!dto.success) {
         throw dto.toException();
       }
+
+      return LogoutResponseDto.fromJson(response.data);
     } on DioException catch (e) {
       LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
       rethrow;

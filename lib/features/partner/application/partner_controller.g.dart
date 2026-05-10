@@ -6,12 +6,12 @@ part of 'partner_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$partnerControllerHash() => r'ee63ba9536eb5112d0979c13e25cd52695d1c9b3';
+String _$partnerControllerHash() => r'9c87dce43471f14e250282c3e75e52d0716f01f9';
 
 /// See also [PartnerController].
 @ProviderFor(PartnerController)
 final partnerControllerProvider =
-    AsyncNotifierProvider<PartnerController, Partner?>.internal(
+    AsyncNotifierProvider<PartnerController, bool?>.internal(
   PartnerController.new,
   name: r'partnerControllerProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -21,6 +21,6 @@ final partnerControllerProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$PartnerController = AsyncNotifier<Partner?>;
+typedef _$PartnerController = AsyncNotifier<bool?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

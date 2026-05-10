@@ -7,7 +7,7 @@ import 'package:app/core/utils/logger_util.dart';
 import 'package:app/features/account/edit_profile/data/dtos/responses/update_profile_response_dto.dart';
 import 'package:app/features/account/edit_profile/domain/repositories/edit_profile_repository.dart';
 import 'package:app/features/account/edit_profile/data/repositories/edit_profile_repository_impl.dart';
-import 'package:app/features/home/application/home_providers.dart';
+import 'package:app/features/home/application/home_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'edit_profile_controller.g.dart';
@@ -78,9 +78,9 @@ class EditProfileController extends _$EditProfileController {
       final result = await _repository.resendVerificationEmail();
 
       return result.fold(
-        (failure) => throw failure,
-        (data) {
-          success = data;
+        (l) => throw l,
+        (_) {
+          success = true;
         },
       );
     });
@@ -88,4 +88,3 @@ class EditProfileController extends _$EditProfileController {
     return success;
   }
 }
-

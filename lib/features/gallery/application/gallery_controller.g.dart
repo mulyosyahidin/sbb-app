@@ -6,7 +6,7 @@ part of 'gallery_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$galleryDetailHash() => r'49a6614745c4cde5b06c162d1d8dd4dc48a2d37c';
+String _$galleryDetailHash() => r'b709dd4a85343c1e663b228c301ec4ac89f2a5b9';
 
 /// Copied from Dart SDK
 class _SystemHash {

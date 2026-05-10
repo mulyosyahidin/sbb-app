@@ -1,4 +1,4 @@
-import 'package:app/features/home_guest/presentation/widgets/home_banner.dart';
+import 'package:app/features/home_guest/presentation/widgets/home_slider.dart';
 import 'package:app/features/home_guest/presentation/widgets/home_guest_cta.dart';
 import 'package:app/features/home_guest/presentation/widgets/home_guest_header.dart';
 import 'package:app/features/home_guest/presentation/widgets/home_menu_grid.dart';
@@ -23,7 +23,7 @@ class HomeGuestPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 20),
-                  const HomeBanner(),
+                  const HomeSlider(),
                   const SizedBox(height: 24),
                   Text(
                     'Menu Utama',

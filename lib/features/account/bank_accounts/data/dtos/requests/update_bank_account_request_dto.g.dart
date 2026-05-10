@@ -6,9 +6,9 @@ part of 'update_bank_account_request_dto.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-UpdateBankAccountRequestDto _$UpdateBankAccountRequestDtoFromJson(
+_UpdateBankAccountRequestDto _$UpdateBankAccountRequestDtoFromJson(
         Map<String, dynamic> json) =>
-    UpdateBankAccountRequestDto(
+    _UpdateBankAccountRequestDto(
       bankName: json['bank_name'] as String,
       accountName: json['account_name'] as String,
       accountNumber: json['account_number'] as String,
@@ -17,7 +17,7 @@ UpdateBankAccountRequestDto _$UpdateBankAccountRequestDtoFromJson(
     );
 
 Map<String, dynamic> _$UpdateBankAccountRequestDtoToJson(
-        UpdateBankAccountRequestDto instance) =>
+        _UpdateBankAccountRequestDto instance) =>
     <String, dynamic>{
       'bank_name': instance.bankName,
       'account_name': instance.accountName,

@@ -6,8 +6,8 @@ part of 'register_request_dto.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-RegisterRequestDto _$RegisterRequestDtoFromJson(Map<String, dynamic> json) =>
-    RegisterRequestDto(
+_RegisterRequestDto _$RegisterRequestDtoFromJson(Map<String, dynamic> json) =>
+    _RegisterRequestDto(
       name: json['name'] as String,
       email: json['email'] as String,
       password: json['password'] as String,
@@ -20,7 +20,7 @@ RegisterRequestDto _$RegisterRequestDtoFromJson(Map<String, dynamic> json) =>
       osVersion: json['os_version'] as String,
     );
 
-Map<String, dynamic> _$RegisterRequestDtoToJson(RegisterRequestDto instance) =>
+Map<String, dynamic> _$RegisterRequestDtoToJson(_RegisterRequestDto instance) =>
     <String, dynamic>{
       'name': instance.name,
       'email': instance.email,

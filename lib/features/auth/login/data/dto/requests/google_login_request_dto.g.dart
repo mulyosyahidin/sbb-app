@@ -6,9 +6,9 @@ part of 'google_login_request_dto.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-GoogleLoginRequestDto _$GoogleLoginRequestDtoFromJson(
+_GoogleLoginRequestDto _$GoogleLoginRequestDtoFromJson(
         Map<String, dynamic> json) =>
-    GoogleLoginRequestDto(
+    _GoogleLoginRequestDto(
       idToken: json['id_token'] as String,
       fcmToken: json['fcm_token'] as String,
       deviceId: json['device_id'] as String,
@@ -19,7 +19,7 @@ GoogleLoginRequestDto _$GoogleLoginRequestDtoFromJson(
     );
 
 Map<String, dynamic> _$GoogleLoginRequestDtoToJson(
-        GoogleLoginRequestDto instance) =>
+        _GoogleLoginRequestDto instance) =>
     <String, dynamic>{
       'id_token': instance.idToken,
       'fcm_token': instance.fcmToken,

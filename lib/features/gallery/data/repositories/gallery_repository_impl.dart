@@ -4,8 +4,7 @@ import 'package:app/core/errors/failure.dart';
 import 'package:app/core/utils/error_util.dart';
 import 'package:app/features/gallery/data/datasources/gallery_remote_data_source.dart';
 import 'package:app/features/gallery/data/dtos/responses/get_galleries_response_dto.dart';
-import 'package:app/features/gallery/data/mappers/gallery_mapper.dart';
-import 'package:app/features/gallery/domain/entities/gallery.dart';
+import 'package:app/features/gallery/data/dtos/responses/get_gallery_by_id_response_dto.dart';
 import 'package:app/features/gallery/domain/repositories/gallery_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
@@ -35,7 +34,7 @@ class GalleryRepositoryImpl implements GalleryRepository {
   }) async {
     try {
       final response = await _remoteDataSource.getGalleries(page: page);
-      return Right(response);
+      return Right(response.data!);
     } catch (e) {
       return Left(
         _mapExceptionToFailure(e, 'GalleryRepositoryImpl.getGalleries'),
@@ -44,11 +43,13 @@ class GalleryRepositoryImpl implements GalleryRepository {
   }
 
   @override
-  Future<Either<Failure, Gallery>> getGalleryById(int id) async {
+  Future<Either<Failure, GetGalleryByIdResponseData>> getGalleryById(
+    int id,
+  ) async {
     try {
       final responseDto = await _remoteDataSource.getGalleryById(id);
-      final entity = GalleryMapper.toEntity(responseDto);
-      return Right(entity);
+
+      return Right(responseDto.data!);
     } catch (e) {
       return Left(
         _mapExceptionToFailure(e, 'GalleryRepositoryImpl.getGalleryById'),

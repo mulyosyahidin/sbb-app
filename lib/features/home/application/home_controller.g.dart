@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'home_providers.dart';
+part of 'home_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$fetchHomeDataHash() => r'e127031e0bdad97b62e23822839c4c090755ce97';
+String _$fetchHomeDataHash() => r'b1e795eb956f5e0ea80ea2ec2ba5932674b8c23d';
 
 /// See also [fetchHomeData].
 @ProviderFor(fetchHomeData)
@@ -23,7 +23,7 @@ final fetchHomeDataProvider = AutoDisposeFutureProvider<HomeState>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef FetchHomeDataRef = AutoDisposeFutureProviderRef<HomeState>;
-String _$slidersHash() => r'500a2ddb9b9c2f62f235d913e23f7f07bf5fe9c1';
+String _$slidersHash() => r'180f9cc40a9b8eca854c1fcead74ac6f585d7fa8';
 
 /// See also [sliders].
 @ProviderFor(sliders)

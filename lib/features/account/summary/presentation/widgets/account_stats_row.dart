@@ -1,6 +1,5 @@
 import 'package:app/core/theme/app_text_style.dart';
 import 'package:app/core/theme/app_theme.dart';
-import 'package:app/features/partner/application/partner_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,7 +9,6 @@ class AccountStatsRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final partner = ref.watch(partnerControllerProvider).value;
 
     return Column(
       children: [
@@ -28,13 +26,12 @@ class AccountStatsRow extends ConsumerWidget {
         const SizedBox(height: 12),
         Row(
           children: [
-            if (partner?.level == 'consultant' ||
-                partner?.level == 'partner_consultant') ...[
-              Expanded(
-                child: _buildStatCard(context, '5', 'Mitra'),
-              ),
-              const SizedBox(width: 12),
-            ],
+            // if (partner == true) ...[
+            //   Expanded(
+            //     child: _buildStatCard(context, '5', 'Mitra'),
+            //   ),
+            //   const SizedBox(width: 12),
+            // ],
             Expanded(
               child: _buildStatCard(
                 context,

@@ -1,25 +1,18 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'create_bank_account_request_dto.freezed.dart';
 part 'create_bank_account_request_dto.g.dart';
 
-@JsonSerializable()
-class CreateBankAccountRequestDto {
-  final String bankName;
-  final String accountName;
-  final String accountNumber;
-  final String? note;
-  final bool isPrimary;
-
-  CreateBankAccountRequestDto({
-    required this.bankName,
-    required this.accountName,
-    required this.accountNumber,
-    this.note,
-    this.isPrimary = false,
-  });
+@freezed
+abstract class CreateBankAccountRequestDto with _$CreateBankAccountRequestDto {
+  const factory CreateBankAccountRequestDto({
+    required String bankName,
+    required String accountName,
+    required String accountNumber,
+    String? note,
+    @Default(false) bool isPrimary,
+  }) = _CreateBankAccountRequestDto;
 
   factory CreateBankAccountRequestDto.fromJson(Map<String, dynamic> json) =>
       _$CreateBankAccountRequestDtoFromJson(json);
-
-  Map<String, dynamic> toJson() => _$CreateBankAccountRequestDtoToJson(this);
 }

@@ -30,13 +30,13 @@ class EditPasswordRepositoryImpl implements EditPasswordRepository {
   }
 
   @override
-  Future<Either<Failure, String>> updatePassword({
+  Future<Either<Failure, void>> updatePassword({
     required String currentPassword,
     required String newPassword,
     required String newPasswordConfirmation,
   }) async {
     try {
-      final response = await _editPasswordRemoteDataSource.updatePassword(
+      await _editPasswordRemoteDataSource.updatePassword(
         UpdatePasswordRequestDto(
           currentPassword: currentPassword,
           newPassword: newPassword,
@@ -44,7 +44,7 @@ class EditPasswordRepositoryImpl implements EditPasswordRepository {
         ),
       );
 
-      return Right(response.message);
+      return Right(null);
     } catch (e) {
       return Left(
         _mapExceptionToFailure(e, 'EditPasswordRepositoryImpl'),

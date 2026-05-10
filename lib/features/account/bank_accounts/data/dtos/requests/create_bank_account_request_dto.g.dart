@@ -6,9 +6,9 @@ part of 'create_bank_account_request_dto.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-CreateBankAccountRequestDto _$CreateBankAccountRequestDtoFromJson(
+_CreateBankAccountRequestDto _$CreateBankAccountRequestDtoFromJson(
         Map<String, dynamic> json) =>
-    CreateBankAccountRequestDto(
+    _CreateBankAccountRequestDto(
       bankName: json['bank_name'] as String,
       accountName: json['account_name'] as String,
       accountNumber: json['account_number'] as String,
@@ -17,7 +17,7 @@ CreateBankAccountRequestDto _$CreateBankAccountRequestDtoFromJson(
     );
 
 Map<String, dynamic> _$CreateBankAccountRequestDtoToJson(
-        CreateBankAccountRequestDto instance) =>
+        _CreateBankAccountRequestDto instance) =>
     <String, dynamic>{
       'bank_name': instance.bankName,
       'account_name': instance.accountName,

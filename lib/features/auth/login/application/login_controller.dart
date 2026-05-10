@@ -13,7 +13,7 @@ import 'package:app/features/auth/login/data/dto/requests/login_request_dto.dart
 import 'package:app/features/auth/login/data/dto/responses/login_response_dto.dart';
 import 'package:app/features/auth/login/data/repositories/login_repository_impl.dart';
 import 'package:app/features/auth/login/domain/repositories/login_repository.dart';
-import 'package:app/features/home/application/home_providers.dart';
+import 'package:app/features/home/application/home_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'login_controller.g.dart';

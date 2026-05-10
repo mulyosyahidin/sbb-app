@@ -1,18 +1,23 @@
+import 'dart:io';
+
 import 'package:app/app/app_router.dart';
 import 'package:app/core/theme/app_text_style.dart';
-import 'package:app/shared/widgets/app_bar_header.dart';
-import 'package:app/shared/forms/app_choice_field.dart';
-import 'package:app/shared/widgets/primary_button.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:go_router/go_router.dart';
-
-import 'package:app/features/partner/application/partner_controller.dart';
+import 'package:app/core/utils/toast_util.dart';
 import 'package:app/features/account/bank_accounts/application/bank_accounts_controller.dart';
 import 'package:app/features/account/bank_accounts/domain/entities/bank_account.dart';
-import 'package:app/features/partner/domain/entities/partner.dart';
-import 'package:app/features/partner/presentation/widgets/partner_skeleton.dart';
+import 'package:app/features/contract/application/contract_draft_controller.dart';
+import 'package:app/features/contract/data/dtos/requests/save_draft_request_dto.dart';
+import 'package:app/features/contract/presentation/widgets/contract_create_skeleton.dart';
+import 'package:app/shared/forms/app_dropdown_field.dart';
+import 'package:app/shared/forms/app_file_picker_field.dart';
+import 'package:app/shared/forms/app_text_field.dart';
+import 'package:app/shared/widgets/app_bar_header.dart';
+import 'package:app/shared/widgets/primary_button.dart';
+import 'package:app/shared/widgets/secondary_button.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 class ContractCreatePage extends ConsumerStatefulWidget {
   const ContractCreatePage({super.key});
@@ -23,11 +28,21 @@ class ContractCreatePage extends ConsumerStatefulWidget {
 
 class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
   int quantity = 1;
-  String selectedCowType = 'Brahman Cross';
-  int currentPrice = 18000000;
+  String selectedCowType = 'Pilih Sapi';
+  int? selectedCowId;
+  int? selectedCowWeight;
+  int currentPrice = 0;
   BankAccount? selectedBankAccount;
-  String selectedProgram = 'Regular';
+  String selectedProgram = 'Reguler';
   String selectedDuration = '12 Bulan';
+
+  final _nameController = TextEditingController();
+  final _nikController = TextEditingController();
+  File? _kycFile;
+  bool _isDataPopulated = false;
+  bool _isInitialCheckDone = false;
+  String? _initialKycFileName;
+  bool _isKycDeleted = false;
 
   final currencyFormat = NumberFormat.currency(
     locale: 'id_ID',
@@ -38,9 +53,15 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
   int get subtotal => quantity * currentPrice;
 
   @override
+  void dispose() {
+    _nameController.dispose();
+    _nikController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final partnerAsync = ref.watch(partnerControllerProvider);
 
     ref.listen(bankAccountsControllerProvider, (previous, next) {
       next.whenData((state) {
@@ -52,6 +73,51 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
       });
     });
 
+    ref.listen(contractDraftControllerProvider, (previous, next) {
+      if (!next.isLoading) {
+        setState(() => _isInitialCheckDone = true);
+      }
+ 
+      next.whenData((contract) {
+        if (contract != null && !_isDataPopulated) {
+          _nameController.text = contract.userName ?? '';
+          _nikController.text = contract.userIdentityNumber ?? '';
+          _initialKycFileName = contract.userIdentityNumberFile?.fileName;
+ 
+          if (contract.cowId != null) {
+            selectedCowId = contract.cowId;
+            selectedCowType = contract.cowName ?? 'Pilih Sapi';
+            currentPrice = contract.cowPrice?.toInt() ?? 0;
+            selectedCowWeight = contract.cowWeightKg;
+            quantity = contract.cowQuantity ?? 1;
+          }
+ 
+          if (contract.program != null) {
+            selectedProgram = contract.program!.value;
+          }
+ 
+          if (contract.contractMonthDuration != null) {
+            selectedDuration = '${contract.contractMonthDuration} Bulan';
+          }
+ 
+          _isDataPopulated = true;
+          setState(() {});
+        }
+      });
+ 
+      if (next is AsyncError) {
+        ToastUtil.showError(
+          context,
+          title: 'Gagal',
+          description: next.error.toString(),
+        );
+      }
+    });
+ 
+    final contractState = ref.watch(contractDraftControllerProvider);
+    final isLoading = contractState.isLoading;
+    final isInitialLoading = !_isInitialCheckDone && isLoading;
+
     return Scaffold(
       backgroundColor: colorScheme.surface,
       body: SafeArea(
@@ -61,17 +127,45 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
               title: 'Buat Kontrak Baru',
               subtitle: 'Lengkapi rincian akad kerjasama',
             ),
-            Expanded(
-              child: partnerAsync.when(
-                data: (partner) {
-                  if (partner == null) {
-                    return _buildBecomePartnerState(context);
-                  }
-                  return _buildForm(context, partner);
-                },
-                loading: () => const PartnerSkeleton(),
-                error: (error, stack) => _buildErrorState(context, error),
+            if (_isDataPopulated)
+              Container(
+                margin: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: colorScheme.primaryContainer.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: colorScheme.primary.withValues(alpha: 0.3),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.info_outline,
+                      color: colorScheme.primary,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'Anda masih memiliki draft kontrak, silakan lanjutkan pengisian.',
+                        style: TextStyle(
+                          color: colorScheme.onPrimaryContainer,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
+            Expanded(
+              child: isInitialLoading
+                  ? const Padding(
+                      padding: EdgeInsets.all(24.0),
+                      child: ContractCreateSkeleton(),
+                    )
+                  : _buildForm(context),
             ),
           ],
         ),
@@ -79,20 +173,50 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
     );
   }
 
-  Widget _buildForm(BuildContext context, Partner partner) {
+  Widget _buildForm(BuildContext context) {
+    final contractState = ref.watch(contractDraftControllerProvider);
+    final isLoading = contractState.isLoading;
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _buildSectionHeader(context, 'Informasi Mitra'),
+          _buildSectionHeader(context, 'Data Diri'),
           const SizedBox(height: 12),
           _buildInfoCard(
             context,
             [
-              _buildReadOnlyField(context, 'Nama Lengkap', partner.name),
+              AppTextField(
+                label: 'Nama Lengkap',
+                controller: _nameController,
+                textCapitalization: TextCapitalization.words,
+                enabled: !isLoading,
+              ),
               const SizedBox(height: 16),
-              _buildReadOnlyField(context, 'NIK', partner.nik),
+              AppTextField(
+                label: 'NIK',
+                controller: _nikController,
+                keyboardType: TextInputType.number,
+                enabled: !isLoading,
+              ),
+              const SizedBox(height: 16),
+              AppFilePickerField(
+                key: ValueKey('kyc_${_initialKycFileName ?? 'none'}'),
+                label: 'KTP',
+                allowedExtensions: const ['jpg', 'png', 'pdf'],
+                initialValue: _initialKycFileName,
+                onFileSelected: (file) {
+                  setState(() {
+                    _kycFile = file;
+                    if (file == null && _initialKycFileName != null) {
+                      _isKycDeleted = true;
+                    } else if (file != null) {
+                      _isKycDeleted = false;
+                    }
+                  });
+                },
+              ),
             ],
           ),
           const SizedBox(height: 32),
@@ -108,13 +232,18 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
           const SizedBox(height: 12),
           _buildCalculationCard(context),
           const SizedBox(height: 48),
+          SecondaryButton(
+            label: 'Simpan Draft',
+            isLoading: isLoading,
+            onPressed: isLoading ? null : _handleSaveDraft,
+          ),
+          const SizedBox(height: 16),
           PrimaryButton(
             label: 'Submit Kontrak',
-            onPressed: selectedBankAccount == null
+            onPressed: (selectedBankAccount == null || currentPrice == 0)
                 ? null
                 : () {
                     final data = {
-                      'partner': partner,
                       'quantity': quantity,
                       'cowType': selectedCowType,
                       'price': currentPrice,
@@ -122,6 +251,9 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
                       'program': selectedProgram,
                       'duration': selectedDuration,
                       'subtotal': subtotal,
+                      'name': _nameController.text,
+                      'nik': _nikController.text,
+                      'kycFile': _kycFile,
                     };
                     context.push(Routes.contractPreview, extra: data);
                   },
@@ -145,100 +277,31 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          AppChoiceField<String>(
+          AppDropdownField<String>(
             label: 'Pilih Program',
-            options: const [
-              ChoiceOption(label: 'Regular', value: 'Regular'),
-              ChoiceOption(label: 'PPM', value: 'PPM'),
-              ChoiceOption(label: 'Umroh', value: 'Umroh'),
+            value: selectedProgram,
+            items: const [
+              DropdownMenuItem(value: 'Reguler', child: Text('Reguler')),
+              DropdownMenuItem(value: 'PPM', child: Text('PPM')),
+              DropdownMenuItem(value: 'Umroh', child: Text('Umroh')),
             ],
-            selected: selectedProgram,
-            onSelected: (val) => setState(() => selectedProgram = val),
+            onChanged: (val) {
+              if (val != null) setState(() => selectedProgram = val);
+            },
           ),
           const SizedBox(height: 24),
-          AppChoiceField<String>(
+          AppDropdownField<String>(
             label: 'Durasi Kontrak',
-            options: const [
-              ChoiceOption(label: '12 Bulan', value: '12 Bulan'),
-              ChoiceOption(label: '36 Bulan', value: '36 Bulan'),
+            value: selectedDuration,
+            items: const [
+              DropdownMenuItem(value: '12 Bulan', child: Text('12 Bulan')),
+              DropdownMenuItem(value: '36 Bulan', child: Text('36 Bulan')),
             ],
-            selected: selectedDuration,
-            onSelected: (val) => setState(() => selectedDuration = val),
+            onChanged: (val) {
+              if (val != null) setState(() => selectedDuration = val);
+            },
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildBecomePartnerState(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              color: colorScheme.primaryContainer,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.handshake_outlined,
-              size: 36,
-              color: colorScheme.primary,
-            ),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'Hanya untuk Mitra',
-            style: AppTextStyles.heading(),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Anda harus terdaftar sebagai mitra untuk dapat membuat kontrak kerjasama investasi.',
-            style: AppTextStyles.body(color: colorScheme.onSurfaceVariant),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 32),
-          PrimaryButton(
-            label: 'DAFTAR MITRA SEKARANG',
-            onPressed: () => context.push(Routes.openPartner),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildErrorState(BuildContext context, Object error) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline, size: 48, color: Colors.red),
-            const SizedBox(height: 16),
-            Text(
-              'Gagal mengambil data mitra',
-              style: AppTextStyles.title(),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              error.toString(),
-              textAlign: TextAlign.center,
-              style: AppTextStyles.body(),
-            ),
-            const SizedBox(height: 24),
-            PrimaryButton(
-              label: 'Coba Lagi',
-              onPressed: () => ref.refresh(partnerControllerProvider),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -269,30 +332,6 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
     );
   }
 
-  Widget _buildReadOnlyField(BuildContext context, String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: AppTextStyles.body(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-            fontSize: 12,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: AppTextStyles.body(
-            fontWeight: FontWeight.bold,
-            fontSize: 15,
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildFormCard(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return Container(
@@ -318,8 +357,10 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
               final result = await context.push(Routes.cowCatalog);
               if (result != null && result is Map<String, dynamic>) {
                 setState(() {
+                  selectedCowId = result['id'] as int;
                   selectedCowType = result['name'] as String;
                   currentPrice = result['price'] as int;
+                  selectedCowWeight = result['weight_kg'] as int;
                 });
               }
             },
@@ -686,5 +727,31 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
         ),
       ],
     );
+  }
+
+  Future<void> _handleSaveDraft() async {
+    final dto = SaveDraftRequestDto(
+      userName: _nameController.text,
+      userIdentityNumber: _nikController.text,
+      userIdentityNumberFile: _kycFile,
+      cowId: selectedCowId,
+      cowQuantity: quantity,
+      cowTotalPrice: subtotal.toDouble(),
+      bankAccountId: selectedBankAccount?.id,
+      program: selectedProgram,
+      contractMonthDuration: int.tryParse(selectedDuration.split(' ')[0]),
+      deleteUserIdentityNumberFile: _isKycDeleted,
+    );
+
+    final result =
+        await ref.read(contractDraftControllerProvider.notifier).saveDraft(dto);
+
+    if (result != null && mounted) {
+      ToastUtil.showSuccess(
+        context,
+        title: 'Berhasil',
+        description: 'Draft kontrak berhasil disimpan',
+      );
+    }
   }
 }

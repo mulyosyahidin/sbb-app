@@ -6,16 +6,16 @@ part of 'update_password_request_dto.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-UpdatePasswordRequestDto _$UpdatePasswordRequestDtoFromJson(
+_UpdatePasswordRequestDto _$UpdatePasswordRequestDtoFromJson(
         Map<String, dynamic> json) =>
-    UpdatePasswordRequestDto(
+    _UpdatePasswordRequestDto(
       currentPassword: json['current_password'] as String,
       newPassword: json['new_password'] as String,
       newPasswordConfirmation: json['new_password_confirmation'] as String,
     );
 
 Map<String, dynamic> _$UpdatePasswordRequestDtoToJson(
-        UpdatePasswordRequestDto instance) =>
+        _UpdatePasswordRequestDto instance) =>
     <String, dynamic>{
       'current_password': instance.currentPassword,
       'new_password': instance.newPassword,

@@ -1,19 +1,15 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'update_profile_request_dto.freezed.dart';
 part 'update_profile_request_dto.g.dart';
 
-@JsonSerializable()
-class UpdateProfileRequestDto {
-  final String name;
-  final String email;
-
-  UpdateProfileRequestDto({
-    required this.name,
-    required this.email,
-  });
+@freezed
+abstract class UpdateProfileRequestDto with _$UpdateProfileRequestDto {
+  const factory UpdateProfileRequestDto({
+    required String name,
+    required String email,
+  }) = _UpdateProfileRequestDto;
 
   factory UpdateProfileRequestDto.fromJson(Map<String, dynamic> json) =>
       _$UpdateProfileRequestDtoFromJson(json);
-
-  Map<String, dynamic> toJson() => _$UpdateProfileRequestDtoToJson(this);
 }

@@ -1,17 +1,17 @@
 import 'package:app/core/theme/app_text_style.dart';
-import 'package:app/features/home/application/home_providers.dart';
+import 'package:app/features/home/application/home_controller.dart';
 import 'package:app/shared/widgets/app_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeBanner extends ConsumerStatefulWidget {
-  const HomeBanner({super.key});
+class HomeSlider extends ConsumerStatefulWidget {
+  const HomeSlider({super.key});
 
   @override
-  ConsumerState<HomeBanner> createState() => _HomeBannerState();
+  ConsumerState<HomeSlider> createState() => _HomeSliderState();
 }
 
-class _HomeBannerState extends ConsumerState<HomeBanner> {
+class _HomeSliderState extends ConsumerState<HomeSlider> {
   final PageController _pageController = PageController();
   int _currentIndex = 0;
 
@@ -139,7 +139,12 @@ class _HomeBannerState extends ConsumerState<HomeBanner> {
           child: CircularProgressIndicator(),
         ),
       ),
-      error: (err, stack) => const SizedBox.shrink(),
+      error: (err, stack) => Center(
+        child: Text(
+          'Slider Error: $err',
+          style: const TextStyle(color: Colors.red, fontSize: 10),
+        ),
+      ),
     );
   }
 }

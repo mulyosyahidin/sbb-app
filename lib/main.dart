@@ -1,4 +1,5 @@
 import 'package:app/app/app_router.dart';
+import 'package:app/core/application/app_startup.dart';
 import 'package:app/core/config/env.dart';
 import 'package:app/core/services/fcm_service.dart';
 import 'package:app/core/services/notification_service.dart';
@@ -57,6 +58,8 @@ class MyApp extends ConsumerStatefulWidget {
 class _MyAppState extends ConsumerState<MyApp> {
   @override
   Widget build(BuildContext context) {
+    ref.watch(appStartupProvider);
+
     final router = ref.watch(routerProvider);
 
     return MaterialApp.router(
