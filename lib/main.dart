@@ -1,10 +1,12 @@
 import 'package:app/app/app_router.dart';
 import 'package:app/core/application/app_startup.dart';
 import 'package:app/core/config/env.dart';
+import 'package:app/core/services/fcm_handler.dart';
 import 'package:app/core/services/fcm_service.dart';
 import 'package:app/core/services/notification_service.dart';
 import 'package:app/core/theme/app_theme.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -12,6 +14,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'firebase_options.dart';
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,6 +47,8 @@ void main() async {
     };
   }
 
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   runApp(
     ProviderScope(
       child: const MyApp(),
@@ -56,6 +64,14 @@ class MyApp extends ConsumerStatefulWidget {
 }
 
 class _MyAppState extends ConsumerState<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(fcmHandlerProvider).init();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     ref.watch(appStartupProvider);

@@ -1,27 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'contract_draft_controller.dart';
+part of 'pending_notification_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$contractDraftControllerHash() =>
-    r'4561100d4767bf649002d02c8af288e896c6e62e';
+String _$pendingNotificationHash() =>
+    r'a59ec91200445b09cce18109017afb228f51ef97';
 
-/// See also [ContractDraftController].
-@ProviderFor(ContractDraftController)
-final contractDraftControllerProvider = AutoDisposeAsyncNotifierProvider<
-    ContractDraftController, Contract?>.internal(
-  ContractDraftController.new,
-  name: r'contractDraftControllerProvider',
+/// See also [PendingNotification].
+@ProviderFor(PendingNotification)
+final pendingNotificationProvider =
+    NotifierProvider<PendingNotification, String?>.internal(
+  PendingNotification.new,
+  name: r'pendingNotificationProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$contractDraftControllerHash,
+      : _$pendingNotificationHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$ContractDraftController = AutoDisposeAsyncNotifier<Contract?>;
+typedef _$PendingNotification = Notifier<String?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

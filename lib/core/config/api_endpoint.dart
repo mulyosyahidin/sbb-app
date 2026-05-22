@@ -48,6 +48,6 @@ class ApiEndpoint {
   static const String getContractDraft = '/contracts/draft';
   static const String saveContractDraft = '/contracts/draft/save';
   static const String getContracts = '/contracts';
-  static const String submitContract = '/contracts/submit';
+  static const String submitContract = '/contracts/draft/submit';
   static const String getContractById = '/contracts/{id}';
 }
