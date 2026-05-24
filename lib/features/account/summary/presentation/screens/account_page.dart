@@ -10,6 +10,10 @@ import 'package:go_router/go_router.dart';
 class AccountPage extends ConsumerWidget {
   const AccountPage({super.key});
 
+  static const _green = Color(0xFF1F6E2D);
+  static const _gold = Color(0xFFD3AB35);
+  static const _pageBackground = Color(0xFFF5F0E6);
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return PopScope(
@@ -19,16 +23,16 @@ class AccountPage extends ConsumerWidget {
         context.go(Routes.home);
       },
       child: Scaffold(
+        backgroundColor: _pageBackground,
         body: SingleChildScrollView(
           child: Column(
             children: [
               const AccountHeader(),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.fromLTRB(16, 18, 16, 28),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const SizedBox(height: 16),
                     const AccountStatsRow(),
                     // if (partner == true) ...[
                     //   const SizedBox(height: 24),
@@ -36,11 +40,8 @@ class AccountPage extends ConsumerWidget {
                     //   const SizedBox(height: 12),
                     //   const ConsultantPanel(),
                     // ],
-                    const SizedBox(height: 24),
-                    _buildSectionTitle(context, 'Pengaturan Akun'),
-                    const SizedBox(height: 12),
-                    const AccountMenuList(),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 18),
+                    _buildMenuSection(context),
                   ],
                 ),
               ),
@@ -51,13 +52,52 @@ class AccountPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildSectionTitle(BuildContext context, String title) {
-    return Text(
-      title,
-      style: AppTextStyles.title(
-        fontWeight: FontWeight.bold,
-        fontSize: 18,
-        color: Theme.of(context).colorScheme.onSurface,
+  Widget _buildMenuSection(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 7,
+                height: 7,
+                decoration: const BoxDecoration(
+                  color: _gold,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'PENGATURAN AKUN',
+                style: AppTextStyles.body(
+                  color: _green,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Divider(
+            height: 1,
+            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
+          ),
+          const SizedBox(height: 10),
+          const AccountMenuList(),
+        ],
       ),
     );
   }

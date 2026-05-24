@@ -1,5 +1,4 @@
 import 'package:app/core/theme/app_text_style.dart';
-import 'package:app/core/theme/app_theme.dart';
 import 'package:app/features/account/bank_accounts/domain/entities/bank_account.dart';
 import 'package:app/features/account/bank_accounts/presentation/widgets/bank_account_detail_bottom_sheet.dart';
 import 'package:flutter/material.dart';
@@ -16,10 +15,13 @@ class BankAccountCard extends StatelessWidget {
     this.onSetPrimary,
   });
 
+  static const _green = Color(0xFF1F6E2D);
+  static const _softGreen = Color(0xFFE9F6DF);
+  static const _gold = Color(0xFFD3AB35);
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return GestureDetector(
       onTap: () {
@@ -31,19 +33,20 @@ class BankAccountCard extends StatelessWidget {
         );
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 10),
+        margin: const EdgeInsets.only(bottom: 12),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.surfaceDark : Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: account.isPrimary
-                ? colorScheme.primary.withValues(alpha: 0.8)
-                : colorScheme.outline.withValues(alpha: isDark ? 0.2 : 0.3),
-            width: account.isPrimary ? 1.5 : 0.5,
-          ),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.06),
+              blurRadius: 14,
+              offset: const Offset(0, 6),
+            ),
+          ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(14),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -51,7 +54,7 @@ class BankAccountCard extends StatelessWidget {
               if (account.isPrimary)
                 Container(
                   height: 3,
-                  color: colorScheme.primary,
+                  color: _gold,
                 ),
 
               Padding(
@@ -63,17 +66,12 @@ class BankAccountCard extends StatelessWidget {
                       width: 42,
                       height: 42,
                       decoration: BoxDecoration(
-                        color: account.isPrimary
-                            ? colorScheme.primaryContainer.withValues(alpha: 0.8)
-                            : colorScheme.surfaceContainerHighest
-                                .withValues(alpha: 0.6),
+                        color: _softGreen,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(
                         Icons.account_balance,
-                        color: account.isPrimary
-                            ? colorScheme.primary
-                            : colorScheme.onSurfaceVariant,
+                        color: _green,
                         size: 20,
                       ),
                     ),
@@ -110,21 +108,21 @@ class BankAccountCard extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: colorScheme.primaryContainer.withValues(alpha: 0.8),
+                          color: _softGreen,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.star_rounded,
-                                size: 11, color: colorScheme.onPrimaryContainer),
+                            const Icon(Icons.star_rounded,
+                                size: 11, color: _gold),
                             const SizedBox(width: 4),
                             Text(
                               'Utama',
                               style: AppTextStyles.label(
-                                color: colorScheme.onPrimaryContainer,
+                                color: _green,
                                 fontSize: 11,
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ],
@@ -174,9 +172,10 @@ class BankAccountCard extends StatelessWidget {
                           OutlinedButton(
                             onPressed: isProcessing ? null : onSetPrimary,
                             style: OutlinedButton.styleFrom(
-                              foregroundColor: colorScheme.primary,
+                              foregroundColor: _green,
+                              backgroundColor: _softGreen,
                               side: BorderSide(
-                                color: colorScheme.primary.withValues(alpha: 0.4),
+                                color: _green.withValues(alpha: 0.18),
                                 width: 0.5,
                               ),
                               shape: RoundedRectangleBorder(
@@ -191,7 +190,8 @@ class BankAccountCard extends StatelessWidget {
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            child: Text(isProcessing ? '......' : 'Jadikan utama'),
+                            child:
+                                Text(isProcessing ? '......' : 'Jadikan utama'),
                           ),
                       ],
                     ),

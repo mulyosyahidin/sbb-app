@@ -1,25 +1,45 @@
 import 'package:app/app/app_router.dart';
+import 'package:app/core/errors/failure.dart';
 import 'package:app/core/theme/app_text_style.dart';
+import 'package:app/features/profit/application/profit_controller.dart';
+import 'package:app/features/profit/domain/entities/profit_payment_history.dart';
 import 'package:app/shared/widgets/app_bar_header.dart';
-import 'package:app/shared/widgets/primary_button.dart';
-import 'package:app/shared/widgets/secondary_button.dart';
+import 'package:app/shared/widgets/app_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class PaymentDetailPage extends StatelessWidget {
-  const PaymentDetailPage({super.key});
+class PaymentDetailPage extends ConsumerWidget {
+  final String paymentId;
+
+  const PaymentDetailPage({
+    super.key,
+    required this.paymentId,
+  });
+
+  static const _green = Color(0xFF1F6E2D);
+  static const _darkGreen = Color(0xFF155B24);
+  static const _tileGreen = Color(0xFF3E8445);
+  static const _softGreen = Color(0xFFE9F6DF);
+  static const _gold = Color(0xFFD3AB35);
+  static const _pageBackground = Color(0xFFF5F0E6);
+
+  static final _currencyFormat = NumberFormat.currency(
+    locale: 'id_ID',
+    symbol: 'Rp ',
+    decimalDigits: 0,
+  );
+
+  static final _dateFormat = DateFormat('dd MMM yyyy', 'id_ID');
 
   @override
-  Widget build(BuildContext context) {
-    const String amount = '+Rp 4.200.000';
-    const String status = 'Sudah cair';
-    const String txId = 'TX-SBB-2026-04-15-001';
-    const String date = '15 April 2026, 09:45 WIB';
-    const String method = 'Transfer Bank (BCA)';
-    const String source = 'Bagi Hasil #SBB-007';
+  Widget build(BuildContext context, WidgetRef ref) {
+    final profitState = ref.watch(profitControllerProvider);
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: _pageBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -28,47 +48,21 @@ class PaymentDetailPage extends StatelessWidget {
               subtitle: 'Keterangan rincian transaksi',
             ),
             Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  children: [
-                    // Amount Hero
-                    _buildAmountHero(context, amount, status),
-                    const SizedBox(height: 32),
+              child: profitState.when(
+                data: (profit) {
+                  final id = int.tryParse(paymentId);
+                  final history = profit.paymentHistories
+                      .where((item) => item.id == id)
+                      .firstOrNull;
 
-                    // Transaction Details
-                    _buildSectionHeader(context, 'Detail Transaksi'),
-                    const SizedBox(height: 12),
-                    _buildInfoCard(context, [
-                      _buildInfoRow(context, 'Jenis Transaksi', 'Bagi Hasil'),
-                      _buildInfoRow(context, 'ID Transaksi', txId),
-                      _buildInfoRow(context, 'Waktu', date),
-                      _buildInfoRow(context, 'Metode', method),
-                      _buildInfoRow(context, 'Sumber Dana', source),
-                    ]),
-                    const SizedBox(height: 32),
+                  if (history == null) {
+                    return _buildNotFound(context);
+                  }
 
-                    // Source Contract
-                    _buildSectionHeader(context, 'Kontrak Terkait'),
-                    const SizedBox(height: 12),
-                    _buildContractCard(context),
-                    const SizedBox(height: 48),
-
-                    // Buttons
-                    PrimaryButton(
-                      label: 'Unduh Bukti Transfer',
-                      onPressed: () {},
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                    ),
-                    const SizedBox(height: 16),
-                    SecondaryButton(
-                      label: 'Hubungi Tim Support',
-                      onPressed: () {},
-                      icon: const Icon(Icons.support_agent_rounded, size: 20),
-                    ),
-                    const SizedBox(height: 40),
-                  ],
-                ),
+                  return _buildContent(context, history);
+                },
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, stackTrace) => _buildError(context, error, ref),
               ),
             ),
           ],
@@ -77,84 +71,191 @@ class PaymentDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildAmountHero(BuildContext context, String amount, String status) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Column(
-      children: [
-        Text(
-          amount,
-          style: AppTextStyles.hero(
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).colorScheme.primary,
+  Widget _buildContent(
+    BuildContext context,
+    ProfitPaymentHistory history,
+  ) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(16, 18, 16, 28),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildAmountHero(history),
+          const SizedBox(height: 18),
+          _buildSectionCard(
+            context,
+            title: 'DETAIL TRANSAKSI',
+            children: [
+              _buildInfoRow(context, 'Jenis Transaksi', 'Bagi Hasil'),
+              _buildInfoRow(context, 'ID Transaksi', 'TX-${history.id}'),
+              _buildInfoRow(
+                  context, 'Tanggal Jadwal', _dateFormat.format(history.date)),
+              _buildInfoRow(
+                context,
+                'Tanggal Cair',
+                history.paidAt == null
+                    ? '-'
+                    : _dateFormat.format(history.paidAt!),
+              ),
+              _buildInfoRow(
+                context,
+                'Nominal Jadwal',
+                _currencyFormat.format(history.nominal),
+              ),
+              _buildInfoRow(
+                context,
+                'Nominal Dibayar',
+                _currencyFormat.format(history.paidNominal ?? history.nominal),
+              ),
+              _buildInfoRow(context, 'Status', _statusLabel(history.status)),
+              _buildInfoRow(
+                context,
+                'Catatan',
+                history.paymentNote?.isNotEmpty == true
+                    ? history.paymentNote!
+                    : '-',
+              ),
+            ],
           ),
-        ),
-        const SizedBox(height: 12),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary.withValues(alpha: isDark ? 0.2 : 0.1),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Text(
-            status,
-            style: AppTextStyles.body(
-              color: isDark ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.9) : Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSectionHeader(BuildContext context, String title) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Text(
-        title,
-        style: AppTextStyles.title(
-          fontWeight: FontWeight.bold,
-          fontSize: 16,
-          color: Theme.of(context).colorScheme.onSurface,
-        ),
+          const SizedBox(height: 12),
+          _buildContractCard(context, history),
+          const SizedBox(height: 12),
+          _buildProofCard(context, history),
+          const SizedBox(height: 16),
+          _buildActions(context, history),
+        ],
       ),
     );
   }
 
-  Widget _buildInfoCard(BuildContext context, List<Widget> children) {
+  Widget _buildAmountHero(ProfitPaymentHistory history) {
+    final paidNominal = history.paidNominal ?? history.nominal;
+
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Theme.of(context).colorScheme.outline),
+        gradient: const LinearGradient(
+          colors: [
+            _darkGreen,
+            Color(0xFF2C8A3C),
+            _green,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: _green.withValues(alpha: 0.18),
+            blurRadius: 18,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            right: -42,
+            top: -50,
+            child: _buildSoftCircle(128),
+          ),
+          Positioned(
+            left: -46,
+            bottom: -60,
+            child: _buildSoftCircle(116),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Nominal pembayaran',
+                style: AppTextStyles.body(
+                  color: Colors.white.withValues(alpha: 0.72),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '+${_currencyFormat.format(paidNominal)}',
+                style: AppTextStyles.title(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 32,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildHeroMetric(
+                      label: 'Status',
+                      value: _statusLabel(history.status),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _buildHeroMetric(
+                      label: 'Tanggal Cair',
+                      value: history.paidAt == null
+                          ? '-'
+                          : _dateFormat.format(history.paidAt!),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSoftCircle(double size) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.06),
+        shape: BoxShape.circle,
+      ),
+    );
+  }
+
+  Widget _buildHeroMetric({
+    required String label,
+    required String value,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: _tileGreen,
+        borderRadius: BorderRadius.circular(14),
       ),
       child: Column(
-        children: children,
-      ),
-    );
-  }
-
-  Widget _buildInfoRow(BuildContext context, String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: AppTextStyles.body(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-              fontSize: 13,
+              color: Colors.white.withValues(alpha: 0.72),
+              fontWeight: FontWeight.w600,
+              fontSize: 12,
             ),
           ),
-          Text(
-            value,
-            style: AppTextStyles.body(
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-              color: Theme.of(context).colorScheme.onSurface,
+          const SizedBox(height: 6),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              value,
+              style: AppTextStyles.title(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
             ),
           ),
         ],
@@ -162,56 +263,359 @@ class PaymentDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildContractCard(BuildContext context) {
+  Widget _buildSectionCard(
+    BuildContext context, {
+    required String title,
+    required List<Widget> children,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: _whiteCardDecoration(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildSectionTitle(context, title),
+          const SizedBox(height: 10),
+          Divider(
+            height: 1,
+            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
+          ),
+          const SizedBox(height: 10),
+          ...children,
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(BuildContext context, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: 3,
+            child: Text(
+              label,
+              style: AppTextStyles.body(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            flex: 4,
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              style: AppTextStyles.body(
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildContractCard(
+    BuildContext context,
+    ProfitPaymentHistory history,
+  ) {
     return InkWell(
       onTap: () => context.push(
-        Routes.contractDetail.replaceAll(':id', 'SBB-K-2025-088'),
+        Routes.contractDetail.replaceAll(':id', history.contractId.toString()),
       ),
-      borderRadius: BorderRadius.circular(24),
+      borderRadius: BorderRadius.circular(14),
       child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primary,
-          borderRadius: BorderRadius.circular(24),
-        ),
+        padding: const EdgeInsets.all(16),
+        decoration: _whiteCardDecoration(),
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(12),
+              width: 42,
+              height: 42,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(16),
+                color: _softGreen,
+                borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.description_outlined,
-                  color: Colors.white, size: 24),
+              child: const Icon(
+                Icons.description_outlined,
+                color: _green,
+                size: 22,
+              ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '#SBB-007 — Brahman Cross',
+                    'Kontrak Terkait',
                     style: AppTextStyles.body(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
+                  const SizedBox(height: 3),
                   Text(
-                    'Kontrak SBB-K-2025-088',
+                    history.contractNumber,
                     style: AppTextStyles.body(
-                      color: Colors.white.withValues(alpha: 0.7),
-                      fontSize: 12,
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
                     ),
                   ),
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right, color: Colors.white),
+            Icon(
+              Icons.chevron_right,
+              color: _gold.withValues(alpha: 0.8),
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildProofCard(
+    BuildContext context,
+    ProfitPaymentHistory history,
+  ) {
+    final proof = history.paymentProofFile;
+
+    return _buildSectionCard(
+      context,
+      title: 'BUKTI PEMBAYARAN',
+      children: [
+        if (proof == null)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Text(
+              'Bukti pembayaran belum tersedia.',
+              textAlign: TextAlign.center,
+              style: AppTextStyles.body(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                fontSize: 13,
+              ),
+            ),
+          )
+        else ...[
+          AppNetworkImage(
+            imageUrl: proof.fileUrl,
+            height: 180,
+            width: double.infinity,
+            borderRadius: 12,
+            fit: BoxFit.cover,
+          ),
+          const SizedBox(height: 10),
+          _buildInfoRow(context, 'Nama File', proof.fileName),
+          _buildInfoRow(context, 'Tipe File', proof.fileType),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildActions(BuildContext context, ProfitPaymentHistory history) {
+    return Row(
+      children: [
+        Expanded(
+          child: _buildActionButton(
+            context,
+            label: 'Buka Bukti',
+            icon: Icons.open_in_new_rounded,
+            foregroundColor: Theme.of(context).colorScheme.onSurface,
+            backgroundColor: Colors.white,
+            onPressed: history.paymentProofFile == null
+                ? null
+                : () => _openProof(context, history.paymentProofFile!.fileUrl),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _buildActionButton(
+            context,
+            label: 'Bantuan',
+            icon: Icons.support_agent_rounded,
+            foregroundColor: Colors.white,
+            backgroundColor: _green,
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Fitur bantuan belum tersedia.')),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActionButton(
+    BuildContext context, {
+    required String label,
+    required IconData icon,
+    required Color foregroundColor,
+    required Color backgroundColor,
+    required VoidCallback? onPressed,
+  }) {
+    return SizedBox(
+      height: 52,
+      child: ElevatedButton.icon(
+        onPressed: onPressed,
+        icon: Icon(icon, size: 18),
+        label: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(label),
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: backgroundColor,
+          foregroundColor: foregroundColor,
+          disabledBackgroundColor: Colors.white.withValues(alpha: 0.55),
+          disabledForegroundColor:
+              Theme.of(context).colorScheme.onSurfaceVariant,
+          elevation: backgroundColor == Colors.white ? 0 : 2,
+          shadowColor: _green.withValues(alpha: 0.18),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          textStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 13,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(BuildContext context, String title) {
+    return Row(
+      children: [
+        Container(
+          width: 7,
+          height: 7,
+          decoration: const BoxDecoration(
+            color: _gold,
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          title,
+          style: AppTextStyles.body(
+            color: _green,
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNotFound(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Container(
+          padding: const EdgeInsets.all(18),
+          decoration: _whiteCardDecoration(),
+          child: Text(
+            'Data pembayaran tidak ditemukan.',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.body(
+              color: Theme.of(context).colorScheme.onSurface,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildError(BuildContext context, Object error, WidgetRef ref) {
+    final message = error is Failure
+        ? error.message
+        : 'Gagal mendapatkan detail pembayaran';
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Container(
+          padding: const EdgeInsets.all(18),
+          decoration: _whiteCardDecoration(),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.error_outline,
+                size: 40,
+                color: Theme.of(context).colorScheme.error,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.body(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextButton(
+                onPressed: () => ref.invalidate(profitControllerProvider),
+                child: const Text('Coba Lagi'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _openProof(BuildContext context, String url) async {
+    final uri = Uri.tryParse(url);
+    if (uri == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('URL bukti pembayaran tidak valid.')),
+      );
+      return;
+    }
+
+    final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!opened && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Gagal membuka bukti pembayaran.')),
+      );
+    }
+  }
+
+  String _statusLabel(String status) {
+    switch (status) {
+      case 'berhasil':
+        return 'Sudah cair';
+      case 'pending':
+        return 'Terjadwal';
+      default:
+        return status;
+    }
+  }
+
+  BoxDecoration _whiteCardDecoration() {
+    return BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(14),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.06),
+          blurRadius: 14,
+          offset: const Offset(0, 6),
+        ),
+      ],
     );
   }
 }

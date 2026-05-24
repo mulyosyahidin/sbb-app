@@ -18,6 +18,13 @@ class _CalculatorPageState extends State<CalculatorPage> {
   static const double _monthlyYieldPerCow = 1000000;
   static const int _durationMonths = 12;
 
+  static const _green = Color(0xFF1F6E2D);
+  static const _darkGreen = Color(0xFF155B24);
+  static const _tileGreen = Color(0xFF3E8445);
+  static const _softGreen = Color(0xFFE9F6DF);
+  static const _gold = Color(0xFFD3AB35);
+  static const _pageBackground = Color(0xFFF5F0E6);
+
   final _currencyFormat = NumberFormat.currency(
     locale: 'id_ID',
     symbol: 'Rp ',
@@ -46,14 +53,13 @@ class _CalculatorPageState extends State<CalculatorPage> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final totalModal = _cowCount * _pricePerCow;
     final monthlyProfit = _cowCount * _monthlyYieldPerCow;
     final totalProfit = monthlyProfit * _durationMonths;
     final totalFinalReturn = totalModal + totalProfit;
 
     return Scaffold(
-      backgroundColor: colorScheme.surface,
+      backgroundColor: _pageBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -63,31 +69,22 @@ class _CalculatorPageState extends State<CalculatorPage> {
             ),
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.fromLTRB(16, 18, 16, 28),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _buildInputSection(colorScheme),
-                    const SizedBox(height: 24),
+                    _buildInputSection(context),
+                    const SizedBox(height: 18),
                     _buildSummaryCard(
-                      colorScheme,
                       totalModal: totalModal,
                       monthlyProfit: monthlyProfit,
                       totalFinalReturn: totalFinalReturn,
                     ),
-                    const SizedBox(height: 32),
-                    Text(
-                      'Rincian Proyeksi Bulanan',
-                      style: AppTextStyles.title(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: colorScheme.onSurface,
-                      ),
+                    const SizedBox(height: 18),
+                    _buildProjectionSection(
+                      context,
+                      monthlyProfit: monthlyProfit,
                     ),
-                    const SizedBox(height: 16),
-                    _buildMonthlyTable(colorScheme,
-                        monthlyProfit: monthlyProfit),
-                    const SizedBox(height: 32),
                   ],
                 ),
               ),
@@ -98,36 +95,21 @@ class _CalculatorPageState extends State<CalculatorPage> {
     );
   }
 
-  Widget _buildInputSection(ColorScheme colorScheme) {
+  Widget _buildInputSection(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.1),),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+      decoration: _whiteCardDecoration(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Jumlah Sapi',
-            style: AppTextStyles.label(
-              color: colorScheme.primary,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          _buildSectionTitle(context, 'JUMLAH SAPI'),
           const SizedBox(height: 16),
           Row(
             children: [
               _buildAdjustButton(
-                  Icons.remove, () => _updateCowCount(_cowCount - 1),),
+                Icons.remove,
+                () => _updateCowCount(_cowCount - 1),
+              ),
               Expanded(
                 child: TextField(
                   controller: _controller,
@@ -136,7 +118,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                   style: AppTextStyles.title(
                     fontWeight: FontWeight.bold,
                     fontSize: 24,
-                    color: colorScheme.onSurface,
+                    color: _green,
                   ),
                   decoration: const InputDecoration(
                     border: InputBorder.none,
@@ -149,24 +131,25 @@ class _CalculatorPageState extends State<CalculatorPage> {
                 ),
               ),
               _buildAdjustButton(
-                  Icons.add, () => _updateCowCount(_cowCount + 1),),
+                Icons.add,
+                () => _updateCowCount(_cowCount + 1),
+              ),
             ],
           ),
           const SizedBox(height: 16),
           SliderTheme(
             data: SliderThemeData(
-              activeTrackColor: colorScheme.primary,
-              inactiveTrackColor:
-                  colorScheme.primaryContainer.withValues(alpha: 0.2),
-              thumbColor: colorScheme.primary,
-              overlayColor: colorScheme.primary.withValues(alpha: 0.1),
+              activeTrackColor: _green,
+              inactiveTrackColor: _softGreen,
+              thumbColor: _green,
+              overlayColor: _green.withValues(alpha: 0.1),
             ),
             child: Slider(
               value: _cowCount.toDouble().clamp(1, 100),
               min: 1,
               max: 100,
               divisions: 99,
-              onChanged: (value) => _updateCowCount(value.toInt(),),
+              onChanged: (value) => _updateCowCount(value.toInt()),
             ),
           ),
         ],
@@ -175,23 +158,21 @@ class _CalculatorPageState extends State<CalculatorPage> {
   }
 
   Widget _buildAdjustButton(IconData icon, VoidCallback onTap) {
-    final colorScheme = Theme.of(context).colorScheme;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: colorScheme.primary.withValues(alpha: 0.1),
+          color: _softGreen,
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Icon(icon, color: colorScheme.primary, size: 20),
+        child: Icon(icon, color: _green, size: 20),
       ),
     );
   }
 
-  Widget _buildSummaryCard(
-    ColorScheme colorScheme, {
+  Widget _buildSummaryCard({
     required double totalModal,
     required double monthlyProfit,
     required double totalFinalReturn,
@@ -199,63 +180,126 @@ class _CalculatorPageState extends State<CalculatorPage> {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
+        borderRadius: BorderRadius.circular(24),
+        gradient: const LinearGradient(
+          colors: [
+            _darkGreen,
+            Color(0xFF2C8A3C),
+            _green,
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            colorScheme.primary,
-            colorScheme.primary.withValues(alpha: 0.8),
-          ],
         ),
-        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: colorScheme.primary.withValues(alpha: 0.3),
-            blurRadius: 15,
-            offset: const Offset(0, 8),
+            color: _green.withValues(alpha: 0.18),
+            blurRadius: 18,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
-      child: Column(
+      child: Stack(
         children: [
-          _buildSummaryRow(
-            'Total Modal',
-            _currencyFormat.format(totalModal),
-            isTransparent: true,
+          Positioned(
+            right: -42,
+            top: -50,
+            child: _buildSoftCircle(128),
           ),
-          const Divider(height: 24, color: Colors.white24),
-          _buildSummaryRow(
-            'Laba per Bulan',
-            _currencyFormat.format(monthlyProfit),
-            isTransparent: true,
+          Positioned(
+            left: -46,
+            bottom: -60,
+            child: _buildSoftCircle(116),
           ),
-          const SizedBox(height: 24),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(16),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Total pengembalian',
+                style: AppTextStyles.body(
+                  color: Colors.white.withValues(alpha: 0.72),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                _currencyFormat.format(totalFinalReturn),
+                style: AppTextStyles.title(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 32,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildSummaryMetric(
+                      label: 'Total Modal',
+                      value: _currencyFormat.format(totalModal),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _buildSummaryMetric(
+                      label: 'Profit/bln',
+                      value: _currencyFormat.format(monthlyProfit),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSoftCircle(double size) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.06),
+        shape: BoxShape.circle,
+      ),
+    );
+  }
+
+  Widget _buildSummaryMetric({
+    required String label,
+    required String value,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: _tileGreen,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AppTextStyles.body(
+              color: Colors.white.withValues(alpha: 0.72),
+              fontWeight: FontWeight.w600,
+              fontSize: 12,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Total Pengembalian',
-                  style: AppTextStyles.body(
-                    color: Colors.white.withValues(alpha: 0.9),
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  _currencyFormat.format(totalFinalReturn),
-                  style: AppTextStyles.title(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24,
-                  ),
-                ),
-              ],
+          ),
+          const SizedBox(height: 6),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              value,
+              style: AppTextStyles.title(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
             ),
           ),
         ],
@@ -263,116 +307,154 @@ class _CalculatorPageState extends State<CalculatorPage> {
     );
   }
 
-  Widget _buildSummaryRow(String label, String value,
-      {bool isTransparent = false}) {
+  Widget _buildProjectionSection(
+    BuildContext context, {
+    required double monthlyProfit,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: _whiteCardDecoration(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildSectionTitle(context, 'RINCIAN PROYEKSI BULANAN'),
+          const SizedBox(height: 10),
+          Divider(
+            height: 1,
+            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
+          ),
+          _buildMonthlyTable(context, monthlyProfit: monthlyProfit),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(BuildContext context, String title) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Expanded(
-          child: Text(
-            label,
-            style: AppTextStyles.body(
-              color: isTransparent
-                  ? Colors.white.withValues(alpha: 0.8)
-                  : Colors.black87,
-            ),
+        Container(
+          width: 7,
+          height: 7,
+          decoration: const BoxDecoration(
+            color: _gold,
+            shape: BoxShape.circle,
           ),
         ),
         const SizedBox(width: 8),
         Text(
-          value,
-          style: AppTextStyles.title(
-            fontSize: 16,
+          title,
+          style: AppTextStyles.body(
+            color: _green,
+            fontSize: 12,
             fontWeight: FontWeight.bold,
-            color: isTransparent ? Colors.white : Colors.black,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildMonthlyTable(ColorScheme colorScheme,
-      {required double monthlyProfit}) {
-    return Container(
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.1),),
-      ),
-      child: Column(
-        children: List.generate(_durationMonths, (index) {
-          final month = index + 1;
-          final isLast = month == _durationMonths;
-          final currentMonthlyPayout = monthlyProfit;
+  Widget _buildMonthlyTable(
+    BuildContext context, {
+    required double monthlyProfit,
+  }) {
+    final colorScheme = Theme.of(context).colorScheme;
 
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            decoration: BoxDecoration(
-              border: index == _durationMonths - 1
-                  ? null
-                  : Border(
-                      bottom: BorderSide(
-                          color: colorScheme.outline.withValues(alpha: 0.05),)),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: isLast
-                        ? colorScheme.primary
-                        : colorScheme.primaryContainer.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(10),
+    return Column(
+      children: List.generate(_durationMonths, (index) {
+        final month = index + 1;
+        final isLast = month == _durationMonths;
+        final currentMonthlyPayout = monthlyProfit;
+
+        return Container(
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          decoration: BoxDecoration(
+            border: index == _durationMonths - 1
+                ? null
+                : Border(
+                    bottom: BorderSide(
+                      color: colorScheme.outline.withValues(alpha: 0.16),
+                    ),
                   ),
-                  child: Center(
-                    child: Text(
-                      month.toString(),
-                      style: AppTextStyles.body(
-                        color: isLast ? Colors.white : colorScheme.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: isLast ? _green : _softGreen,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Center(
+                  child: Text(
+                    month.toString(),
+                    style: AppTextStyles.body(
+                      color: isLast ? Colors.white : _green,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Bulan $month',
+                      style: AppTextStyles.body(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                        color: colorScheme.onSurface,
+                      ),
+                    ),
+                    if (isLast)
                       Text(
-                        'Bulan $month',
+                        'Estimasi selesai (modal + hasil)',
                         style: AppTextStyles.body(
-                          fontWeight: FontWeight.bold,
-                          color: colorScheme.onSurface,
+                          fontSize: 10,
+                          color: colorScheme.onSurfaceVariant,
                         ),
                       ),
-                      if (isLast)
-                        Text(
-                          'Estimasi Selesai (Modal + Hasil)',
-                          style: AppTextStyles.body(
-                            fontSize: 10,
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                    ],
+                  ],
+                ),
+              ),
+              const SizedBox(width: 10),
+              Flexible(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    isLast
+                        ? _currencyFormat.format(
+                            (_cowCount * _pricePerCow) + currentMonthlyPayout)
+                        : _currencyFormat.format(currentMonthlyPayout),
+                    style: AppTextStyles.body(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                      color: isLast ? _gold : colorScheme.onSurface,
+                    ),
                   ),
                 ),
-                Text(
-                  isLast
-                      ? _currencyFormat.format(
-                          (_cowCount * _pricePerCow) + currentMonthlyPayout)
-                      : _currencyFormat.format(currentMonthlyPayout),
-                  style: AppTextStyles.body(
-                    fontWeight: FontWeight.bold,
-                    color: isLast ? colorScheme.primary : colorScheme.onSurface,
-                  ),
-                ),
-              ],
-            ),
-          );
-        }),
-      ),
+              ),
+            ],
+          ),
+        );
+      }),
+    );
+  }
+
+  BoxDecoration _whiteCardDecoration() {
+    return BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(14),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.06),
+          blurRadius: 14,
+          offset: const Offset(0, 6),
+        ),
+      ],
     );
   }
 }

@@ -2,7 +2,6 @@ import 'package:app/core/auth/domain/entities/auth_driver.dart';
 import 'package:app/core/auth/application/auth_session_controller.dart';
 import 'package:app/core/errors/failure.dart';
 import 'package:app/core/theme/app_text_style.dart';
-import 'package:app/core/theme/app_theme.dart';
 import 'package:app/core/utils/toast_util.dart';
 import 'package:app/features/account/edit_password/application/edit_password_controller.dart';
 import 'package:app/shared/forms/app_text_password.dart';
@@ -25,6 +24,10 @@ class _EditPasswordPageState extends ConsumerState<EditPasswordPage> {
   final _confirmPasswordController = TextEditingController();
 
   Map<String, String> _fieldErrors = {};
+  static const _green = Color(0xFF1F6E2D);
+  static const _softGreen = Color(0xFFE9F6DF);
+  static const _gold = Color(0xFFD3AB35);
+  static const _pageBackground = Color(0xFFF5F0E6);
 
   @override
   void dispose() {
@@ -69,7 +72,6 @@ class _EditPasswordPageState extends ConsumerState<EditPasswordPage> {
     final user = ref.watch(authSessionControllerProvider).value?.user;
     final isEmailUser = user?.driver == AuthDriver.email;
 
-
     ref.listen(editPasswordControllerProvider, (previous, next) {
       if (next is AsyncError) {
         final error = next.error;
@@ -104,6 +106,7 @@ class _EditPasswordPageState extends ConsumerState<EditPasswordPage> {
     final isLoading = ref.watch(editPasswordControllerProvider).isLoading;
 
     return Scaffold(
+      backgroundColor: _pageBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -115,83 +118,132 @@ class _EditPasswordPageState extends ConsumerState<EditPasswordPage> {
               child: !isEmailUser
                   ? Center(
                       child: Padding(
-                        padding: const EdgeInsets.all(32.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(24),
-                              decoration: BoxDecoration(
-                                color: AppColors.primary.withValues(alpha: 0.1),
-                                shape: BoxShape.circle,
+                        padding: const EdgeInsets.all(16),
+                        child: _buildWhiteCard(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(22),
+                                decoration: const BoxDecoration(
+                                  color: _softGreen,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.security_update_warning_outlined,
+                                  size: 56,
+                                  color: _green,
+                                ),
                               ),
-                              child: const Icon(
-                                Icons.security_update_warning_outlined,
-                                size: 64,
-                                color: AppColors.primary,
+                              const SizedBox(height: 22),
+                              Text(
+                                'Fitur Tidak Tersedia',
+                                style: AppTextStyles.heading(
+                                  color: _green,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
                               ),
-                            ),
-                            const SizedBox(height: 24),
-                            Text(
-                              'Fitur Tidak Tersedia',
-                              style: AppTextStyles.heading(
-                                color: AppColors.primary,
-                                fontWeight: FontWeight.bold,
+                              const SizedBox(height: 12),
+                              Text(
+                                'Anda masuk menggunakan akun ${user?.driver.value.toUpperCase()}. Password hanya dapat diubah melalui penyedia layanan tersebut atau jika Anda mendaftar menggunakan Email.',
+                                style: AppTextStyles.body(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant,
+                                ),
+                                textAlign: TextAlign.center,
                               ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 12),
-                            Text(
-                              'Anda masuk menggunakan akun ${user?.driver.value.toUpperCase()}. Password hanya dapat diubah melalui penyedia layanan tersebut atau jika Anda mendaftar menggunakan Email.',
-
-                              style: AppTextStyles.body(
-                                color: AppColors.textSecondaryLight,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     )
                   : SingleChildScrollView(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          AppTextPassword(
-                            controller: _currentPasswordController,
-                            label: 'PASSWORD SAAT INI',
-                            hint: 'Masukkan password lama',
-                            errorText: _fieldErrors['current_password'],
-                          ),
-                          const SizedBox(height: 20),
-                          AppTextPassword(
-                            controller: _newPasswordController,
-                            label: 'PASSWORD BARU',
-                            hint: 'Masukkan password baru',
-                            errorText: _fieldErrors['new_password'],
-                          ),
-                          const SizedBox(height: 20),
-                          AppTextPassword(
-                            controller: _confirmPasswordController,
-                            label: 'KONFIRMASI PASSWORD BARU',
-                            hint: 'Ulangi password baru',
-                            errorText:
-                                _fieldErrors['new_password_confirmation'],
-                          ),
-                          const SizedBox(height: 40),
-                          PrimaryButton(
-                            label: 'Simpan Password',
-                            isLoading: isLoading,
-                            onPressed: isLoading ? null : _handleSubmit,
-                          ),
-                        ],
+                      padding: const EdgeInsets.fromLTRB(16, 18, 16, 28),
+                      child: _buildWhiteCard(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            _buildSectionTitle(context, 'PASSWORD AKUN'),
+                            const SizedBox(height: 16),
+                            AppTextPassword(
+                              controller: _currentPasswordController,
+                              label: 'PASSWORD SAAT INI',
+                              hint: 'Masukkan password lama',
+                              errorText: _fieldErrors['current_password'],
+                            ),
+                            const SizedBox(height: 20),
+                            AppTextPassword(
+                              controller: _newPasswordController,
+                              label: 'PASSWORD BARU',
+                              hint: 'Masukkan password baru',
+                              errorText: _fieldErrors['new_password'],
+                            ),
+                            const SizedBox(height: 20),
+                            AppTextPassword(
+                              controller: _confirmPasswordController,
+                              label: 'KONFIRMASI PASSWORD BARU',
+                              hint: 'Ulangi password baru',
+                              errorText:
+                                  _fieldErrors['new_password_confirmation'],
+                            ),
+                            const SizedBox(height: 32),
+                            PrimaryButton(
+                              label: 'Simpan Password',
+                              isLoading: isLoading,
+                              onPressed: isLoading ? null : _handleSubmit,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildWhiteCard({required Widget child}) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: child,
+    );
+  }
+
+  Widget _buildSectionTitle(BuildContext context, String title) {
+    return Row(
+      children: [
+        Container(
+          width: 7,
+          height: 7,
+          decoration: const BoxDecoration(
+            color: _gold,
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          title,
+          style: AppTextStyles.body(
+            color: _green,
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
     );
   }
 }

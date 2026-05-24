@@ -17,6 +17,9 @@ class EditProfileAvatar extends ConsumerStatefulWidget {
 
 class _EditProfileAvatarState extends ConsumerState<EditProfileAvatar> {
   final ImagePicker _picker = ImagePicker();
+  static const _green = Color(0xFF1F6E2D);
+  static const _gold = Color(0xFFD3AB35);
+  static const _softGreen = Color(0xFFE9F6DF);
 
   Future<void> _pickImage(ImageSource source) async {
     try {
@@ -112,14 +115,11 @@ class _EditProfileAvatarState extends ConsumerState<EditProfileAvatar> {
             height: 120,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              color: _softGreen,
               border: Border.all(
                 color: (user != null && user.emailVerifiedAt == null)
-                    ? Colors.yellow
-                    : Theme.of(context)
-                        .colorScheme
-                        .primary
-                        .withValues(alpha: 0.5),
+                    ? _gold
+                    : _green.withValues(alpha: 0.5),
                 width: 2,
               ),
             ),
@@ -165,12 +165,10 @@ class _EditProfileAvatarState extends ConsumerState<EditProfileAvatar> {
               child: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: isLoading
-                      ? Colors.grey
-                      : Theme.of(context).colorScheme.primary,
+                  color: isLoading ? Colors.grey : _green,
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: Theme.of(context).colorScheme.surface,
+                    color: Colors.white,
                     width: 2,
                   ),
                 ),

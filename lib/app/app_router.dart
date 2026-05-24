@@ -277,7 +277,9 @@ GoRouter router(Ref ref) {
                 routes: [
                   GoRoute(
                     path: ':id',
-                    builder: (context, state) => const PaymentDetailPage(),
+                    builder: (context, state) => PaymentDetailPage(
+                      paymentId: state.pathParameters['id'] ?? '',
+                    ),
                   ),
                 ],
               ),

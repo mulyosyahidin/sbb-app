@@ -50,6 +50,10 @@ mixin _$ContractDto {
   String? get note;
   @DoubleStringConverter()
   double? get profitSharingPercentage;
+  @DoubleStringConverter()
+  double? get totalProfitPaid;
+  @IntStringConverter()
+  int? get totalProfitPaidMonths;
   List<ContractNoteDto>? get notes;
   @JsonKey(readValue: _readLatestNote)
   ContractNoteDto? get latestNote;
@@ -115,6 +119,10 @@ mixin _$ContractDto {
             (identical(
                     other.profitSharingPercentage, profitSharingPercentage) ||
                 other.profitSharingPercentage == profitSharingPercentage) &&
+            (identical(other.totalProfitPaid, totalProfitPaid) ||
+                other.totalProfitPaid == totalProfitPaid) &&
+            (identical(other.totalProfitPaidMonths, totalProfitPaidMonths) ||
+                other.totalProfitPaidMonths == totalProfitPaidMonths) &&
             const DeepCollectionEquality().equals(other.notes, notes) &&
             (identical(other.latestNote, latestNote) ||
                 other.latestNote == latestNote) &&
@@ -156,6 +164,8 @@ mixin _$ContractDto {
         status,
         note,
         profitSharingPercentage,
+        totalProfitPaid,
+        totalProfitPaidMonths,
         const DeepCollectionEquality().hash(notes),
         latestNote,
         const DeepCollectionEquality().hash(paymentSchedules),
@@ -167,7 +177,7 @@ mixin _$ContractDto {
 
   @override
   String toString() {
-    return 'ContractDto(id: $id, contractNumber: $contractNumber, userId: $userId, userName: $userName, userIdentityNumber: $userIdentityNumber, userIdentityNumberFileId: $userIdentityNumberFileId, userIdentityNumberFile: $userIdentityNumberFile, cowId: $cowId, cowImageFileId: $cowImageFileId, cowName: $cowName, cowPrice: $cowPrice, cowWeightKg: $cowWeightKg, cowQuantity: $cowQuantity, cowTotalPrice: $cowTotalPrice, bankAccountId: $bankAccountId, bankName: $bankName, bankAccountName: $bankAccountName, bankAccountNumber: $bankAccountNumber, program: $program, contractMonthDuration: $contractMonthDuration, status: $status, note: $note, profitSharingPercentage: $profitSharingPercentage, notes: $notes, latestNote: $latestNote, paymentSchedules: $paymentSchedules, startDate: $startDate, endDate: $endDate, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'ContractDto(id: $id, contractNumber: $contractNumber, userId: $userId, userName: $userName, userIdentityNumber: $userIdentityNumber, userIdentityNumberFileId: $userIdentityNumberFileId, userIdentityNumberFile: $userIdentityNumberFile, cowId: $cowId, cowImageFileId: $cowImageFileId, cowName: $cowName, cowPrice: $cowPrice, cowWeightKg: $cowWeightKg, cowQuantity: $cowQuantity, cowTotalPrice: $cowTotalPrice, bankAccountId: $bankAccountId, bankName: $bankName, bankAccountName: $bankAccountName, bankAccountNumber: $bankAccountNumber, program: $program, contractMonthDuration: $contractMonthDuration, status: $status, note: $note, profitSharingPercentage: $profitSharingPercentage, totalProfitPaid: $totalProfitPaid, totalProfitPaidMonths: $totalProfitPaidMonths, notes: $notes, latestNote: $latestNote, paymentSchedules: $paymentSchedules, startDate: $startDate, endDate: $endDate, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }
 
@@ -201,6 +211,8 @@ abstract mixin class $ContractDtoCopyWith<$Res> {
       String status,
       String? note,
       @DoubleStringConverter() double? profitSharingPercentage,
+      @DoubleStringConverter() double? totalProfitPaid,
+      @IntStringConverter() int? totalProfitPaidMonths,
       List<ContractNoteDto>? notes,
       @JsonKey(readValue: _readLatestNote) ContractNoteDto? latestNote,
       List<PaymentScheduleDto>? paymentSchedules,
@@ -248,6 +260,8 @@ class _$ContractDtoCopyWithImpl<$Res> implements $ContractDtoCopyWith<$Res> {
     Object? status = null,
     Object? note = freezed,
     Object? profitSharingPercentage = freezed,
+    Object? totalProfitPaid = freezed,
+    Object? totalProfitPaidMonths = freezed,
     Object? notes = freezed,
     Object? latestNote = freezed,
     Object? paymentSchedules = freezed,
@@ -349,6 +363,14 @@ class _$ContractDtoCopyWithImpl<$Res> implements $ContractDtoCopyWith<$Res> {
           ? _self.profitSharingPercentage
           : profitSharingPercentage // ignore: cast_nullable_to_non_nullable
               as double?,
+      totalProfitPaid: freezed == totalProfitPaid
+          ? _self.totalProfitPaid
+          : totalProfitPaid // ignore: cast_nullable_to_non_nullable
+              as double?,
+      totalProfitPaidMonths: freezed == totalProfitPaidMonths
+          ? _self.totalProfitPaidMonths
+          : totalProfitPaidMonths // ignore: cast_nullable_to_non_nullable
+              as int?,
       notes: freezed == notes
           ? _self.notes
           : notes // ignore: cast_nullable_to_non_nullable
@@ -436,6 +458,8 @@ class _ContractDto implements ContractDto {
       required this.status,
       this.note,
       @DoubleStringConverter() this.profitSharingPercentage,
+      @DoubleStringConverter() this.totalProfitPaid,
+      @IntStringConverter() this.totalProfitPaidMonths,
       final List<ContractNoteDto>? notes,
       @JsonKey(readValue: _readLatestNote) this.latestNote,
       final List<PaymentScheduleDto>? paymentSchedules,
@@ -506,6 +530,12 @@ class _ContractDto implements ContractDto {
   @override
   @DoubleStringConverter()
   final double? profitSharingPercentage;
+  @override
+  @DoubleStringConverter()
+  final double? totalProfitPaid;
+  @override
+  @IntStringConverter()
+  final int? totalProfitPaidMonths;
   final List<ContractNoteDto>? _notes;
   @override
   List<ContractNoteDto>? get notes {
@@ -600,6 +630,10 @@ class _ContractDto implements ContractDto {
             (identical(
                     other.profitSharingPercentage, profitSharingPercentage) ||
                 other.profitSharingPercentage == profitSharingPercentage) &&
+            (identical(other.totalProfitPaid, totalProfitPaid) ||
+                other.totalProfitPaid == totalProfitPaid) &&
+            (identical(other.totalProfitPaidMonths, totalProfitPaidMonths) ||
+                other.totalProfitPaidMonths == totalProfitPaidMonths) &&
             const DeepCollectionEquality().equals(other._notes, _notes) &&
             (identical(other.latestNote, latestNote) ||
                 other.latestNote == latestNote) &&
@@ -641,6 +675,8 @@ class _ContractDto implements ContractDto {
         status,
         note,
         profitSharingPercentage,
+        totalProfitPaid,
+        totalProfitPaidMonths,
         const DeepCollectionEquality().hash(_notes),
         latestNote,
         const DeepCollectionEquality().hash(_paymentSchedules),
@@ -652,7 +688,7 @@ class _ContractDto implements ContractDto {
 
   @override
   String toString() {
-    return 'ContractDto(id: $id, contractNumber: $contractNumber, userId: $userId, userName: $userName, userIdentityNumber: $userIdentityNumber, userIdentityNumberFileId: $userIdentityNumberFileId, userIdentityNumberFile: $userIdentityNumberFile, cowId: $cowId, cowImageFileId: $cowImageFileId, cowName: $cowName, cowPrice: $cowPrice, cowWeightKg: $cowWeightKg, cowQuantity: $cowQuantity, cowTotalPrice: $cowTotalPrice, bankAccountId: $bankAccountId, bankName: $bankName, bankAccountName: $bankAccountName, bankAccountNumber: $bankAccountNumber, program: $program, contractMonthDuration: $contractMonthDuration, status: $status, note: $note, profitSharingPercentage: $profitSharingPercentage, notes: $notes, latestNote: $latestNote, paymentSchedules: $paymentSchedules, startDate: $startDate, endDate: $endDate, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'ContractDto(id: $id, contractNumber: $contractNumber, userId: $userId, userName: $userName, userIdentityNumber: $userIdentityNumber, userIdentityNumberFileId: $userIdentityNumberFileId, userIdentityNumberFile: $userIdentityNumberFile, cowId: $cowId, cowImageFileId: $cowImageFileId, cowName: $cowName, cowPrice: $cowPrice, cowWeightKg: $cowWeightKg, cowQuantity: $cowQuantity, cowTotalPrice: $cowTotalPrice, bankAccountId: $bankAccountId, bankName: $bankName, bankAccountName: $bankAccountName, bankAccountNumber: $bankAccountNumber, program: $program, contractMonthDuration: $contractMonthDuration, status: $status, note: $note, profitSharingPercentage: $profitSharingPercentage, totalProfitPaid: $totalProfitPaid, totalProfitPaidMonths: $totalProfitPaidMonths, notes: $notes, latestNote: $latestNote, paymentSchedules: $paymentSchedules, startDate: $startDate, endDate: $endDate, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }
 
@@ -688,6 +724,8 @@ abstract mixin class _$ContractDtoCopyWith<$Res>
       String status,
       String? note,
       @DoubleStringConverter() double? profitSharingPercentage,
+      @DoubleStringConverter() double? totalProfitPaid,
+      @IntStringConverter() int? totalProfitPaidMonths,
       List<ContractNoteDto>? notes,
       @JsonKey(readValue: _readLatestNote) ContractNoteDto? latestNote,
       List<PaymentScheduleDto>? paymentSchedules,
@@ -737,6 +775,8 @@ class __$ContractDtoCopyWithImpl<$Res> implements _$ContractDtoCopyWith<$Res> {
     Object? status = null,
     Object? note = freezed,
     Object? profitSharingPercentage = freezed,
+    Object? totalProfitPaid = freezed,
+    Object? totalProfitPaidMonths = freezed,
     Object? notes = freezed,
     Object? latestNote = freezed,
     Object? paymentSchedules = freezed,
@@ -838,6 +878,14 @@ class __$ContractDtoCopyWithImpl<$Res> implements _$ContractDtoCopyWith<$Res> {
           ? _self.profitSharingPercentage
           : profitSharingPercentage // ignore: cast_nullable_to_non_nullable
               as double?,
+      totalProfitPaid: freezed == totalProfitPaid
+          ? _self.totalProfitPaid
+          : totalProfitPaid // ignore: cast_nullable_to_non_nullable
+              as double?,
+      totalProfitPaidMonths: freezed == totalProfitPaidMonths
+          ? _self.totalProfitPaidMonths
+          : totalProfitPaidMonths // ignore: cast_nullable_to_non_nullable
+              as int?,
       notes: freezed == notes
           ? _self._notes
           : notes // ignore: cast_nullable_to_non_nullable

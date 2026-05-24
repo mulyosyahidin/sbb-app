@@ -43,6 +43,9 @@ class ApiEndpoint {
   // Web View
   static const String companyProfileWebView = '/webview/company-profile';
 
+  // Profit
+  static const String getProfit = '/profits';
+
   // Contracts
   static const String checkContractDraft = '/contracts/draft/check';
   static const String getContractDraft = '/contracts/draft';

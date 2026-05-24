@@ -1,9 +1,11 @@
 import 'package:app/app/app_router.dart';
+import 'package:app/core/theme/app_theme.dart';
 import 'package:app/core/theme/app_text_style.dart';
 import 'package:app/features/contract/application/contract_list_controller.dart';
 import 'package:app/features/contract/presentation/widgets/contract_card.dart';
 import 'package:app/shared/widgets/app_bar_header.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -52,110 +54,113 @@ class _ContractsPageState extends ConsumerState<ContractsPage> {
     final contractState =
         ref.watch(contractListControllerProvider(selectedFilter));
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildHeader(contractState.value?.pagination?.total ?? 0),
-            _buildFilters(),
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: () => ref
-                    .read(
-                        contractListControllerProvider(selectedFilter).notifier)
-                    .refresh(),
-                child: contractState.when(
-                  data: (state) {
-                    if (state.contracts.isEmpty) {
-                      return ListView(
-                        children: [
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.6,
-                            child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.assignment_outlined,
-                                    size: 64,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .outlineVariant,
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(
-                                    'Belum ada kontrak',
-                                    style: AppTextStyles.body(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark,
+      child: Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        body: SafeArea(
+          child: Column(
+            children: [
+              _buildHeader(contractState.value?.pagination?.total ?? 0),
+              _buildFilters(),
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: () => ref
+                      .read(contractListControllerProvider(selectedFilter)
+                          .notifier)
+                      .refresh(),
+                  child: contractState.when(
+                    data: (state) {
+                      if (state.contracts.isEmpty) {
+                        return ListView(
+                          children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.6,
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.assignment_outlined,
+                                      size: 64,
                                       color: Theme.of(context)
                                           .colorScheme
-                                          .onSurfaceVariant,
+                                          .outlineVariant,
                                     ),
-                                  ),
-                                ],
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      'Belum ada kontrak',
+                                      style: AppTextStyles.body(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurfaceVariant,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      );
-                    }
+                          ],
+                        );
+                      }
 
-                    return ListView.builder(
-                      controller: _scrollController,
+                      return ListView.builder(
+                        controller: _scrollController,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemCount: state.contracts.length +
+                            (state.isLoadingMore ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (index == state.contracts.length) {
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 32),
+                              child: Center(child: CircularProgressIndicator()),
+                            );
+                          }
+                          return ContractCard(item: state.contracts[index]);
+                        },
+                      );
+                    },
+                    loading: () => ListView(
                       physics: const AlwaysScrollableScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      itemCount: state.contracts.length +
-                          (state.isLoadingMore ? 1 : 0),
-                      itemBuilder: (context, index) {
-                        if (index == state.contracts.length) {
-                          return const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 32),
-                            child: Center(child: CircularProgressIndicator()),
-                          );
-                        }
-                        return ContractCard(item: state.contracts[index]);
-                      },
-                    );
-                  },
-                  loading: () => ListView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    children: [
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.6,
-                        child: const Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      ),
-                    ],
-                  ),
-                  error: (error, stack) => ListView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    children: [
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.6,
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text('Gagal memuat data: $error'),
-                              TextButton(
-                                onPressed: () => ref
-                                    .read(contractListControllerProvider(
-                                            selectedFilter)
-                                        .notifier)
-                                    .refresh(),
-                                child: const Text('Coba Lagi'),
-                              ),
-                            ],
+                      children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.6,
+                          child: const Center(
+                            child: CircularProgressIndicator(),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
+                    error: (error, stack) => ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.6,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('Gagal memuat data: $error'),
+                                TextButton(
+                                  onPressed: () => ref
+                                      .read(contractListControllerProvider(
+                                              selectedFilter)
+                                          .notifier)
+                                      .refresh(),
+                                  child: const Text('Coba Lagi'),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -165,6 +170,8 @@ class _ContractsPageState extends ConsumerState<ContractsPage> {
     return AppBarHeader(
       title: 'Daftar Kontrak',
       subtitle: '$totalCount kontrak terdaftar',
+      titleColor: AppColors.textPrimaryLight,
+      subtitleColor: AppColors.textSecondaryLight,
       trailing: InkWell(
         onTap: () => context.push(Routes.contractCreate),
         borderRadius: BorderRadius.circular(10),

@@ -1,6 +1,7 @@
 import 'package:app/app/app_router.dart';
 import 'package:app/core/theme/app_text_style.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 class AppBarHeader extends StatelessWidget {
@@ -8,6 +9,8 @@ class AppBarHeader extends StatelessWidget {
   final String subtitle;
   final VoidCallback? onBackPressed;
   final Widget? trailing;
+  final Color? titleColor;
+  final Color? subtitleColor;
 
   const AppBarHeader({
     super.key,
@@ -15,6 +18,8 @@ class AppBarHeader extends StatelessWidget {
     required this.subtitle,
     this.onBackPressed,
     this.trailing,
+    this.titleColor,
+    this.subtitleColor,
   });
 
   @override
@@ -32,79 +37,87 @@ class AppBarHeader extends StatelessWidget {
           }
         };
 
-    return PopScope(
-      canPop: canPop,
-      onPopInvokedWithResult: (didPop, result) {
-        if (didPop) return;
-        context.go(Routes.home);
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Row(
-              children: [
-                InkWell(
-                  onTap: onTap,
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                          color: Theme.of(context).colorScheme.outline),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.03),
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final systemUiOverlayStyle = isDark
+        ? SystemUiOverlayStyle.light
+        : SystemUiOverlayStyle.dark;
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: systemUiOverlayStyle,
+      child: PopScope(
+        canPop: canPop,
+        onPopInvokedWithResult: (didPop, result) {
+          if (didPop) return;
+          context.go(Routes.home);
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                children: [
+                  InkWell(
+                    onTap: onTap,
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                            color: Theme.of(context).colorScheme.outline),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.03),
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        icon,
+                        size: 24,
+                        color: titleColor ?? Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: AppTextStyles.title(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color: titleColor ?? Theme.of(context).colorScheme.onSurface,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          subtitle,
+                          style: AppTextStyles.body(
+                            fontSize: 12,
+                            color: subtitleColor ?? Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
-                    child: Icon(
-                      icon,
-                      size: 24,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
                   ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: AppTextStyles.title(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        subtitle,
-                        style: AppTextStyles.body(
-                          fontSize: 12,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-                if (trailing != null) ...[
-                  const SizedBox(width: 16),
-                  trailing!,
+                  if (trailing != null) ...[
+                    const SizedBox(width: 16),
+                    trailing!,
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
-          Divider(height: 1, color: Theme.of(context).colorScheme.outline),
-        ],
+            Divider(height: 1, color: Theme.of(context).colorScheme.outline),
+          ],
+        ),
       ),
     );
   }

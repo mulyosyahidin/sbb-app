@@ -35,6 +35,8 @@ class ContractMapper {
       status: ContractStatus.fromString(dto.status),
       note: dto.note,
       profitSharingPercentage: dto.profitSharingPercentage,
+      totalProfitPaid: dto.totalProfitPaid,
+      totalProfitPaidMonths: dto.totalProfitPaidMonths,
       notes: dto.notes != null
           ? ContractNoteMapper.toEntityList(dto.notes!)
           : null,

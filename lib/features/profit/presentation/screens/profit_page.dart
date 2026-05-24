@@ -1,16 +1,38 @@
 import 'package:app/app/app_router.dart';
+import 'package:app/core/errors/failure.dart';
 import 'package:app/core/theme/app_text_style.dart';
+import 'package:app/features/profit/application/profit_controller.dart';
+import 'package:app/features/profit/domain/entities/profit.dart';
+import 'package:app/features/profit/domain/entities/profit_monthly_paid.dart';
+import 'package:app/features/profit/domain/entities/profit_payment_history.dart';
 import 'package:app/shared/widgets/app_bar_header.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
-class ProfitPage extends StatelessWidget {
+class ProfitPage extends ConsumerWidget {
   const ProfitPage({super.key});
 
+  static const _green = Color(0xFF1F6E2D);
+  static const _darkGreen = Color(0xFF155B24);
+  static const _tileGreen = Color(0xFF3E8445);
+  static const _softGreen = Color(0xFFE9F6DF);
+  static const _gold = Color(0xFFD3AB35);
+  static const _pageBackground = Color(0xFFF5F0E6);
+
+  static final _currencyFormat = NumberFormat.currency(
+    locale: 'id_ID',
+    symbol: 'Rp ',
+    decimalDigits: 0,
+  );
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final profitState = ref.watch(profitControllerProvider);
+
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: _pageBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -19,29 +41,10 @@ class ProfitPage extends StatelessWidget {
               subtitle: 'Riwayat bagi hasil kemitraan',
             ),
             Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 10),
-                    _buildSummaryCards(context),
-                    const SizedBox(height: 24),
-                    _buildMonthlyChart(context),
-                    const SizedBox(height: 32),
-                    Text(
-                      'Riwayat Pembayaran',
-                      style: AppTextStyles.title(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    _buildHistoryList(),
-                    const SizedBox(height: 40),
-                  ],
-                ),
+              child: profitState.when(
+                data: (profit) => _buildContent(context, profit),
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, stackTrace) => _buildError(context, error, ref),
               ),
             ),
           ],
@@ -50,134 +53,235 @@ class ProfitPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSummaryCards(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Icon(Icons.account_balance_wallet_rounded,
-                    color: Colors.orange, size: 28),
-                const SizedBox(height: 16),
-                Text(
-                  'TOTAL PROFIT',
-                  style: AppTextStyles.body(
-                    color: Colors.white.withValues(alpha: 0.7),
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  'Rp 45jt',
-                  style: AppTextStyles.title(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: Theme.of(context).colorScheme.outline),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Icon(Icons.file_upload_outlined,
-                    color: Colors.purple, size: 28),
-                const SizedBox(height: 16),
-                Text(
-                  'SUDAH CAIR',
-                  style: AppTextStyles.body(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  'Rp 38jt',
-                  style: AppTextStyles.title(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
+  Widget _buildContent(BuildContext context, Profit profit) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(16, 18, 16, 28),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildSummaryCard(profit),
+          const SizedBox(height: 18),
+          _buildMonthlyChart(context, profit.last6MonthsPaid),
+          const SizedBox(height: 18),
+          _buildHistorySection(context, profit.paymentHistories),
+        ],
+      ),
     );
   }
 
-  Widget _buildMonthlyChart(BuildContext context) {
-    final months = ['Okt', 'Nov', 'Des', 'Jan', 'Feb', 'Mar', 'Apr'];
-    final values = [2.1, 3.4, 2.8, 4.2, 3.8, 5.1, 3.2];
-    const maxValue = 6.0;
-
+  Widget _buildSummaryCard(Profit profit) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Theme.of(context).colorScheme.outline),
+        gradient: const LinearGradient(
+          colors: [
+            _darkGreen,
+            Color(0xFF2C8A3C),
+            _green,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: _green.withValues(alpha: 0.18),
+            blurRadius: 18,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            right: -42,
+            top: -50,
+            child: _buildSoftCircle(128),
+          ),
+          Positioned(
+            left: -46,
+            bottom: -60,
+            child: _buildSoftCircle(116),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(14),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.08),
+                          blurRadius: 12,
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.account_balance_wallet_rounded,
+                      color: _green,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Total profit',
+                          style: AppTextStyles.body(
+                            color: Colors.white.withValues(alpha: 0.72),
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            _currencyFormat
+                                .format(profit.summary.totalPotentialProfit),
+                            style: AppTextStyles.title(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 18),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildSummaryMetric(
+                      label: 'Sudah Cair',
+                      value: _currencyFormat.format(profit.summary.paid),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _buildSummaryMetric(
+                      label: 'Menunggu',
+                      value: _currencyFormat.format(profit.summary.waiting),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSoftCircle(double size) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.06),
+        shape: BoxShape.circle,
+      ),
+    );
+  }
+
+  Widget _buildSummaryMetric({
+    required String label,
+    required String value,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: _tileGreen,
+        borderRadius: BorderRadius.circular(14),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Profit per bulan (juta Rp)',
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: AppTextStyles.body(
-              fontWeight: FontWeight.bold,
-              fontSize: 15,
-              color: Theme.of(context).colorScheme.onSurface,
+              color: Colors.white.withValues(alpha: 0.72),
+              fontWeight: FontWeight.w600,
+              fontSize: 12,
             ),
           ),
-          const SizedBox(height: 32),
-          LayoutBuilder(builder: (context, constraints) {
-            const chartHeight = 110.0; // Base height for bars
-            return SizedBox(
-              height: 170,
+          const SizedBox(height: 6),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              value,
+              style: AppTextStyles.title(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMonthlyChart(
+    BuildContext context,
+    List<ProfitMonthlyPaid> months,
+  ) {
+    final maxValue = months.fold<double>(
+      0,
+      (max, item) => item.totalPaid > max ? item.totalPaid : max,
+    );
+    final effectiveMax = maxValue <= 0 ? 1 : maxValue;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: _whiteCardDecoration(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionTitle(context, 'PROFIT PER BULAN'),
+          const SizedBox(height: 22),
+          if (months.isEmpty)
+            _buildEmptyMessage(context, 'Belum ada data profit bulanan.')
+          else
+            SizedBox(
+              height: 178,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: List.generate(months.length, (index) {
-                  final isHighlight = index == 5; // Mar
-                  final barHeight = (values[index] / maxValue) * chartHeight;
+                  final item = months[index];
+                  final isHighlight =
+                      item.totalPaid == maxValue && maxValue > 0;
+                  final barHeight = (item.totalPaid / effectiveMax) * 110;
 
                   return Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
-                          '${values[index]}jt',
+                          _formatCompactCurrency(item.totalPaid),
                           style: AppTextStyles.label(
                             fontSize: 9,
                             color: isHighlight
-                                ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context).colorScheme.onSurfaceVariant,
+                                ? _green
+                                : Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -185,20 +289,19 @@ class ProfitPage extends StatelessWidget {
                         Container(
                           margin: const EdgeInsets.symmetric(horizontal: 4),
                           constraints: const BoxConstraints(maxWidth: 32),
-                          height: barHeight,
+                          height: item.totalPaid <= 0 ? 8 : barHeight,
                           decoration: BoxDecoration(
-                            color: isHighlight
-                                ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
+                            color: isHighlight ? _green : _softGreen,
                             borderRadius: BorderRadius.circular(6),
                           ),
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          months[index],
+                          item.label.split(' ').first,
                           style: AppTextStyles.body(
                             fontSize: 11,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
                       ],
@@ -206,87 +309,91 @@ class ProfitPage extends StatelessWidget {
                   );
                 }),
               ),
-            );
-          }),
+            ),
         ],
       ),
     );
   }
 
-  Widget _buildHistoryList() {
-    final items = [
-      _HistoryItem(
-        id: 'TX-001',
-        title: 'Bagi Hasil — #SBB-007',
-        subtitle: 'Kontrak SBB-K-2025-088',
-        amount: '+Rp 4,2jt',
-        status: 'Sudah cair',
-        isPositive: true,
+  Widget _buildHistorySection(
+    BuildContext context,
+    List<ProfitPaymentHistory> histories,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: _whiteCardDecoration(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildSectionTitle(context, 'RIWAYAT PEMBAYARAN'),
+          const SizedBox(height: 10),
+          Divider(
+            height: 1,
+            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
+          ),
+          const SizedBox(height: 12),
+          if (histories.isEmpty)
+            _buildEmptyMessage(context, 'Belum ada riwayat pembayaran.')
+          else
+            _buildHistoryList(histories),
+        ],
       ),
-      _HistoryItem(
-        id: 'TX-002',
-        title: 'Bagi Hasil — #SBB-003',
-        subtitle: 'Kontrak SBB-K-2025-071',
-        amount: '+Rp 3,8jt',
-        status: 'Sudah cair',
-        isPositive: true,
-      ),
-      _HistoryItem(
-        id: 'TX-003',
-        title: 'Bagi Hasil — #SBB-014',
-        subtitle: 'Kontrak SBB-K-2026-039',
-        amount: '+Rp 3,2jt',
-        status: 'Menunggu panen',
-        isPositive: true,
-        statusColor: const Color(0xFF9E6E16),
-      ),
-      _HistoryItem(
-        id: 'TX-004',
-        title: 'Komisi Konsultan',
-        subtitle: '5 mitra aktif · Apr 2026',
-        amount: '+Rp 2,5jt',
-        status: 'Sudah cair',
-        isPositive: true,
-      ),
-    ];
+    );
+  }
 
+  Widget _buildHistoryList(List<ProfitPaymentHistory> histories) {
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: items.length,
-      separatorBuilder: (context, index) => const SizedBox(height: 12),
+      itemCount: histories.length,
+      separatorBuilder: (context, index) => Divider(
+        height: 1,
+        color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.16),
+      ),
       itemBuilder: (context, index) {
-        final item = items[index];
+        final item = histories[index];
+        final status = _statusLabel(item.status);
+        final statusColor =
+            item.status == 'berhasil' ? _green : const Color(0xFF9E6E16);
+
         return InkWell(
           onTap: () => context.push(
-            Routes.paymentDetail.replaceAll(':id', item.id),
+            Routes.paymentDetail.replaceAll(':id', item.id.toString()),
           ),
-          borderRadius: BorderRadius.circular(20),
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Theme.of(context).colorScheme.outline),
-            ),
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 14),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                Container(
+                  width: 38,
+                  height: 38,
+                  decoration: BoxDecoration(
+                    color: _softGreen,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(
+                    Icons.payments_outlined,
+                    color: _green,
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        item.title,
+                        'Bagi Hasil - ${item.contractNumber}',
                         style: AppTextStyles.body(
                           fontWeight: FontWeight.bold,
-                          fontSize: 15,
+                          fontSize: 14,
                           color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        item.subtitle,
+                        'Kontrak ${item.contractNumber}',
                         style: AppTextStyles.body(
                           fontSize: 12,
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -295,24 +402,25 @@ class ProfitPage extends StatelessWidget {
                     ],
                   ),
                 ),
+                const SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      item.amount,
+                      '+${_currencyFormat.format(item.paidNominal ?? item.nominal)}',
                       style: AppTextStyles.body(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: Theme.of(context).colorScheme.primary,
+                        fontSize: 15,
+                        color: _green,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      item.status,
+                      status,
                       style: AppTextStyles.body(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
-                        color: item.statusColor ?? Theme.of(context).colorScheme.primary,
+                        color: statusColor,
                       ),
                     ),
                   ],
@@ -324,24 +432,119 @@ class ProfitPage extends StatelessWidget {
       },
     );
   }
-}
 
-class _HistoryItem {
-  final String id;
-  final String title;
-  final String subtitle;
-  final String amount;
-  final String status;
-  final bool isPositive;
-  final Color? statusColor;
+  Widget _buildSectionTitle(BuildContext context, String title) {
+    return Row(
+      children: [
+        Container(
+          width: 7,
+          height: 7,
+          decoration: const BoxDecoration(
+            color: _gold,
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          title,
+          style: AppTextStyles.body(
+            color: _green,
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
 
-  _HistoryItem({
-    required this.id,
-    required this.title,
-    required this.subtitle,
-    required this.amount,
-    required this.status,
-    required this.isPositive,
-    this.statusColor,
-  });
+  Widget _buildEmptyMessage(BuildContext context, String message) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 18),
+      child: Text(
+        message,
+        textAlign: TextAlign.center,
+        style: AppTextStyles.body(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+          fontSize: 13,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildError(BuildContext context, Object error, WidgetRef ref) {
+    final message =
+        error is Failure ? error.message : 'Gagal mendapatkan data profit';
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Container(
+          padding: const EdgeInsets.all(18),
+          decoration: _whiteCardDecoration(),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.error_outline,
+                size: 40,
+                color: Theme.of(context).colorScheme.error,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.body(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextButton(
+                onPressed: () => ref.invalidate(profitControllerProvider),
+                child: const Text('Coba Lagi'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _formatCompactCurrency(double value) {
+    if (value >= 1000000000) {
+      return '${(value / 1000000000).toStringAsFixed(1)}M';
+    }
+    if (value >= 1000000) {
+      return '${(value / 1000000).toStringAsFixed(value % 1000000 == 0 ? 0 : 1)}jt';
+    }
+    if (value >= 1000) {
+      return '${(value / 1000).toStringAsFixed(0)}rb';
+    }
+    return '0';
+  }
+
+  String _statusLabel(String status) {
+    switch (status) {
+      case 'berhasil':
+        return 'Sudah cair';
+      case 'pending':
+        return 'Terjadwal';
+      default:
+        return status;
+    }
+  }
+
+  BoxDecoration _whiteCardDecoration() {
+    return BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(14),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.06),
+          blurRadius: 14,
+          offset: const Offset(0, 6),
+        ),
+      ],
+    );
+  }
 }

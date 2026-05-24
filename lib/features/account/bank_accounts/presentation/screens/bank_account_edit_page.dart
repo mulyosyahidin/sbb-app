@@ -1,5 +1,4 @@
 import 'package:app/core/errors/failure.dart';
-import 'package:app/core/theme/app_theme.dart';
 import 'package:app/core/utils/toast_util.dart';
 import 'package:app/features/account/bank_accounts/application/bank_account_edit_controller.dart';
 import 'package:app/features/account/bank_accounts/domain/entities/bank_account.dart';
@@ -31,6 +30,10 @@ class _BankAccountEditPageState extends ConsumerState<BankAccountEditPage> {
   late bool _isPrimary;
 
   Map<String, String> _fieldErrors = {};
+  static const _green = Color(0xFF1F6E2D);
+  static const _softGreen = Color(0xFFE9F6DF);
+  static const _gold = Color(0xFFD3AB35);
+  static const _pageBackground = Color(0xFFF5F0E6);
 
   @override
   void initState() {
@@ -120,6 +123,7 @@ class _BankAccountEditPageState extends ConsumerState<BankAccountEditPage> {
     });
 
     return Scaffold(
+      backgroundColor: _pageBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -130,92 +134,94 @@ class _BankAccountEditPageState extends ConsumerState<BankAccountEditPage> {
             Expanded(
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      AppTextField(
-                        controller: _bankNameController,
-                        label: 'Nama Bank',
-                        prefixIcon:
-                            const Icon(Icons.account_balance_outlined, size: 20),
-                        textCapitalization: TextCapitalization.characters,
-                        errorText: _fieldErrors['bank_name'],
-                      ),
-                      const SizedBox(height: 24),
-
-                      AppTextField(
-                        controller: _accountNameController,
-                        label: 'Nama Pemilik Rekening',
-                        prefixIcon: const Icon(Icons.person_outline, size: 20),
-                        errorText: _fieldErrors['account_name'],
-                      ),
-                      const SizedBox(height: 24),
-
-                      AppTextField(
-                        controller: _accountNumberController,
-                        label: 'Nomor Rekening',
-                        prefixIcon: const Icon(Icons.numbers, size: 20),
-                        keyboardType: TextInputType.number,
-                        errorText: _fieldErrors['account_number'],
-                      ),
-                      const SizedBox(height: 24),
-
-                      AppTextField(
-                        controller: _noteController,
-                        label: 'Catatan (Opsional)',
-                        prefixIcon: const Icon(Icons.note_alt_outlined, size: 20),
-                        errorText: _fieldErrors['note'],
-                      ),
-                      const SizedBox(height: 24),
-
-                      // Switch for isPrimary
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: Theme.of(context).colorScheme.outlineVariant,
-                          ),
+                  padding: const EdgeInsets.fromLTRB(16, 18, 16, 28),
+                  child: _buildWhiteCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _buildSectionTitle(context, 'DATA REKENING'),
+                        const SizedBox(height: 16),
+                        AppTextField(
+                          controller: _bankNameController,
+                          label: 'Nama Bank',
+                          prefixIcon: const Icon(Icons.account_balance_outlined,
+                              size: 20),
+                          textCapitalization: TextCapitalization.characters,
+                          errorText: _fieldErrors['bank_name'],
                         ),
-                        child: SwitchListTile(
-                          value: _isPrimary,
-                          onChanged: widget.account.isPrimary 
-                            ? null // Cannot unset primary if it's already primary
-                            : (value) => setState(() => _isPrimary = value),
-                          title: const Text(
-                            'Jadikan Akun Utama',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          subtitle: Text(
-                            widget.account.isPrimary 
-                              ? 'Rekening ini adalah akun utama'
-                              : 'Tandai rekening ini sebagai rekening utama untuk menerima pembayaran',
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                          secondary: Icon(
-                            _isPrimary ? Icons.star : Icons.star_border,
-                            color: _isPrimary ? AppColors.warning : null,
-                          ),
-                          activeColor: AppColors.warning,
-                          shape: RoundedRectangleBorder(
+                        const SizedBox(height: 24),
+
+                        AppTextField(
+                          controller: _accountNameController,
+                          label: 'Nama Pemilik Rekening',
+                          prefixIcon:
+                              const Icon(Icons.person_outline, size: 20),
+                          errorText: _fieldErrors['account_name'],
+                        ),
+                        const SizedBox(height: 24),
+
+                        AppTextField(
+                          controller: _accountNumberController,
+                          label: 'Nomor Rekening',
+                          prefixIcon: const Icon(Icons.numbers, size: 20),
+                          keyboardType: TextInputType.number,
+                          errorText: _fieldErrors['account_number'],
+                        ),
+                        const SizedBox(height: 24),
+
+                        AppTextField(
+                          controller: _noteController,
+                          label: 'Catatan (Opsional)',
+                          prefixIcon:
+                              const Icon(Icons.note_alt_outlined, size: 20),
+                          errorText: _fieldErrors['note'],
+                        ),
+                        const SizedBox(height: 24),
+
+                        // Switch for isPrimary
+                        Container(
+                          decoration: BoxDecoration(
+                            color: _softGreen.withValues(alpha: 0.6),
                             borderRadius: BorderRadius.circular(12),
                           ),
+                          child: SwitchListTile(
+                            value: _isPrimary,
+                            onChanged: widget.account.isPrimary
+                                ? null
+                                : (value) => setState(() => _isPrimary = value),
+                            title: const Text(
+                              'Jadikan Akun Utama',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            subtitle: Text(
+                              widget.account.isPrimary
+                                  ? 'Rekening ini adalah akun utama'
+                                  : 'Tandai rekening ini sebagai rekening utama untuk menerima pembayaran',
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                            secondary: Icon(
+                              _isPrimary ? Icons.star : Icons.star_border,
+                              color: _isPrimary ? _gold : null,
+                            ),
+                            activeColor: _gold,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
                         ),
-                      ),
 
-                      const SizedBox(height: 40),
+                        const SizedBox(height: 32),
 
-                      PrimaryButton(
-                        label: 'Simpan Perubahan',
-                        onPressed: isLoading ? null : _handleSubmit,
-                        isLoading: isLoading,
-                      ),
-                      const SizedBox(height: 16),
-                    ],
+                        PrimaryButton(
+                          label: 'Simpan Perubahan',
+                          onPressed: isLoading ? null : _handleSubmit,
+                          isLoading: isLoading,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -223,6 +229,48 @@ class _BankAccountEditPageState extends ConsumerState<BankAccountEditPage> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildWhiteCard({required Widget child}) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: child,
+    );
+  }
+
+  Widget _buildSectionTitle(BuildContext context, String title) {
+    return Row(
+      children: [
+        Container(
+          width: 7,
+          height: 7,
+          decoration: const BoxDecoration(
+            color: _gold,
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          title,
+          style: const TextStyle(
+            color: _green,
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
     );
   }
 }

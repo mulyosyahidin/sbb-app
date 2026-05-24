@@ -37,6 +37,8 @@ abstract class ContractDto with _$ContractDto {
     required String status,
     String? note,
     @DoubleStringConverter() double? profitSharingPercentage,
+    @DoubleStringConverter() double? totalProfitPaid,
+    @IntStringConverter() int? totalProfitPaidMonths,
     List<ContractNoteDto>? notes,
     @JsonKey(readValue: _readLatestNote) ContractNoteDto? latestNote,
     List<PaymentScheduleDto>? paymentSchedules,

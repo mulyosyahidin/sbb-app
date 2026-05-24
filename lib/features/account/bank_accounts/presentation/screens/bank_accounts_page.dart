@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:app/app/app_router.dart';
 import 'package:app/core/theme/app_text_style.dart';
-import 'package:app/core/theme/app_theme.dart';
 import 'package:app/features/account/bank_accounts/application/bank_accounts_controller.dart';
 import 'package:app/features/account/bank_accounts/presentation/widgets/bank_account_card.dart';
 import 'package:app/features/account/bank_accounts/presentation/widgets/bank_account_skeleton.dart';
@@ -23,6 +22,10 @@ class _BankAccountsPageState extends ConsumerState<BankAccountsPage> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocus = FocusNode();
   Timer? _debounce;
+  static const _green = Color(0xFF1F6E2D);
+  static const _softGreen = Color(0xFFE9F6DF);
+  static const _gold = Color(0xFFD3AB35);
+  static const _pageBackground = Color(0xFFF5F0E6);
 
   @override
   void initState() {
@@ -66,10 +69,10 @@ class _BankAccountsPageState extends ConsumerState<BankAccountsPage> {
   Widget build(BuildContext context) {
     final state = ref.watch(bankAccountsControllerProvider);
     final colorScheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final hasQuery = _searchController.text.isNotEmpty;
 
     return Scaffold(
+      backgroundColor: _pageBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -77,24 +80,24 @@ class _BankAccountsPageState extends ConsumerState<BankAccountsPage> {
               title: 'Rekening Bank',
               subtitle: 'Kelola daftar rekening bank Anda',
             ),
-            const SizedBox(height: 16),
             // Search bar — pill shape
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+              padding: const EdgeInsets.fromLTRB(16, 18, 16, 16),
               child: Row(
                 children: [
                   Expanded(
                     child: Container(
-                      height: 44,
+                      height: 48,
                       decoration: BoxDecoration(
-                        color: isDark ? AppColors.surfaceDark : Colors.white,
-                        borderRadius: BorderRadius.circular(22),
-                        border: Border.all(
-                          color: _searchFocus.hasFocus
-                              ? colorScheme.primary.withValues(alpha: 0.5)
-                              : colorScheme.outline.withValues(alpha: 0.25),
-                          width: 0.5,
-                        ),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(14),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.06),
+                            blurRadius: 14,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
                       ),
                       child: TextField(
                         controller: _searchController,
@@ -114,8 +117,7 @@ class _BankAccountsPageState extends ConsumerState<BankAccountsPage> {
                           prefixIcon: Icon(
                             Icons.search,
                             size: 18,
-                            color: colorScheme.onSurfaceVariant
-                                .withValues(alpha: 0.6),
+                            color: _green.withValues(alpha: 0.75),
                           ),
                           suffixIcon: hasQuery
                               ? GestureDetector(
@@ -171,24 +173,36 @@ class _BankAccountsPageState extends ConsumerState<BankAccountsPage> {
                     children: [
                       // Section label
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(22, 0, 20, 10),
-                        child: Text(
-                          hasQuery
-                              ? '${data.accounts.length} rekening ditemukan'
-                              : '${data.accounts.length} rekening tersimpan',
-                          style: AppTextStyles.label(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500,
-                            color: colorScheme.onSurfaceVariant
-                                .withValues(alpha: 0.6),
-                          ),
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 7,
+                              height: 7,
+                              decoration: const BoxDecoration(
+                                color: _gold,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              hasQuery
+                                  ? '${data.accounts.length} REKENING DITEMUKAN'
+                                  : '${data.accounts.length} REKENING TERSIMPAN',
+                              style: AppTextStyles.label(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: _green,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
 
                       Expanded(
                         child: ListView.builder(
                           controller: _scrollController,
-                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
                           itemCount: data.accounts.length +
                               (data.isLoadingMore ? 1 : 0),
                           itemBuilder: (context, index) {
@@ -223,7 +237,7 @@ class _BankAccountsPageState extends ConsumerState<BankAccountsPage> {
                   );
                 },
                 loading: () => ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: 5,
                   itemBuilder: (context, index) => const BankAccountSkeleton(),
                 ),
@@ -233,24 +247,27 @@ class _BankAccountsPageState extends ConsumerState<BankAccountsPage> {
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.6,
                       child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.error_outline,
-                                size: 40, color: colorScheme.error),
-                            const SizedBox(height: 12),
-                            Text(
-                              'Gagal memuat data',
-                              style: AppTextStyles.body(),
-                            ),
-                            const SizedBox(height: 8),
-                            TextButton(
-                              onPressed: () => ref
-                                  .read(bankAccountsControllerProvider.notifier)
-                                  .refresh(),
-                              child: const Text('Coba Lagi'),
-                            ),
-                          ],
+                        child: _buildWhiteCard(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.error_outline,
+                                  size: 40, color: colorScheme.error),
+                              const SizedBox(height: 12),
+                              Text(
+                                'Gagal memuat data',
+                                style: AppTextStyles.body(),
+                              ),
+                              const SizedBox(height: 8),
+                              TextButton(
+                                onPressed: () => ref
+                                    .read(
+                                        bankAccountsControllerProvider.notifier)
+                                    .refresh(),
+                                child: const Text('Coba Lagi'),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -265,6 +282,8 @@ class _BankAccountsPageState extends ConsumerState<BankAccountsPage> {
         onPressed: () => context.push(Routes.bankAccountCreate),
         icon: const Icon(Icons.add_card_outlined),
         label: const Text('Tambah Rekening'),
+        backgroundColor: _green,
+        foregroundColor: Colors.white,
       ),
     );
   }
@@ -280,41 +299,62 @@ class _BankAccountsPageState extends ConsumerState<BankAccountsPage> {
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 40),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 64,
-              height: 64,
-              decoration: BoxDecoration(
-                color: colorScheme.primaryContainer.withValues(alpha: 0.8),
-                borderRadius: BorderRadius.circular(20),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: _buildWhiteCard(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  color: _softGreen,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Icon(
+                  Icons.account_balance_outlined,
+                  size: 28,
+                  color: _green,
+                ),
               ),
-              child: Icon(
-                Icons.account_balance_outlined,
-                size: 28,
-                color: colorScheme.primary,
+              const SizedBox(height: 16),
+              Text(
+                title,
+                style: AppTextStyles.title(fontWeight: FontWeight.w600),
+                textAlign: TextAlign.center,
               ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              title,
-              style: AppTextStyles.title(fontWeight: FontWeight.w600),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              subtitle,
-              textAlign: TextAlign.center,
-              style: AppTextStyles.body(
-                color: colorScheme.onSurfaceVariant,
-                fontSize: 13,
+              const SizedBox(height: 8),
+              Text(
+                subtitle,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.body(
+                  color: colorScheme.onSurfaceVariant,
+                  fontSize: 13,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _buildWhiteCard({required Widget child}) {
+    return Container(
+      padding: const EdgeInsets.all(18),
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: child,
     );
   }
 }

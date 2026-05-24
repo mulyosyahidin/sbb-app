@@ -29,6 +29,8 @@ class Contract extends Equatable {
   final ContractStatus status;
   final String? note;
   final double? profitSharingPercentage;
+  final double? totalProfitPaid;
+  final int? totalProfitPaidMonths;
   final List<ContractNote>? notes;
   final ContractNote? latestNote;
   final List<PaymentSchedule>? paymentSchedules;
@@ -61,6 +63,8 @@ class Contract extends Equatable {
     required this.status,
     this.note,
     this.profitSharingPercentage,
+    this.totalProfitPaid,
+    this.totalProfitPaidMonths,
     this.notes,
     this.latestNote,
     this.paymentSchedules,
@@ -95,6 +99,8 @@ class Contract extends Equatable {
         status,
         note,
         profitSharingPercentage,
+        totalProfitPaid,
+        totalProfitPaidMonths,
         notes,
         latestNote,
         paymentSchedules,

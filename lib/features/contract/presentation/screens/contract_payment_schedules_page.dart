@@ -52,10 +52,6 @@ class _PaymentSchedulesContent extends StatelessWidget {
 
   static const _summaryGreen = Color(0xFF226B2F);
   static const _summaryTileGreen = Color(0xFF3E8445);
-  static const _dummyProfitSharing = 12000000.0;
-  static const _dummyDistributed = 2000000.0;
-  static const _dummyRunningMonth = 2;
-  static const _dummyTotalMonth = 12;
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +74,7 @@ class _PaymentSchedulesContent extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _buildProfitSummaryCard(context),
+                    _buildProfitSummaryCard(context, schedules),
                     const SizedBox(height: 20),
                     if (schedules.isEmpty)
                       _buildEmptyCard(context)
@@ -94,7 +90,18 @@ class _PaymentSchedulesContent extends StatelessWidget {
     );
   }
 
-  Widget _buildProfitSummaryCard(BuildContext context) {
+  Widget _buildProfitSummaryCard(
+    BuildContext context,
+    List<PaymentSchedule> schedules,
+  ) {
+    final totalProfit = schedules.fold<double>(
+      0,
+      (total, schedule) => total + schedule.nominal,
+    );
+    final totalPaid = contract.totalProfitPaid ?? 0;
+    final paidMonths = contract.totalProfitPaidMonths ?? 0;
+    final totalMonths = contract.contractMonthDuration ?? schedules.length;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -114,8 +121,7 @@ class _PaymentSchedulesContent extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            ContractPaymentSchedulesPage._currencyFormat
-                .format(_dummyProfitSharing),
+            ContractPaymentSchedulesPage._currencyFormat.format(totalProfit),
             style: AppTextStyles.title(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -129,14 +135,14 @@ class _PaymentSchedulesContent extends StatelessWidget {
                 child: _buildSummaryMetric(
                   label: 'Tersalurkan',
                   value: ContractPaymentSchedulesPage._currencyFormat
-                      .format(_dummyDistributed),
+                      .format(totalPaid),
                 ),
               ),
               const SizedBox(width: 14),
               Expanded(
                 child: _buildSummaryMetric(
                   label: 'Berjalan',
-                  value: '$_dummyRunningMonth/$_dummyTotalMonth bln',
+                  value: '$paidMonths/$totalMonths bln',
                 ),
               ),
             ],
@@ -234,8 +240,8 @@ class _PaymentSchedulesContent extends StatelessWidget {
       child: Row(
         children: [
           _buildHeaderCell(context, 'Bln', flex: 1, textAlign: TextAlign.left),
-          _buildHeaderCell(context, 'Tanggal salur', flex: 3),
-          _buildHeaderCell(context, 'Profit',
+          _buildHeaderCell(context, 'Tanggal', flex: 3),
+          _buildHeaderCell(context, 'Nominal',
               flex: 3, textAlign: TextAlign.end),
           _buildHeaderCell(context, 'Status',
               flex: 3, textAlign: TextAlign.end),
@@ -397,7 +403,7 @@ class _PaymentSchedulesContent extends StatelessWidget {
   _ScheduleStatusStyle _statusStyle(PaymentSchedule schedule) {
     if (schedule.status == PaymentScheduleStatus.success) {
       return const _ScheduleStatusStyle(
-        label: 'Tersalurkan',
+        label: 'Berhasil',
         textColor: Color(0xFF226B2F),
         backgroundColor: Color(0xFFEFF8EA),
         borderColor: Color(0xFFE1EFD9),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppColors {
@@ -110,6 +111,7 @@ class AppTheme {
       elevation: 0,
       backgroundColor: AppColors.backgroundDark,
       foregroundColor: AppColors.textPrimaryDark,
+      systemOverlayStyle: SystemUiOverlayStyle.light,
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
