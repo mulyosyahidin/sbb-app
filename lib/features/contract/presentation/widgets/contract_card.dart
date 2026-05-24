@@ -23,6 +23,12 @@ class ContractCard extends StatelessWidget {
     );
 
     final isDraft = item.status == ContractStatus.draft;
+    final contractNumber = item.contractNumber?.trim();
+    final title = isDraft
+        ? 'Draft Kontrak'
+        : (contractNumber == null || contractNumber.isEmpty
+            ? null
+            : contractNumber);
 
     return InkWell(
       onTap: () {
@@ -54,19 +60,31 @@ class ContractCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  isDraft
-                      ? 'Draft Kontrak'
-                      : (item.contractNumber ?? 'No. Kontrak -'),
-                  style: AppTextStyles.body(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                    color: Theme.of(context).colorScheme.onSurface,
+                if (title != null) ...[
+                  Expanded(
+                    child: Text(
+                      title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTextStyles.body(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                ] else
+                  const Spacer(),
+                Flexible(
+                  flex: title == null ? 0 : 1,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: _buildStatusBadge(context, item.status),
                   ),
                 ),
-                _buildStatusBadge(context, item.status),
               ],
             ),
             const SizedBox(height: 20),
@@ -140,6 +158,7 @@ class ContractCard extends StatelessWidget {
         color = const Color(0xFF4CAF50);
         break;
       case ContractStatus.waitingVerification:
+      case ContractStatus.waitingPaymentVerification:
       case ContractStatus.waitingPayment:
         color = const Color(0xFFFF9800);
         break;
@@ -150,6 +169,7 @@ class ContractCard extends StatelessWidget {
         color = const Color(0xFF2196F3);
         break;
       case ContractStatus.rejected:
+      case ContractStatus.paymentRejected:
       case ContractStatus.cancelled:
         color = const Color(0xFFF44336);
         break;
@@ -163,6 +183,9 @@ class ContractCard extends StatelessWidget {
       ),
       child: Text(
         status.value,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.center,
         style: AppTextStyles.body(
           fontSize: 11,
           fontWeight: FontWeight.bold,

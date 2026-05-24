@@ -4,9 +4,12 @@ import 'package:app/core/errors/failure.dart';
 import 'package:app/core/utils/error_util.dart';
 import 'package:app/features/contract/data/datasources/contract_remote_data_source.dart';
 import 'package:app/features/contract/data/dtos/requests/save_draft_request_dto.dart';
+import 'package:app/features/contract/data/dtos/requests/store_payment_proof_request_dto.dart';
+import 'package:app/features/contract/data/dtos/responses/get_contract_response_dto.dart';
 import 'package:app/features/contract/data/dtos/responses/get_contracts_response_dto.dart';
 import 'package:app/features/contract/data/dtos/responses/get_draft_contract_response_dto.dart';
 import 'package:app/features/contract/data/dtos/responses/save_contract_draft_response_dto.dart';
+import 'package:app/features/contract/data/dtos/responses/store_payment_proof_response_dto.dart';
 import 'package:app/features/contract/domain/repositories/contract_repository.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -100,6 +103,39 @@ class ContractRepositoryImpl implements ContractRepository {
     } catch (e) {
       return Left(
         _mapExceptionToFailure(e, 'ContractRepositoryImpl.getContracts'),
+      );
+    }
+  }
+
+  @override
+  Future<Either<Failure, GetContractResponseData>> getContractById(
+      String id) async {
+    try {
+      final responseDto = await _remoteDataSource.getContractById(id);
+
+      return Right(responseDto.data!);
+    } catch (e) {
+      return Left(
+        _mapExceptionToFailure(e, 'ContractRepositoryImpl.getContractById'),
+      );
+    }
+  }
+
+  @override
+  Future<Either<Failure, StorePaymentProofResponseData>> storePaymentProof({
+    required int contractId,
+    required StorePaymentProofRequestDto request,
+  }) async {
+    try {
+      final responseDto = await _remoteDataSource.storePaymentProof(
+        contractId: contractId,
+        request: request,
+      );
+
+      return Right(responseDto.data!);
+    } catch (e) {
+      return Left(
+        _mapExceptionToFailure(e, 'ContractRepositoryImpl.storePaymentProof'),
       );
     }
   }

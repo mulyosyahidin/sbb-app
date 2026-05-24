@@ -3,6 +3,7 @@ import 'package:app/features/contract/data/dtos/requests/save_draft_request_dto.
 import 'package:app/features/contract/data/mappers/contract_mapper.dart';
 import 'package:app/features/contract/data/repositories/contract_repository_impl.dart';
 import 'package:app/features/contract/domain/entities/contract.dart';
+import 'package:app/features/contract/domain/entities/contract_status.dart';
 import 'package:app/features/contract/domain/repositories/contract_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -19,11 +20,7 @@ class ContractDraftController extends _$ContractDraftController {
     return authState.maybeWhen(
       data: (session) async {
         if (session.isAuthenticated) {
-          final result = await _repository.getDraftContract();
-          return result.fold(
-            (l) => null,
-            (r) => r.contract != null ? ContractMapper.toEntity(r.contract!) : null,
-          );
+          return _fetchEditableContract();
         }
         return null;
       },
@@ -34,15 +31,36 @@ class ContractDraftController extends _$ContractDraftController {
   Future<Contract?> checkDraft() async {
     state = const AsyncValue.loading();
 
-    final result = await _repository.getDraftContract();
+    final contract = await _fetchEditableContract();
 
-    state = result.fold(
-      (l) => AsyncValue.error(l, StackTrace.current),
-      (r) => AsyncValue.data(
-          r.contract != null ? ContractMapper.toEntity(r.contract!) : null),
-    );
+    state = AsyncValue.data(contract);
 
     return state.value;
+  }
+
+  Future<Contract?> _fetchEditableContract() async {
+    final draftResult = await _repository.getDraftContract();
+    final draftContract = draftResult.fold(
+      (failure) => null,
+      (data) => data.contract != null
+          ? ContractMapper.toEntity(data.contract!)
+          : null,
+    );
+
+    if (draftContract != null) {
+      return draftContract;
+    }
+
+    final rejectedResult = await _repository.getContracts(
+      status: ContractStatus.rejected.value,
+    );
+
+    return rejectedResult.fold(
+      (failure) => null,
+      (data) => data.contracts.isNotEmpty
+          ? ContractMapper.toEntity(data.contracts.first)
+          : null,
+    );
   }
 
   Future<Contract?> saveDraft(

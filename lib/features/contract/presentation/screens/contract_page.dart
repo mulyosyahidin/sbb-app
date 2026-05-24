@@ -1,18 +1,105 @@
-import 'package:app/core/theme/app_theme.dart';
-import 'package:app/core/theme/app_text_style.dart';
+import 'package:app/core/errors/failure.dart';
+import 'package:app/features/contract/application/contract_detail_controller.dart';
+import 'package:app/features/contract/domain/entities/contract.dart';
+import 'package:app/features/contract/domain/entities/contract_status.dart';
+import 'package:app/features/contract/presentation/screens/partials/contract_detail/active_contract_detail_partial.dart';
+import 'package:app/features/contract/presentation/screens/partials/contract_detail/cancelled_contract_detail_partial.dart';
+import 'package:app/features/contract/presentation/screens/partials/contract_detail/completed_contract_detail_partial.dart';
+import 'package:app/features/contract/presentation/screens/partials/contract_detail/extended_contract_detail_partial.dart';
+import 'package:app/features/contract/presentation/screens/partials/contract_detail/payment_rejected_contract_detail_partial.dart';
+import 'package:app/features/contract/presentation/screens/partials/contract_detail/rejected_contract_detail_partial.dart';
+import 'package:app/features/contract/presentation/screens/partials/contract_detail/waiting_payment_contract_detail_partial.dart';
+import 'package:app/features/contract/presentation/screens/partials/contract_detail/waiting_payment_verification_contract_detail_partial.dart';
+import 'package:app/features/contract/presentation/screens/partials/contract_detail/waiting_verification_contract_detail_partial.dart';
 import 'package:app/shared/widgets/app_bar_header.dart';
-import 'package:app/shared/widgets/primary_button.dart';
-import 'package:app/shared/widgets/secondary_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ContractPage extends StatelessWidget {
-  const ContractPage({super.key});
+class ContractPage extends ConsumerWidget {
+  final String contractId;
+
+  const ContractPage({
+    super.key,
+    required this.contractId,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final contractState =
+        ref.watch(contractDetailControllerProvider(contractId));
+
+    return contractState.when(
+      data: _buildStatusPage,
+      loading: () => const _ContractDetailLoadingPage(),
+      error: (error, stackTrace) => _ContractDetailErrorPage(error: error),
+    );
+  }
+
+  Widget _buildStatusPage(Contract contract) {
+    switch (contract.status) {
+      case ContractStatus.waitingVerification:
+        return WaitingVerificationContractDetailPartial(contract: contract);
+      case ContractStatus.waitingPaymentVerification:
+        return WaitingPaymentVerificationContractDetailPartial(
+            contract: contract);
+      case ContractStatus.waitingPayment:
+        return WaitingPaymentContractDetailPartial(contract: contract);
+      case ContractStatus.paymentRejected:
+        return PaymentRejectedContractDetailPartial(contract: contract);
+      case ContractStatus.active:
+        return ActiveContractDetailPartial(contract: contract);
+      case ContractStatus.extended:
+        return ExtendedContractDetailPartial(contract: contract);
+      case ContractStatus.completed:
+        return CompletedContractDetailPartial(contract: contract);
+      case ContractStatus.cancelled:
+        return CancelledContractDetailPartial(contract: contract);
+      case ContractStatus.rejected:
+        return RejectedContractDetailPartial(contract: contract);
+      case ContractStatus.draft:
+        return const SizedBox.shrink();
+    }
+  }
+}
+
+class _ContractDetailLoadingPage extends StatelessWidget {
+  const _ContractDetailLoadingPage();
 
   @override
   Widget build(BuildContext context) {
-    const String contractId = 'SBB-K-2026-039';
-    const String status = 'Aktif';
-    const double progress = 0.72;
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: const SafeArea(
+        child: Column(
+          children: [
+            AppBarHeader(
+              title: 'Detail Kontrak',
+              subtitle: 'Memuat data kontrak',
+            ),
+            Expanded(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ContractDetailErrorPage extends StatelessWidget {
+  final Object error;
+
+  const _ContractDetailErrorPage({
+    required this.error,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final message = error is Failure
+        ? (error as Failure).message
+        : 'Gagal mendapatkan detail kontrak';
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -21,360 +108,25 @@ class ContractPage extends StatelessWidget {
           children: [
             const AppBarHeader(
               title: 'Detail Kontrak',
-              subtitle: 'Informasi lengkap akad kerjasama',
+              subtitle: 'Terjadi kesalahan',
             ),
             Expanded(
-              child: CustomScrollView(
-                slivers: [
-                  // Content
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Hero Summary Card
-                          _buildHeroCard(context, contractId, status, progress),
-                          const SizedBox(height: 24),
-
-                          // Informasi Sapi
-                          _buildSectionHeader(context, 'Informasi Sapi'),
-                          const SizedBox(height: 12),
-                          _buildDetailCard(context, [
-                            _buildDetailRow(context, 'ID Kontrak', '#SBB-014'),
-                            _buildDetailRow(context, 'Jenis', 'Brahman Cross'),
-                            _buildDetailRow(context, 'Berat Awal', '320 kg'),
-                            _buildDetailRow(
-                                context, 'Berat Sekarang', '415 kg'),
-                            _buildDetailRow(context, 'Target Berat', '500 kg'),
-                          ]),
-                          const SizedBox(height: 24),
-
-                          // Rincian Keuangan
-                          _buildSectionHeader(context, 'Rincian Keuangan'),
-                          const SizedBox(height: 12),
-                          _buildDetailCard(context, [
-                            _buildDetailRow(
-                                context, 'Modal Investasi', 'Rp 18.000.000'),
-                            _buildDetailRow(context, 'Bagi Hasil',
-                                '60% (Mitra) / 40% (SBB)'),
-                            _buildDetailRow(
-                                context, 'Estimasi Profit', '+Rp 4.200.000',
-                                valueColor:
-                                    Theme.of(context).colorScheme.primary),
-                          ]),
-                          const SizedBox(height: 24),
-
-                          // Jadwal
-                          _buildSectionHeader(context, 'Jadwal Kontrak'),
-                          const SizedBox(height: 12),
-                          _buildDetailCard(context, [
-                            _buildDetailRow(
-                                context, 'Tanggal Mulai', '20 Oktober 2025'),
-                            _buildDetailRow(
-                                context, 'Estimasi Selesai', '20 April 2026'),
-                            _buildDetailRow(context, 'Durasi', '6 Bulan'),
-                          ]),
-                          const SizedBox(height: 24),
-
-                          // Timeline Aktivitas
-                          _buildSectionHeader(context, 'Timeline Aktivitas'),
-                          const SizedBox(height: 16),
-                          _buildTimelineItem(
-                            context,
-                            date: '15 April 2026',
-                            time: '09:00',
-                            title: 'Pemeriksaan Kesehatan Rutin',
-                            desc:
-                                'Kondisi sapi sangat sehat, nafsu makan stabil.',
-                            isLast: false,
-                          ),
-                          _buildTimelineItem(
-                            context,
-                            date: '10 April 2026',
-                            time: '14:30',
-                            title: 'Penimbangan Berat Badan',
-                            desc: 'Kenaikan berat badan 12kg dalam 2 minggu.',
-                            isLast: false,
-                          ),
-                          _buildTimelineItem(
-                            context,
-                            date: '01 April 2026',
-                            time: '08:00',
-                            title: 'Pemberian Vitamin & Vaksin',
-                            desc: 'Pemberian booster vitamin B-Complex.',
-                            isLast: true,
-                          ),
-                          const SizedBox(height: 48),
-
-                          // Action Buttons
-                          PrimaryButton(
-                            label: 'Perpanjang Kontrak',
-                            onPressed: () {},
-                            icon: const Icon(Icons.history_rounded, size: 20),
-                          ),
-                          const SizedBox(height: 12),
-                          SecondaryButton(
-                            label: 'Download Kontrak',
-                            onPressed: () {},
-                            icon: const Icon(Icons.download_rounded, size: 20),
-                          ),
-                          const SizedBox(height: 12),
-                          SecondaryButton(
-                            label: 'Batalkan Kontrak',
-                            onPressed: () {},
-                            color: AppColors.error,
-                            icon: const Icon(Icons.close_rounded, size: 20),
-                          ),
-                          const SizedBox(height: 40),
-                        ],
-                      ),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Text(
+                    message,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                ],
+                ),
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildHeroCard(
-      BuildContext context, String id, String status, double progress) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
-            blurRadius: 15,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'ID Kontrak',
-                    style:
-                        AppTextStyles.body(color: Colors.white70, fontSize: 12),
-                  ),
-                  Text(
-                    id,
-                    style: AppTextStyles.title(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  status,
-                  style: AppTextStyles.label(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Progres Penggemukan',
-                          style: AppTextStyles.body(
-                              color: Colors.white70, fontSize: 12),
-                        ),
-                        Text(
-                          '${(progress * 100).toInt()}%',
-                          style: AppTextStyles.body(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: LinearProgressIndicator(
-                        value: progress,
-                        backgroundColor: Colors.white.withValues(alpha: 0.1),
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onPrimary
-                            .withValues(alpha: 0.5),
-                        minHeight: 8,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSectionHeader(BuildContext context, String title) {
-    return Text(
-      title,
-      style: AppTextStyles.title(
-        fontWeight: FontWeight.bold,
-        fontSize: 16,
-        color: Theme.of(context).colorScheme.onSurface,
-      ),
-    );
-  }
-
-  Widget _buildDetailCard(BuildContext context, List<Widget> children) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Theme.of(context).colorScheme.outline),
-      ),
-      child: Column(
-        children: children,
-      ),
-    );
-  }
-
-  Widget _buildDetailRow(BuildContext context, String label, String value,
-      {Color? valueColor}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: AppTextStyles.body(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-              fontSize: 13,
-            ),
-          ),
-          Text(
-            value,
-            style: AppTextStyles.body(
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-              color: valueColor ?? Theme.of(context).colorScheme.onSurface,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTimelineItem(
-    BuildContext context, {
-    required String date,
-    required String time,
-    required String title,
-    required String desc,
-    bool isLast = false,
-  }) {
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Column(
-            children: [
-              Container(
-                width: 12,
-                height: 12,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                  shape: BoxShape.circle,
-                ),
-              ),
-              if (!isLast)
-                Expanded(
-                  child: Container(
-                    width: 2,
-                    color: Theme.of(context).colorScheme.outline,
-                  ),
-                ),
-            ],
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(bottom: isLast ? 0 : 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        date,
-                        style: AppTextStyles.body(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13,
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        time,
-                        style: AppTextStyles.body(
-                          fontSize: 11,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    title,
-                    style: AppTextStyles.body(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    desc,
-                    style: AppTextStyles.body(
-                      fontSize: 13,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ).copyWith(height: 1.5),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

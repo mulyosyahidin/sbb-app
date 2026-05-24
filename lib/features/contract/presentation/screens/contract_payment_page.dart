@@ -1,0 +1,309 @@
+import 'dart:io';
+
+import 'package:app/app/app_router.dart';
+import 'package:app/core/errors/failure.dart';
+import 'package:app/core/theme/app_text_style.dart';
+import 'package:app/core/utils/toast_util.dart';
+import 'package:app/features/contract/application/contract_detail_controller.dart';
+import 'package:app/features/contract/application/contract_payment_controller.dart';
+import 'package:app/features/contract/data/dtos/requests/store_payment_proof_request_dto.dart';
+import 'package:app/features/contract/domain/entities/contract.dart';
+import 'package:app/shared/forms/app_file_picker_field.dart';
+import 'package:app/shared/forms/app_text_field.dart';
+import 'package:app/shared/widgets/app_bar_header.dart';
+import 'package:app/shared/widgets/primary_button.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+
+class ContractPaymentPage extends ConsumerStatefulWidget {
+  final String contractId;
+
+  const ContractPaymentPage({
+    super.key,
+    required this.contractId,
+  });
+
+  @override
+  ConsumerState<ContractPaymentPage> createState() =>
+      _ContractPaymentPageState();
+}
+
+class _ContractPaymentPageState extends ConsumerState<ContractPaymentPage> {
+  final _bankNameController = TextEditingController();
+  final _bankAccountNameController = TextEditingController();
+  final _bankAccountNumberController = TextEditingController();
+  final _nominalController = TextEditingController();
+
+  File? _proofFile;
+
+  final _currencyFormat = NumberFormat.currency(
+    locale: 'id_ID',
+    symbol: 'Rp ',
+    decimalDigits: 0,
+  );
+
+  @override
+  void dispose() {
+    _bankNameController.dispose();
+    _bankAccountNameController.dispose();
+    _bankAccountNumberController.dispose();
+    _nominalController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ref.listen(contractPaymentControllerProvider, (previous, next) {
+      if (next is AsyncError) {
+        final error = next.error;
+        ToastUtil.showError(
+          context,
+          title: 'Gagal',
+          description: error is Failure ? error.message : error.toString(),
+        );
+      }
+    });
+
+    final contractState =
+        ref.watch(contractDetailControllerProvider(widget.contractId));
+
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      body: SafeArea(
+        child: Column(
+          children: [
+            const AppBarHeader(
+              title: 'Pembayaran Kontrak',
+              subtitle: 'Upload bukti pembayaran',
+            ),
+            Expanded(
+              child: contractState.when(
+                data: (contract) {
+                  return _buildForm(context, contract);
+                },
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, stackTrace) => _buildError(context, error),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildForm(BuildContext context, Contract contract) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final paymentState = ref.watch(contractPaymentControllerProvider);
+    final isLoading = paymentState.isLoading;
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildPaymentSummary(context, contract),
+          const SizedBox(height: 24),
+          _buildSectionHeader(context, 'Data Rekening Pengirim'),
+          const SizedBox(height: 12),
+          _buildCard(
+            context,
+            children: [
+              AppTextField(
+                label: 'Nama Bank',
+                controller: _bankNameController,
+                enabled: !isLoading,
+                textCapitalization: TextCapitalization.words,
+              ),
+              const SizedBox(height: 16),
+              AppTextField(
+                label: 'Atas Nama',
+                controller: _bankAccountNameController,
+                enabled: !isLoading,
+                textCapitalization: TextCapitalization.words,
+              ),
+              const SizedBox(height: 16),
+              AppTextField(
+                label: 'Nomor Rekening',
+                controller: _bankAccountNumberController,
+                enabled: !isLoading,
+                keyboardType: TextInputType.number,
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          _buildSectionHeader(context, 'Bukti Pembayaran'),
+          const SizedBox(height: 12),
+          _buildCard(
+            context,
+            children: [
+              AppTextField(
+                label: 'Nominal',
+                controller: _nominalController,
+                enabled: !isLoading,
+                keyboardType: TextInputType.number,
+                prefixIcon: const Icon(Icons.payments_outlined),
+              ),
+              const SizedBox(height: 16),
+              AppFilePickerField(
+                key: ValueKey(_proofFile?.path ?? 'payment_proof_empty'),
+                label: 'Bukti Transfer',
+                allowedExtensions: const ['jpg', 'jpeg', 'png', 'pdf'],
+                initialFile: _proofFile,
+                onFileSelected: (file) {
+                  setState(() => _proofFile = file);
+                },
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Format: JPG, PNG, atau PDF. Ukuran maksimal mengikuti ketentuan server.',
+                style: AppTextStyles.body(
+                  fontSize: 12,
+                  height: 1.4,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 32),
+          PrimaryButton(
+            label: 'Upload Bukti Pembayaran',
+            isLoading: isLoading,
+            onPressed: isLoading ? null : () => _handleSubmit(contract),
+            icon: const Icon(Icons.upload_file_rounded),
+          ),
+          const SizedBox(height: 40),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPaymentSummary(BuildContext context, Contract contract) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: colorScheme.primary.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: colorScheme.primary.withValues(alpha: 0.12)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Total pembayaran',
+            style: AppTextStyles.body(
+              fontSize: 12,
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            _currencyFormat.format(contract.cowTotalPrice ?? 0),
+            style: AppTextStyles.title(
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
+              color: colorScheme.primary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(BuildContext context, String title) {
+    return Text(
+      title,
+      style: AppTextStyles.title(
+        fontWeight: FontWeight.bold,
+        fontSize: 16,
+        color: Theme.of(context).colorScheme.onSurface,
+      ),
+    );
+  }
+
+  Widget _buildCard(
+    BuildContext context, {
+    required List<Widget> children,
+  }) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: colorScheme.outline),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: children,
+      ),
+    );
+  }
+
+  Widget _buildError(BuildContext context, Object error) {
+    final message =
+        error is Failure ? error.message : 'Gagal mendapatkan detail kontrak';
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Text(
+          message,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurface,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _handleSubmit(Contract contract) async {
+    final file = _proofFile;
+    final nominal = double.tryParse(_nominalController.text.trim());
+
+    if (_bankNameController.text.trim().isEmpty ||
+        _bankAccountNameController.text.trim().isEmpty ||
+        _bankAccountNumberController.text.trim().isEmpty ||
+        nominal == null ||
+        nominal <= 0 ||
+        file == null) {
+      ToastUtil.showError(
+        context,
+        title: 'Data belum lengkap',
+        description: 'Lengkapi data rekening, nominal, dan bukti pembayaran.',
+      );
+      return;
+    }
+
+    final result = await ref
+        .read(contractPaymentControllerProvider.notifier)
+        .uploadPaymentProof(
+          contractId: contract.id,
+          request: StorePaymentProofRequestDto(
+            file: file,
+            bankName: _bankNameController.text.trim(),
+            bankAccountName: _bankAccountNameController.text.trim(),
+            bankAccountNumber: _bankAccountNumberController.text.trim(),
+            nominal: nominal,
+          ),
+        );
+
+    if (result == null || !mounted) return;
+
+    ref.invalidate(contractDetailControllerProvider(widget.contractId));
+
+    ToastUtil.showSuccess(
+      context,
+      title: 'Berhasil',
+      description: 'Bukti pembayaran berhasil diunggah.',
+    );
+
+    context.go(Routes.contractDetail.replaceAll(':id', widget.contractId));
+  }
+}

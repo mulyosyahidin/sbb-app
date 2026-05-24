@@ -8,6 +8,8 @@ import 'package:app/features/account/bank_accounts/domain/entities/bank_account.
 import 'package:app/features/contract/application/contract_draft_controller.dart';
 import 'package:app/features/contract/application/contract_list_controller.dart';
 import 'package:app/features/contract/data/dtos/requests/save_draft_request_dto.dart';
+import 'package:app/features/contract/domain/entities/contract.dart';
+import 'package:app/features/contract/domain/entities/contract_status.dart';
 import 'package:app/features/contract/presentation/widgets/contract_create_skeleton.dart';
 import 'package:app/shared/forms/app_dropdown_field.dart';
 import 'package:app/shared/forms/app_file_picker_field.dart';
@@ -43,6 +45,8 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
   bool _isDataPopulated = false;
   bool _isInitialCheckDone = false;
   String? _initialKycFileName;
+  ContractStatus? _loadedContractStatus;
+  int? _loadedBankAccountId;
   bool _isKycDeleted = false;
   bool isLoading = false;
 
@@ -68,9 +72,8 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
     ref.listen(bankAccountsControllerProvider, (previous, next) {
       next.whenData((state) {
         if (selectedBankAccount == null && state.accounts.isNotEmpty) {
-          final primary = state.accounts.firstWhere((a) => a.isPrimary,
-              orElse: () => state.accounts.first);
-          setState(() => selectedBankAccount = primary);
+          final account = _resolveInitialBankAccount(state.accounts);
+          setState(() => selectedBankAccount = account);
         }
       });
     });
@@ -79,34 +82,13 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
       if (!next.isLoading) {
         setState(() => _isInitialCheckDone = true);
       }
- 
+
       next.whenData((contract) {
         if (contract != null && !_isDataPopulated) {
-          _nameController.text = contract.userName ?? '';
-          _nikController.text = contract.userIdentityNumber ?? '';
-          _initialKycFileName = contract.userIdentityNumberFile?.fileName;
- 
-          if (contract.cowId != null) {
-            selectedCowId = contract.cowId;
-            selectedCowType = contract.cowName ?? 'Pilih Sapi';
-            currentPrice = contract.cowPrice?.toInt() ?? 0;
-            selectedCowWeight = contract.cowWeightKg;
-            quantity = contract.cowQuantity ?? 1;
-          }
- 
-          if (contract.program != null) {
-            selectedProgram = contract.program!.value;
-          }
- 
-          if (contract.contractMonthDuration != null) {
-            selectedDuration = '${contract.contractMonthDuration} Bulan';
-          }
- 
-          _isDataPopulated = true;
-          setState(() {});
+          _populateContractData(contract);
         }
       });
- 
+
       if (next is AsyncError) {
         ToastUtil.showError(
           context,
@@ -115,7 +97,7 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
         );
       }
     });
- 
+
     final contractState = ref.watch(contractDraftControllerProvider);
     final isLoading = contractState.isLoading;
     final isInitialLoading = !_isInitialCheckDone && isLoading;
@@ -150,7 +132,7 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        'Anda masih memiliki draft kontrak, silakan lanjutkan pengisian.',
+                        _editableContractMessage,
                         style: TextStyle(
                           color: colorScheme.onPrimaryContainer,
                           fontSize: 13,
@@ -250,6 +232,64 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
           const SizedBox(height: 40),
         ],
       ),
+    );
+  }
+
+  String get _editableContractMessage {
+    if (_loadedContractStatus == ContractStatus.rejected) {
+      return 'Kontrak Anda ditolak. Silakan perbaiki data sesuai catatan admin.';
+    }
+
+    return 'Anda masih memiliki draft kontrak, silakan lanjutkan pengisian.';
+  }
+
+  void _populateContractData(Contract contract) {
+    _nameController.text = contract.userName ?? '';
+    _nikController.text = contract.userIdentityNumber ?? '';
+    _initialKycFileName = contract.userIdentityNumberFile?.fileName;
+    _loadedContractStatus = contract.status;
+    _loadedBankAccountId = contract.bankAccountId;
+
+    if (contract.cowId != null) {
+      selectedCowId = contract.cowId;
+      selectedCowType = contract.cowName ?? 'Pilih Sapi';
+      currentPrice = contract.cowPrice?.toInt() ?? 0;
+      selectedCowWeight = contract.cowWeightKg;
+      quantity = contract.cowQuantity ?? 1;
+    }
+
+    if (contract.program != null) {
+      selectedProgram = contract.program!.value;
+    }
+
+    if (contract.contractMonthDuration != null) {
+      selectedDuration = '${contract.contractMonthDuration} Bulan';
+    }
+
+    final bankAccountsState = ref.read(bankAccountsControllerProvider).value;
+    if (bankAccountsState != null && bankAccountsState.accounts.isNotEmpty) {
+      selectedBankAccount =
+          _resolveInitialBankAccount(bankAccountsState.accounts);
+    }
+
+    _isDataPopulated = true;
+    setState(() {});
+  }
+
+  BankAccount _resolveInitialBankAccount(List<BankAccount> accounts) {
+    if (_loadedBankAccountId != null) {
+      return accounts.firstWhere(
+        (account) => account.id == _loadedBankAccountId,
+        orElse: () => accounts.firstWhere(
+          (account) => account.isPrimary,
+          orElse: () => accounts.first,
+        ),
+      );
+    }
+
+    return accounts.firstWhere(
+      (account) => account.isPrimary,
+      orElse: () => accounts.first,
     );
   }
 

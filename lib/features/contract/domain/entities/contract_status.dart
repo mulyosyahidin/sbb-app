@@ -1,7 +1,9 @@
 enum ContractStatus {
   draft('Draft'),
   waitingVerification('Menunggu Verifikasi'),
+  waitingPaymentVerification('Menunggu Verifikasi Pembayaran'),
   waitingPayment('Menunggu Pembayaran'),
+  paymentRejected('Pembayaran Ditolak'),
   active('Aktif'),
   extended('Diperpanjang'),
   completed('Selesai'),

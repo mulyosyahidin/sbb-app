@@ -39,6 +39,16 @@ _ContractDto _$ContractDtoFromJson(Map<String, dynamic> json) => _ContractDto(
       note: json['note'] as String?,
       profitSharingPercentage: const DoubleStringConverter()
           .fromJson(json['profit_sharing_percentage']),
+      notes: (json['notes'] as List<dynamic>?)
+          ?.map((e) => ContractNoteDto.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      latestNote: _readLatestNote(json, 'latest_note') == null
+          ? null
+          : ContractNoteDto.fromJson(
+              _readLatestNote(json, 'latest_note') as Map<String, dynamic>),
+      paymentSchedules: (json['payment_schedules'] as List<dynamic>?)
+          ?.map((e) => PaymentScheduleDto.fromJson(e as Map<String, dynamic>))
+          .toList(),
       startDate: json['start_date'] == null
           ? null
           : DateTime.parse(json['start_date'] as String),
@@ -80,6 +90,9 @@ Map<String, dynamic> _$ContractDtoToJson(_ContractDto instance) =>
       'note': instance.note,
       'profit_sharing_percentage': const DoubleStringConverter()
           .toJson(instance.profitSharingPercentage),
+      'notes': instance.notes,
+      'latest_note': instance.latestNote,
+      'payment_schedules': instance.paymentSchedules,
       'start_date': instance.startDate?.toIso8601String(),
       'end_date': instance.endDate?.toIso8601String(),
       'created_at': instance.createdAt.toIso8601String(),

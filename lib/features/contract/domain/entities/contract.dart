@@ -1,6 +1,8 @@
 import 'package:app/core/domain/entities/app_file.dart';
+import 'package:app/features/contract/domain/entities/contract_note.dart';
 import 'package:app/features/contract/domain/entities/contract_program.dart';
 import 'package:app/features/contract/domain/entities/contract_status.dart';
+import 'package:app/features/contract/domain/entities/payment_schedule.dart';
 import 'package:equatable/equatable.dart';
 
 class Contract extends Equatable {
@@ -27,6 +29,9 @@ class Contract extends Equatable {
   final ContractStatus status;
   final String? note;
   final double? profitSharingPercentage;
+  final List<ContractNote>? notes;
+  final ContractNote? latestNote;
+  final List<PaymentSchedule>? paymentSchedules;
   final DateTime? startDate;
   final DateTime? endDate;
   final DateTime createdAt;
@@ -56,6 +61,9 @@ class Contract extends Equatable {
     required this.status,
     this.note,
     this.profitSharingPercentage,
+    this.notes,
+    this.latestNote,
+    this.paymentSchedules,
     this.startDate,
     this.endDate,
     required this.createdAt,
@@ -87,6 +95,9 @@ class Contract extends Equatable {
         status,
         note,
         profitSharingPercentage,
+        notes,
+        latestNote,
+        paymentSchedules,
         startDate,
         endDate,
         createdAt,

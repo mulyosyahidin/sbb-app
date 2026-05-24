@@ -6,7 +6,11 @@ import 'package:app/features/account/summary/presentation/screens/account_page.d
 import 'package:app/features/account/edit_profile/presentation/screens/edit_profile_page.dart';
 import 'package:app/features/auth/login/presentation/screens/login_page.dart';
 import 'package:app/features/auth/register/presentation/screens/register_page.dart';
+import 'package:app/features/contract/domain/entities/contract.dart';
+import 'package:app/features/contract/presentation/screens/contract_certificate_page.dart';
 import 'package:app/features/contract/presentation/screens/contract_create_page.dart';
+import 'package:app/features/contract/presentation/screens/contract_payment_page.dart';
+import 'package:app/features/contract/presentation/screens/contract_payment_schedules_page.dart';
 import 'package:app/features/contract/presentation/screens/contract_preview_page.dart';
 import 'package:app/features/contract/presentation/screens/cow_catalog_page.dart';
 import 'package:app/features/contract/presentation/screens/contract_page.dart';
@@ -50,6 +54,9 @@ class Routes {
   static const contractCreate = "/contract/create";
   static const cowCatalog = "/contract/catalog";
   static const contractDetail = "/contract/:id";
+  static const contractPayment = "/contract/:id/payment";
+  static const contractPaymentSchedules = "/contract/:id/payment-schedules";
+  static const contractCertificate = "/contract/:id/certificate";
   static const profit = "/profit";
   static const paymentDetail = "/profit/:id";
   static const gallery = "/gallery";
@@ -76,6 +83,9 @@ class Routes {
     contractCreate,
     cowCatalog,
     contractDetail,
+    contractPayment,
+    contractPaymentSchedules,
+    contractCertificate,
     profit,
     paymentDetail,
     gallery,
@@ -226,8 +236,34 @@ GoRouter router(Ref ref) {
                     builder: (context, state) => const CowCatalogPage(),
                   ),
                   GoRoute(
+                    path: ':id/payment',
+                    builder: (context, state) => ContractPaymentPage(
+                      contractId: state.pathParameters['id'] ?? '',
+                    ),
+                  ),
+                  GoRoute(
+                    path: ':id/payment-schedules',
+                    builder: (context, state) => ContractPaymentSchedulesPage(
+                      contractId: state.pathParameters['id'] ?? '',
+                      initialContract: state.extra is Contract
+                          ? state.extra as Contract
+                          : null,
+                    ),
+                  ),
+                  GoRoute(
+                    path: ':id/certificate',
+                    builder: (context, state) => ContractCertificatePage(
+                      contractId: state.pathParameters['id'] ?? '',
+                      initialContract: state.extra is Contract
+                          ? state.extra as Contract
+                          : null,
+                    ),
+                  ),
+                  GoRoute(
                     path: ':id',
-                    builder: (context, state) => const ContractPage(),
+                    builder: (context, state) => ContractPage(
+                      contractId: state.pathParameters['id'] ?? '',
+                    ),
                   ),
                 ],
               ),

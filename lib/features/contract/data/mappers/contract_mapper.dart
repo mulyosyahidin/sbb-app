@@ -1,5 +1,7 @@
 import 'package:app/core/mappers/app_file_mapper.dart';
 import 'package:app/features/contract/data/dtos/contract_dto.dart';
+import 'package:app/features/contract/data/mappers/contract_note_mapper.dart';
+import 'package:app/features/contract/data/mappers/payment_schedule_mapper.dart';
 import 'package:app/features/contract/domain/entities/contract.dart';
 import 'package:app/features/contract/domain/entities/contract_program.dart';
 import 'package:app/features/contract/domain/entities/contract_status.dart';
@@ -27,11 +29,21 @@ class ContractMapper {
       bankName: dto.bankName,
       bankAccountName: dto.bankAccountName,
       bankAccountNumber: dto.bankAccountNumber,
-      program: dto.program != null ? ContractProgram.fromString(dto.program) : null,
+      program:
+          dto.program != null ? ContractProgram.fromString(dto.program) : null,
       contractMonthDuration: dto.contractMonthDuration,
       status: ContractStatus.fromString(dto.status),
       note: dto.note,
       profitSharingPercentage: dto.profitSharingPercentage,
+      notes: dto.notes != null
+          ? ContractNoteMapper.toEntityList(dto.notes!)
+          : null,
+      latestNote: dto.latestNote != null
+          ? ContractNoteMapper.toEntity(dto.latestNote!)
+          : null,
+      paymentSchedules: dto.paymentSchedules != null
+          ? PaymentScheduleMapper.toEntityList(dto.paymentSchedules!)
+          : null,
       startDate: dto.startDate,
       endDate: dto.endDate,
       createdAt: dto.createdAt,

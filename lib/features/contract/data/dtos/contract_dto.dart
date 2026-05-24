@@ -1,9 +1,15 @@
 import 'package:app/core/dtos/app_file_dto.dart';
 import 'package:app/core/utils/json_converters.dart';
+import 'package:app/features/contract/data/dtos/contract_note_dto.dart';
+import 'package:app/features/contract/data/dtos/payment_schedule_dto.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'contract_dto.freezed.dart';
 part 'contract_dto.g.dart';
+
+Object? _readLatestNote(Map json, String key) {
+  return json[key] ?? json['last_note'];
+}
 
 @freezed
 abstract class ContractDto with _$ContractDto {
@@ -31,6 +37,9 @@ abstract class ContractDto with _$ContractDto {
     required String status,
     String? note,
     @DoubleStringConverter() double? profitSharingPercentage,
+    List<ContractNoteDto>? notes,
+    @JsonKey(readValue: _readLatestNote) ContractNoteDto? latestNote,
+    List<PaymentScheduleDto>? paymentSchedules,
     DateTime? startDate,
     DateTime? endDate,
     required DateTime createdAt,
