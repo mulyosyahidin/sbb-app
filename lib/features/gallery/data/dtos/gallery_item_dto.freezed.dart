@@ -17,7 +17,7 @@ T _$identity<T>(T value) => value;
 mixin _$GalleryItemDto {
   int get id;
   String? get caption;
-  String get imageUrl;
+  String? get imageUrl;
   String? get featuredImageUrl;
 
   /// Create a copy of GalleryItemDto
@@ -62,7 +62,7 @@ abstract mixin class $GalleryItemDtoCopyWith<$Res> {
       _$GalleryItemDtoCopyWithImpl;
   @useResult
   $Res call(
-      {int id, String? caption, String imageUrl, String? featuredImageUrl});
+      {int id, String? caption, String? imageUrl, String? featuredImageUrl});
 }
 
 /// @nodoc
@@ -80,7 +80,7 @@ class _$GalleryItemDtoCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? caption = freezed,
-    Object? imageUrl = null,
+    Object? imageUrl = freezed,
     Object? featuredImageUrl = freezed,
   }) {
     return _then(_self.copyWith(
@@ -92,10 +92,10 @@ class _$GalleryItemDtoCopyWithImpl<$Res>
           ? _self.caption
           : caption // ignore: cast_nullable_to_non_nullable
               as String?,
-      imageUrl: null == imageUrl
+      imageUrl: freezed == imageUrl
           ? _self.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       featuredImageUrl: freezed == featuredImageUrl
           ? _self.featuredImageUrl
           : featuredImageUrl // ignore: cast_nullable_to_non_nullable
@@ -108,10 +108,7 @@ class _$GalleryItemDtoCopyWithImpl<$Res>
 @JsonSerializable()
 class _GalleryItemDto implements GalleryItemDto {
   const _GalleryItemDto(
-      {required this.id,
-      this.caption,
-      required this.imageUrl,
-      this.featuredImageUrl});
+      {required this.id, this.caption, this.imageUrl, this.featuredImageUrl});
   factory _GalleryItemDto.fromJson(Map<String, dynamic> json) =>
       _$GalleryItemDtoFromJson(json);
 
@@ -120,7 +117,7 @@ class _GalleryItemDto implements GalleryItemDto {
   @override
   final String? caption;
   @override
-  final String imageUrl;
+  final String? imageUrl;
   @override
   final String? featuredImageUrl;
 
@@ -172,7 +169,7 @@ abstract mixin class _$GalleryItemDtoCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int id, String? caption, String imageUrl, String? featuredImageUrl});
+      {int id, String? caption, String? imageUrl, String? featuredImageUrl});
 }
 
 /// @nodoc
@@ -190,7 +187,7 @@ class __$GalleryItemDtoCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? caption = freezed,
-    Object? imageUrl = null,
+    Object? imageUrl = freezed,
     Object? featuredImageUrl = freezed,
   }) {
     return _then(_GalleryItemDto(
@@ -202,10 +199,10 @@ class __$GalleryItemDtoCopyWithImpl<$Res>
           ? _self.caption
           : caption // ignore: cast_nullable_to_non_nullable
               as String?,
-      imageUrl: null == imageUrl
+      imageUrl: freezed == imageUrl
           ? _self.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       featuredImageUrl: freezed == featuredImageUrl
           ? _self.featuredImageUrl
           : featuredImageUrl // ignore: cast_nullable_to_non_nullable

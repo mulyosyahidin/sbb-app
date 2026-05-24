@@ -22,13 +22,11 @@ import 'package:app/features/company_profile/presentation/screens/company_profil
 import 'package:app/features/reward/presentation/screens/reward_page.dart';
 import 'package:app/features/home/presentation/screens/home_page.dart';
 import 'package:app/features/home_guest/presentation/screens/home_guest_page.dart';
+import 'package:app/features/partnership/domain/entities/partnership_application.dart';
 import 'package:app/features/profit/presentation/screens/payment_detail_page.dart';
 import 'package:app/features/profit/presentation/screens/profit_page.dart';
-import 'package:app/features/partner/presentation/screens/partner_register_page.dart';
-import 'package:app/features/partner/presentation/screens/partner_page.dart';
-import 'package:app/features/partner/presentation/screens/partner_edit_page.dart';
-import 'package:app/features/partner/presentation/screens/partner_upgrade_page.dart';
-import 'package:app/features/partner/domain/entities/partner.dart';
+import 'package:app/features/partnership/presentation/screens/partnership_register_page.dart';
+import 'package:app/features/partnership/presentation/screens/partnership_page.dart';
 import 'package:app/features/account/edit_password/presentation/screens/edit_password_page.dart';
 import 'package:app/features/account/bank_accounts/presentation/screens/bank_accounts_page.dart';
 import 'package:app/features/account/bank_accounts/presentation/screens/bank_account_create_page.dart';
@@ -67,10 +65,8 @@ class Routes {
   static const bankAccounts = "/bank-accounts";
   static const bankAccountCreate = "/bank-accounts/create";
   static const bankAccountEdit = "/bank-accounts/edit";
-  static const openPartner = "/open-partner";
   static const partner = "/partner";
-  static const partnerEdit = "/partner/edit";
-  static const partnerUpgrade = "/partner/upgrade";
+  static const openPartner = "$partner/register";
   static const calculator = "/calculator";
   static const companyProfile = "/company-profile";
   static const reward = "/reward";
@@ -98,8 +94,6 @@ class Routes {
     bankAccountEdit,
     openPartner,
     partner,
-    partnerEdit,
-    partnerUpgrade,
     calculator,
     companyProfile,
     reward,
@@ -161,23 +155,18 @@ GoRouter router(Ref ref) {
       ),
 
       GoRoute(
-        path: Routes.openPartner,
-        builder: (context, state) => const PartnerRegisterPage(),
-      ),
-      GoRoute(
         path: Routes.partner,
-        builder: (context, state) => const PartnerPage(),
-      ),
-      GoRoute(
-        path: Routes.partnerEdit,
-        builder: (context, state) {
-          final partner = state.extra as Partner;
-          return PartnerEditPage(partner: partner);
-        },
-      ),
-      GoRoute(
-        path: Routes.partnerUpgrade,
-        builder: (context, state) => const PartnerUpgradePage(),
+        builder: (context, state) => const PartnershipPage(),
+        routes: [
+          GoRoute(
+            path: 'register',
+            builder: (context, state) => PartnershipRegisterPage(
+              initialApplication: state.extra is PartnershipApplication
+                  ? state.extra as PartnershipApplication
+                  : null,
+            ),
+          ),
+        ],
       ),
       GoRoute(
         path: Routes.gallery,

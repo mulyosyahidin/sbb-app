@@ -1,6 +1,6 @@
 import 'package:app/core/auth/application/auth_session_controller.dart';
 import 'package:app/features/home/application/home_controller.dart';
-import 'package:app/features/partner/application/partner_controller.dart';
+import 'package:app/features/partnership/application/partnership_controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

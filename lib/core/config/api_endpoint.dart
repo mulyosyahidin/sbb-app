@@ -13,6 +13,7 @@ class ApiEndpoint {
   static const String updatePassword = '/user/update-password';
   static const String resendVerificationEmail =
       '/user/resend-verification-email';
+  static const String getUserSummary = '/user/summary';
 
   // Bank Accounts
   static const String getAllPaginatedBankAccounts = '/user/bank-accounts';
@@ -23,11 +24,15 @@ class ApiEndpoint {
   static const String updateBankAccount = '/user/bank-accounts/{id}';
   static const String deleteBankAccount = '/user/bank-accounts/{id}';
 
-  // Partner
-  static const String registerPartner = '/user/partner';
-  static const String updatePartner = '/user/partner';
-  static const String getPartner = '/user/partner';
+  // Partnership
   static const String checkPartner = '/user/partner/check';
+  static const String getPartnershipApplications = '/user/partner/applications';
+  static const String storePartnershipApplication =
+      '/user/partner/applications';
+  static const String getPartnershipApplicationById =
+      '/user/partner/applications/{application}';
+  static const String updatePartnershipApplication =
+      '/user/partner/applications/{application}';
 
   // Home Page
   static const String getSliders = '/home-page/sliders';

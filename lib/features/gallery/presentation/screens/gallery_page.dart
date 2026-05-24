@@ -39,8 +39,7 @@ class GalleryPage extends ConsumerWidget {
   }
 
   Widget _buildContent(BuildContext context, Gallery gallery) {
-    final displayImage =
-        gallery.featuredImageUrl ?? gallery.items?.firstOrNull?.imageUrl;
+    final displayImage = _firstAvailableImage(gallery);
 
     return CustomScrollView(
       slivers: [
@@ -230,16 +229,23 @@ class GalleryPage extends ConsumerWidget {
                       itemCount: gallery.items!.length,
                       itemBuilder: (context, index) {
                         final item = gallery.items![index];
+                        final imageUrl = item.imageUrl;
+                        final heroTag = 'photo_${item.id}_$index';
                         return InkWell(
-                          onTap: () => _showFullScreenImage(context,
-                              item.imageUrl, 'photo_${item.imageUrl}_$index'),
+                          onTap: imageUrl == null || imageUrl.isEmpty
+                              ? null
+                              : () => _showFullScreenImage(
+                                  context,
+                                  imageUrl,
+                                  heroTag,
+                                ),
                           borderRadius: BorderRadius.circular(16),
                           child: Hero(
-                            tag: 'photo_${item.imageUrl}_$index',
+                            tag: heroTag,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(16),
                               child: AppNetworkImage(
-                                imageUrl: item.imageUrl,
+                                imageUrl: imageUrl,
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -256,6 +262,22 @@ class GalleryPage extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  String? _firstAvailableImage(Gallery gallery) {
+    final featuredImageUrl = gallery.featuredImageUrl;
+    if (featuredImageUrl != null && featuredImageUrl.isNotEmpty) {
+      return featuredImageUrl;
+    }
+
+    for (final item in gallery.items ?? const []) {
+      final imageUrl = item.imageUrl;
+      if (imageUrl != null && imageUrl.isNotEmpty) {
+        return imageUrl;
+      }
+    }
+
+    return null;
   }
 
   Widget _buildLoading(BuildContext context) {

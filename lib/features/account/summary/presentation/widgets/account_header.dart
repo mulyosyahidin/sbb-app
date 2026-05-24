@@ -1,4 +1,5 @@
 import 'package:app/core/auth/application/auth_session_controller.dart';
+import 'package:app/core/auth/domain/entities/auth_driver.dart';
 import 'package:app/core/theme/app_text_style.dart';
 import 'package:app/shared/widgets/app_network_image.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ class AccountHeader extends ConsumerWidget {
     final user = ref.watch(authSessionControllerProvider).value?.user;
     final name = user?.name ?? 'User';
     final email = user?.email ?? '-';
+    final isEmailUser = user?.driver == AuthDriver.email;
 
     return Container(
       width: double.infinity,
@@ -117,7 +119,7 @@ class AccountHeader extends ConsumerWidget {
                         ),
                       ),
                     ),
-                    if (user != null && user.emailVerifiedAt == null) ...[
+                    if (isEmailUser && user?.emailVerifiedAt == null) ...[
                       const SizedBox(width: 8),
                       Container(
                         width: 8,
@@ -130,25 +132,27 @@ class AccountHeader extends ConsumerWidget {
                     ],
                   ],
                 ),
-                const SizedBox(height: 16),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-                  decoration: BoxDecoration(
-                    color: _tileGreen,
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                  child: Text(
-                    user?.emailVerifiedAt == null
-                        ? 'MENUNGGU VERIFIKASI'
-                        : 'AKUN TERVERIFIKASI',
-                    style: AppTextStyles.body(
-                      color: Colors.white,
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
+                if (isEmailUser) ...[
+                  const SizedBox(height: 16),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                    decoration: BoxDecoration(
+                      color: _tileGreen,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Text(
+                      user?.emailVerifiedAt == null
+                          ? 'MENUNGGU VERIFIKASI'
+                          : 'AKUN TERVERIFIKASI',
+                      style: AppTextStyles.body(
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
+                ],
               ],
             ),
           ],

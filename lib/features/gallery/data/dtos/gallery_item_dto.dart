@@ -8,7 +8,7 @@ abstract class GalleryItemDto with _$GalleryItemDto {
   const factory GalleryItemDto({
     required int id,
     String? caption,
-    required String imageUrl,
+    String? imageUrl,
     String? featuredImageUrl,
   }) = _GalleryItemDto;
 
