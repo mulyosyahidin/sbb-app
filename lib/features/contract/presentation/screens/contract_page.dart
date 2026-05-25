@@ -5,6 +5,7 @@ import 'package:app/features/contract/domain/entities/contract_status.dart';
 import 'package:app/features/contract/presentation/screens/partials/contract_detail/active_contract_detail_partial.dart';
 import 'package:app/features/contract/presentation/screens/partials/contract_detail/cancelled_contract_detail_partial.dart';
 import 'package:app/features/contract/presentation/screens/partials/contract_detail/completed_contract_detail_partial.dart';
+import 'package:app/features/contract/presentation/screens/partials/contract_detail/contract_detail_skeleton_partial.dart';
 import 'package:app/features/contract/presentation/screens/partials/contract_detail/extended_contract_detail_partial.dart';
 import 'package:app/features/contract/presentation/screens/partials/contract_detail/payment_rejected_contract_detail_partial.dart';
 import 'package:app/features/contract/presentation/screens/partials/contract_detail/rejected_contract_detail_partial.dart';
@@ -17,10 +18,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ContractPage extends ConsumerWidget {
   final String contractId;
+  final Contract? initialContract;
 
   const ContractPage({
     super.key,
     required this.contractId,
+    this.initialContract,
   });
 
   @override
@@ -30,7 +33,9 @@ class ContractPage extends ConsumerWidget {
 
     return contractState.when(
       data: _buildStatusPage,
-      loading: () => const _ContractDetailLoadingPage(),
+      loading: () => ContractDetailSkeletonPartial(
+        status: initialContract?.status,
+      ),
       error: (error, stackTrace) => _ContractDetailErrorPage(error: error),
     );
   }
@@ -59,32 +64,6 @@ class ContractPage extends ConsumerWidget {
       case ContractStatus.draft:
         return const SizedBox.shrink();
     }
-  }
-}
-
-class _ContractDetailLoadingPage extends StatelessWidget {
-  const _ContractDetailLoadingPage();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: const SafeArea(
-        child: Column(
-          children: [
-            AppBarHeader(
-              title: 'Detail Kontrak',
-              subtitle: 'Memuat data kontrak',
-            ),
-            Expanded(
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }
 

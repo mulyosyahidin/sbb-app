@@ -17,7 +17,7 @@ class WelcomePage extends StatelessWidget {
           // Background Image
           Positioned.fill(
             child: Image.asset(
-              'assets/images/welcome_bg.jpg',
+              'assets/images/welcome_bg.webp',
               fit: BoxFit.cover,
             ),
           ),
@@ -27,13 +27,13 @@ class WelcomePage extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Colors.transparent,
-                    AppColors.primary.withValues(alpha: 0.6),
-                    AppColors.primaryDark.withValues(alpha: 0.9),
+                    Colors.black.withValues(alpha: 0.08),
+                    AppColors.primary.withValues(alpha: 0.52),
+                    AppColors.primaryDark.withValues(alpha: 0.94),
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  stops: const [0.3, 0.7, 1.0],
+                  stops: const [0.22, 0.64, 1.0],
                 ),
               ),
             ),
@@ -44,30 +44,36 @@ class WelcomePage extends StatelessWidget {
               children: [
                 const Spacer(),
                 // Logo
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(24),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.5),
-                      width: 2,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 10,
-                        spreadRadius: 2,
+                SizedBox(
+                  width: 104,
+                  height: 104,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Container(
+                        width: 92,
+                        height: 92,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white.withValues(alpha: 0.16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.18),
+                              blurRadius: 24,
+                              offset: const Offset(0, 12),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Image.asset(
+                        'assets/icons/logo.png',
+                        height: 76,
+                        width: 76,
                       ),
                     ],
                   ),
-                  child: Image.asset(
-                    'assets/icons/logo.png',
-                    height: 60,
-                    width: 60,
-                  ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 22),
                 // Title
                 const Text(
                   'Sarana Bahagia\nBerkah',
@@ -77,6 +83,7 @@ class WelcomePage extends StatelessWidget {
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
                     height: 1.2,
+                    letterSpacing: 0,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -93,7 +100,7 @@ class WelcomePage extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 48),
+                const SizedBox(height: 44),
                 // Stats
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -105,7 +112,7 @@ class WelcomePage extends StatelessWidget {
                     const WelcomeStatItem(value: '98%', label: 'Panen Sukses'),
                   ],
                 ),
-                const SizedBox(height: 48),
+                const SizedBox(height: 44),
                 // Button
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),

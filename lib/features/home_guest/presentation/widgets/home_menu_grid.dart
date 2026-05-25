@@ -10,33 +10,53 @@ class HomeMenuGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final menus = [
       {
-        'title': 'Kontrak',
-        'icon': Icons.assignment_outlined,
-        'color': Colors.blue
+        'title': 'Open Mitra',
+        'subtitle': 'Gabung',
+        'icon': Icons.group_outlined,
+        'color': const Color(0xFF7C3AED)
       },
-      {'title': 'Profit', 'icon': Icons.bar_chart, 'color': Colors.green},
-      {'title': 'Galeri', 'icon': Icons.photo_outlined, 'color': Colors.orange},
+      {
+        'title': 'Company',
+        'subtitle': 'Profil',
+        'icon': Icons.business_outlined,
+        'color': const Color(0xFF1F6E2D)
+      },
+      {
+        'title': 'Profit',
+        'subtitle': 'Bagi hasil',
+        'icon': Icons.bar_chart,
+        'color': const Color(0xFF16A34A)
+      },
       {
         'title': 'Reward',
+        'subtitle': 'Hadiah',
         'icon': Icons.emoji_events_outlined,
-        'color': Colors.amber
+        'color': const Color(0xFFD3AB35)
       },
       {
-        'title': 'Open Mitra',
-        'icon': Icons.group_outlined,
-        'color': Colors.purple
+        'title': 'Kalkulator',
+        'subtitle': 'Simulasi',
+        'icon': Icons.calculate_outlined,
+        'color': const Color(0xFFF59E0B)
       },
       {
-        'title': 'Jadwal',
-        'icon': Icons.calendar_month_outlined,
-        'color': Colors.indigo
+        'title': 'Galeri',
+        'subtitle': 'Dokumentasi',
+        'icon': Icons.photo_outlined,
+        'color': const Color(0xFFE67E22)
       },
       {
-        'title': 'Laporan',
-        'icon': Icons.description_outlined,
-        'color': Colors.teal
+        'title': 'Kontrak',
+        'subtitle': 'Program',
+        'icon': Icons.assignment_outlined,
+        'color': const Color(0xFF2563EB)
       },
-      {'title': 'Lainnya', 'icon': Icons.settings_outlined, 'color': Colors.grey},
+      {
+        'title': 'Lainnya',
+        'subtitle': 'Masuk',
+        'icon': Icons.more_horiz_rounded,
+        'color': const Color(0xFF64748B)
+      },
     ];
 
     return GridView.builder(
@@ -45,39 +65,76 @@ class HomeMenuGrid extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: menus.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4,
-        mainAxisSpacing: 16,
-        crossAxisSpacing: 16,
-        childAspectRatio: 1.0,
+        crossAxisCount: 2,
+        mainAxisSpacing: 12,
+        crossAxisSpacing: 12,
+        childAspectRatio: 2.45,
       ),
       itemBuilder: (context, index) {
         final menu = menus[index];
         return GestureDetector(
           onTap: () => context.push(Routes.login),
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: (menu['color'] as Color).withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(16),
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 14,
+                  offset: const Offset(0, 6),
                 ),
-                child: Icon(menu['icon'] as IconData,
-                    color: menu['color'] as Color, size: 26),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                menu['title'] as String,
-                style: AppTextStyles.body(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ],
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    color: (menu['color'] as Color).withValues(alpha: 0.11),
+                    borderRadius: BorderRadius.circular(13),
+                  ),
+                  child: Icon(
+                    menu['icon'] as IconData,
+                    color: menu['color'] as Color,
+                    size: 22,
+                  ),
                 ),
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              )
-            ],
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        menu['title'] as String,
+                        style: AppTextStyles.body(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.onSurface,
+                          letterSpacing: 0,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        menu['subtitle'] as String,
+                        style: AppTextStyles.body(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },

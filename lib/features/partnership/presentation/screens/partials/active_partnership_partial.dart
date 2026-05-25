@@ -1,3 +1,4 @@
+import 'package:app/core/theme/app_text_style.dart';
 import 'package:app/features/partnership/domain/entities/partnership.dart';
 import 'package:flutter/material.dart';
 
@@ -21,9 +22,11 @@ class _ActivePartnershipPartialState extends State<ActivePartnershipPartial> {
 
   static const _green = Color(0xFF3F8A32);
   static const _darkGreen = Color(0xFF1F6E2D);
+  static const _tileGreen = Color(0xFF3E8445);
   static const _mint = Color(0xFFE0F6EF);
   static const _softGreen = Color(0xFFE9F6DF);
   static const _softGold = Color(0xFFF8EEDC);
+  static const _gold = Color(0xFFD3AB35);
 
   @override
   Widget build(BuildContext context) {
@@ -63,42 +66,53 @@ class _PartnershipTabs extends StatelessWidget {
   Widget build(BuildContext context) {
     const tabs = ['Profil', 'Aktivitas'];
 
-    return Row(
-      children: [
-        for (var index = 0; index < tabs.length; index++)
-          Expanded(
-            child: InkWell(
-              onTap: () => onChanged(index),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          for (var index = 0; index < tabs.length; index++)
+            Expanded(
+              child: InkWell(
+                onTap: () => onChanged(index),
+                borderRadius: BorderRadius.circular(11),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 160),
+                  padding: const EdgeInsets.symmetric(vertical: 11),
+                  decoration: BoxDecoration(
+                    color: selectedIndex == index
+                        ? _ActivePartnershipPartialState._darkGreen
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(11),
+                  ),
+                  child: Center(
                     child: Text(
                       tabs[index],
-                      style: TextStyle(
+                      style: AppTextStyles.body(
                         color: selectedIndex == index
-                            ? _ActivePartnershipPartialState._darkGreen
+                            ? Colors.white
                             : Theme.of(context).colorScheme.onSurfaceVariant,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w800,
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0,
                       ),
                     ),
                   ),
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 160),
-                    height: 2,
-                    decoration: BoxDecoration(
-                      color: selectedIndex == index
-                          ? _ActivePartnershipPartialState._darkGreen
-                          : Colors.transparent,
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -162,127 +176,228 @@ class _PartnerHeroCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: _ActivePartnershipPartialState._green,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24),
+        gradient: const LinearGradient(
+          colors: [
+            _ActivePartnershipPartialState._darkGreen,
+            Color(0xFF2C8A3C),
+            _ActivePartnershipPartialState._green,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
         boxShadow: [
           BoxShadow(
             color:
                 _ActivePartnershipPartialState._green.withValues(alpha: 0.18),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
+            blurRadius: 18,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
       child: Stack(
         children: [
           Positioned(
-            right: -36,
-            top: -46,
-            child: Container(
-              width: 112,
-              height: 112,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withValues(alpha: 0.14),
-              ),
-            ),
+            right: -52,
+            top: -52,
+            child: _SoftCircle(size: 128, alpha: 0.08),
           ),
           Positioned(
-            left: -56,
-            bottom: -70,
-            child: Container(
-              width: 104,
-              height: 104,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withValues(alpha: 0.08),
-              ),
-            ),
+            left: -44,
+            bottom: -58,
+            child: _SoftCircle(size: 116, alpha: 0.06),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: 52,
-                    height: 52,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white.withValues(alpha: 0.14),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.34),
-                        width: 1.5,
-                      ),
-                    ),
-                    child: const Text(
-                      'MM',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 19,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  const Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Martin Mulyo Syahidin',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900,
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                        Text(
-                          'Bergabung sejak 28 April 2026',
-                          style: TextStyle(
-                            color: Color(0xFFE4F1DE),
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.14),
-                  borderRadius: BorderRadius.circular(999),
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.30),
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
                   children: [
-                    const Icon(Icons.star_rounded,
-                        color: Colors.white, size: 16),
-                    const SizedBox(width: 6),
-                    Text(
-                      levelLabel,
-                      style: const TextStyle(
+                    Container(
+                      width: 54,
+                      height: 54,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
                         color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w800,
+                        borderRadius: BorderRadius.circular(14),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.08),
+                            blurRadius: 12,
+                          ),
+                        ],
+                      ),
+                      child: const Text(
+                        'MM',
+                        style: TextStyle(
+                          color: _ActivePartnershipPartialState._darkGreen,
+                          fontSize: 19,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Mitra aktif',
+                            style: AppTextStyles.title(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Bergabung sejak 28 April 2026',
+                            style: AppTextStyles.body(
+                              color: Colors.white.withValues(alpha: 0.78),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: _ActivePartnershipPartialState._gold,
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        levelLabel.toUpperCase(),
+                        style: AppTextStyles.body(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],
                 ),
+                const SizedBox(height: 24),
+                Text(
+                  'Nama mitra',
+                  style: AppTextStyles.body(
+                    color: Colors.white.withValues(alpha: 0.72),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Martin Mulyo Syahidin',
+                    style: AppTextStyles.title(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 28,
+                      letterSpacing: 0,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 22),
+                Row(
+                  children: [
+                    const Expanded(
+                      child: _HeroMetric(
+                        label: 'Investasi aktif',
+                        value: '24',
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _HeroMetric(
+                        label: 'Level',
+                        value: levelLabel,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SoftCircle extends StatelessWidget {
+  final double size;
+  final double alpha;
+
+  const _SoftCircle({
+    required this.size,
+    required this.alpha,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: alpha),
+        shape: BoxShape.circle,
+      ),
+    );
+  }
+}
+
+class _HeroMetric extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _HeroMetric({
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: _ActivePartnershipPartialState._tileGreen,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AppTextStyles.body(
+              color: Colors.white.withValues(alpha: 0.72),
+              fontWeight: FontWeight.w600,
+              fontSize: 12,
+            ),
+          ),
+          const SizedBox(height: 6),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              value,
+              style: AppTextStyles.title(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                letterSpacing: 0,
               ),
-            ],
+            ),
           ),
         ],
       ),
@@ -308,12 +423,17 @@ class _MetricCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 116,
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.black, width: 1),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -326,18 +446,19 @@ class _MetricCard extends StatelessWidget {
             ),
             child: Icon(icon, color: iconColor, size: 18),
           ),
-          const Spacer(),
+          const SizedBox(height: 16),
           Text(
             value,
-            style: const TextStyle(
+            style: AppTextStyles.title(
               fontSize: 22,
-              fontWeight: FontWeight.w900,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0,
             ),
           ),
           const SizedBox(height: 4),
           Text(
             label,
-            style: TextStyle(
+            style: AppTextStyles.body(
               fontSize: 12,
               fontWeight: FontWeight.w600,
               color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -356,14 +477,27 @@ class _SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: TextStyle(
-        color: Theme.of(context).colorScheme.onSurfaceVariant,
-        fontSize: 12,
-        fontWeight: FontWeight.w900,
-        letterSpacing: 3,
-      ),
+    return Row(
+      children: [
+        Container(
+          width: 7,
+          height: 7,
+          decoration: const BoxDecoration(
+            color: _ActivePartnershipPartialState._gold,
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          text,
+          style: AppTextStyles.body(
+            color: _ActivePartnershipPartialState._darkGreen,
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -375,9 +509,15 @@ class _PersonalInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.black, width: 1),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
       child: const Column(
         children: [
@@ -436,7 +576,7 @@ class _PersonalInfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(16),
       child: Row(
         children: [
           Container(
@@ -455,19 +595,20 @@ class _PersonalInfoRow extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: TextStyle(
+                  style: AppTextStyles.body(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontSize: 10,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 2,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0,
                   ),
                 ),
                 const SizedBox(height: 5),
                 Text(
                   value,
-                  style: const TextStyle(
+                  style: AppTextStyles.body(
                     fontSize: 15,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0,
                   ),
                 ),
               ],
@@ -484,7 +625,10 @@ class _DividerLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Divider(height: 1, color: Colors.black);
+    return Divider(
+      height: 1,
+      color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
+    );
   }
 }
 
@@ -498,23 +642,43 @@ class _ReferralCodeCard extends StatelessWidget {
     final referralCode = code?.trim().isNotEmpty == true ? code!.trim() : '-';
 
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: _ActivePartnershipPartialState._green,
-        borderRadius: BorderRadius.circular(12),
+        color: _ActivePartnershipPartialState._darkGreen,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color:
+                _ActivePartnershipPartialState._green.withValues(alpha: 0.14),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
       child: Row(
         children: [
-          const Icon(Icons.qr_code_2_rounded, color: Colors.white, size: 26),
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(
+              Icons.qr_code_2_rounded,
+              color: Colors.white,
+              size: 24,
+            ),
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Kode Referral',
-                  style: TextStyle(
-                    color: Color(0xFFE4F1DE),
+                  style: AppTextStyles.body(
+                    color: Colors.white.withValues(alpha: 0.72),
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
                   ),
@@ -522,10 +686,11 @@ class _ReferralCodeCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   referralCode,
-                  style: const TextStyle(
+                  style: AppTextStyles.title(
                     color: Colors.white,
                     fontSize: 18,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0,
                   ),
                 ),
               ],
@@ -585,111 +750,85 @@ class _CommissionSummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(18),
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: _ActivePartnershipPartialState._green,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24),
+        gradient: const LinearGradient(
+          colors: [
+            _ActivePartnershipPartialState._darkGreen,
+            Color(0xFF2C8A3C),
+            _ActivePartnershipPartialState._green,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
         boxShadow: [
           BoxShadow(
             color:
                 _ActivePartnershipPartialState._green.withValues(alpha: 0.18),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
+            blurRadius: 18,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
       child: Stack(
         children: [
           Positioned(
-            right: -42,
-            top: -54,
-            child: Container(
-              width: 118,
-              height: 118,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withValues(alpha: 0.14),
-              ),
-            ),
+            right: -52,
+            top: -52,
+            child: _SoftCircle(size: 128, alpha: 0.08),
           ),
-          const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Total Komisi',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              SizedBox(height: 12),
-              Text(
-                'Rp 12.500.000',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 26,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-              SizedBox(height: 20),
-              Row(
-                children: [
-                  Expanded(
-                    child: _SummaryMetric(
-                      label: 'Bonus Referral',
-                      value: 'Rp 1.250.000',
-                    ),
+          const Positioned(
+            left: -44,
+            bottom: -58,
+            child: _SoftCircle(size: 116, alpha: 0.06),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Total Komisi',
+                  style: AppTextStyles.body(
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
                   ),
-                  SizedBox(width: 12),
-                  Expanded(
-                    child: _SummaryMetric(
-                      label: 'Point Reward',
-                      value: '450 Pts',
-                    ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Rp 12.500.000',
+                  style: AppTextStyles.title(
+                    color: Colors.white,
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0,
                   ),
-                ],
-              ),
-            ],
+                ),
+                const SizedBox(height: 22),
+                const Row(
+                  children: [
+                    Expanded(
+                      child: _HeroMetric(
+                        label: 'Bonus Referral',
+                        value: 'Rp 1.250.000',
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: _HeroMetric(
+                        label: 'Point Reward',
+                        value: '450 Pts',
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),
-    );
-  }
-}
-
-class _SummaryMetric extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _SummaryMetric({
-    required this.label,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            color: Color(0xFFE4F1DE),
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 5),
-        Text(
-          value,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 14,
-            fontWeight: FontWeight.w900,
-          ),
-        ),
-      ],
     );
   }
 }
@@ -708,11 +847,17 @@ class _CommissionHistoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.black, width: 1),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -736,20 +881,20 @@ class _CommissionHistoryCard extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: AppTextStyles.body(
                     fontSize: 13,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.bold,
                     height: 1.35,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   date,
-                  style: TextStyle(
+                  style: AppTextStyles.body(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                     fontSize: 11,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 2,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0,
                   ),
                 ),
               ],
@@ -758,10 +903,10 @@ class _CommissionHistoryCard extends StatelessWidget {
           const SizedBox(width: 8),
           Text(
             amount,
-            style: const TextStyle(
+            style: AppTextStyles.body(
               color: Color(0xFF16806D),
               fontSize: 13,
-              fontWeight: FontWeight.w900,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],

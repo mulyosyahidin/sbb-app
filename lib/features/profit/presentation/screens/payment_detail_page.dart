@@ -5,6 +5,7 @@ import 'package:app/features/profit/application/profit_controller.dart';
 import 'package:app/features/profit/domain/entities/profit_payment_history.dart';
 import 'package:app/shared/widgets/app_bar_header.dart';
 import 'package:app/shared/widgets/app_network_image.dart';
+import 'package:app/shared/widgets/app_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -61,7 +62,7 @@ class PaymentDetailPage extends ConsumerWidget {
 
                   return _buildContent(context, history);
                 },
-                loading: () => const Center(child: CircularProgressIndicator()),
+                loading: () => const _PaymentDetailSkeleton(),
                 error: (error, stackTrace) => _buildError(context, error, ref),
               ),
             ),
@@ -614,6 +615,219 @@ class PaymentDetailPage extends ConsumerWidget {
           color: Colors.black.withValues(alpha: 0.06),
           blurRadius: 14,
           offset: const Offset(0, 6),
+        ),
+      ],
+    );
+  }
+}
+
+class _PaymentDetailSkeleton extends StatelessWidget {
+  const _PaymentDetailSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.fromLTRB(16, 18, 16, 28),
+      children: const [
+        _AmountHeroSkeleton(),
+        SizedBox(height: 18),
+        _DetailSectionSkeleton(rowCount: 8),
+        SizedBox(height: 12),
+        _ContractLinkSkeleton(),
+        SizedBox(height: 12),
+        _ProofSectionSkeleton(),
+        SizedBox(height: 16),
+        _ActionButtonsSkeleton(),
+      ],
+    );
+  }
+}
+
+class _AmountHeroSkeleton extends StatelessWidget {
+  const _AmountHeroSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return AppShimmer(
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Skeleton(width: 150, height: 14, borderRadius: 6),
+            SizedBox(height: 10),
+            Skeleton(width: 220, height: 36, borderRadius: 8),
+            SizedBox(height: 24),
+            Row(
+              children: [
+                Expanded(child: Skeleton(height: 68, borderRadius: 14)),
+                SizedBox(width: 12),
+                Expanded(child: Skeleton(height: 68, borderRadius: 14)),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DetailSectionSkeleton extends StatelessWidget {
+  final int rowCount;
+
+  const _DetailSectionSkeleton({
+    required this.rowCount,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AppShimmer(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Column(
+          children: [
+            const Row(
+              children: [
+                Skeleton(width: 7, height: 7, borderRadius: 4),
+                SizedBox(width: 8),
+                Skeleton(width: 132, height: 12, borderRadius: 6),
+              ],
+            ),
+            const SizedBox(height: 20),
+            ...List.generate(
+              rowCount,
+              (index) => Padding(
+                padding:
+                    EdgeInsets.only(bottom: index == rowCount - 1 ? 0 : 10),
+                child: const _InfoRowSkeleton(),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _InfoRowSkeleton extends StatelessWidget {
+  const _InfoRowSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          flex: 3,
+          child: Skeleton(height: 12, borderRadius: 6),
+        ),
+        SizedBox(width: 20),
+        Expanded(
+          flex: 4,
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Skeleton(width: 132, height: 12, borderRadius: 6),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ContractLinkSkeleton extends StatelessWidget {
+  const _ContractLinkSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return AppShimmer(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: const Row(
+          children: [
+            Skeleton(width: 42, height: 42, borderRadius: 12),
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Skeleton(width: 104, height: 12, borderRadius: 6),
+                  SizedBox(height: 8),
+                  Skeleton(width: 150, height: 14, borderRadius: 6),
+                ],
+              ),
+            ),
+            Skeleton(width: 22, height: 22, borderRadius: 6),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ProofSectionSkeleton extends StatelessWidget {
+  const _ProofSectionSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return AppShimmer(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: const Column(
+          children: [
+            Row(
+              children: [
+                Skeleton(width: 7, height: 7, borderRadius: 4),
+                SizedBox(width: 8),
+                Skeleton(width: 130, height: 12, borderRadius: 6),
+              ],
+            ),
+            SizedBox(height: 18),
+            Skeleton(height: 180, borderRadius: 12),
+            SizedBox(height: 14),
+            _InfoRowSkeleton(),
+            SizedBox(height: 10),
+            _InfoRowSkeleton(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ActionButtonsSkeleton extends StatelessWidget {
+  const _ActionButtonsSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Row(
+      children: [
+        Expanded(
+          child: AppShimmer(
+            child: Skeleton(height: 52, borderRadius: 12),
+          ),
+        ),
+        SizedBox(width: 12),
+        Expanded(
+          child: AppShimmer(
+            child: Skeleton(height: 52, borderRadius: 12),
+          ),
         ),
       ],
     );

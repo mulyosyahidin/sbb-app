@@ -37,6 +37,7 @@ class ContractCard extends StatelessWidget {
         } else {
           context.push(
             Routes.contractDetail.replaceAll(':id', item.id.toString()),
+            extra: item,
           );
         }
       },

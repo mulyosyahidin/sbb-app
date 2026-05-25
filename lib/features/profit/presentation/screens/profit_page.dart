@@ -6,6 +6,7 @@ import 'package:app/features/profit/domain/entities/profit.dart';
 import 'package:app/features/profit/domain/entities/profit_monthly_paid.dart';
 import 'package:app/features/profit/domain/entities/profit_payment_history.dart';
 import 'package:app/shared/widgets/app_bar_header.dart';
+import 'package:app/shared/widgets/app_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -43,7 +44,7 @@ class ProfitPage extends ConsumerWidget {
             Expanded(
               child: profitState.when(
                 data: (profit) => _buildContent(context, profit),
-                loading: () => const Center(child: CircularProgressIndicator()),
+                loading: () => const _ProfitPageSkeleton(),
                 error: (error, stackTrace) => _buildError(context, error, ref),
               ),
             ),
@@ -543,6 +544,208 @@ class ProfitPage extends ConsumerWidget {
           color: Colors.black.withValues(alpha: 0.06),
           blurRadius: 14,
           offset: const Offset(0, 6),
+        ),
+      ],
+    );
+  }
+}
+
+class _ProfitPageSkeleton extends StatelessWidget {
+  const _ProfitPageSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.fromLTRB(16, 18, 16, 28),
+      children: const [
+        _ProfitSummarySkeleton(),
+        SizedBox(height: 18),
+        _ProfitChartSkeleton(),
+        SizedBox(height: 18),
+        _ProfitHistorySkeleton(),
+      ],
+    );
+  }
+}
+
+class _ProfitSummarySkeleton extends StatelessWidget {
+  const _ProfitSummarySkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return AppShimmer(
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Skeleton(width: 48, height: 48, borderRadius: 14),
+                SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Skeleton(width: 88, height: 13, borderRadius: 6),
+                      SizedBox(height: 8),
+                      Skeleton(width: 190, height: 28, borderRadius: 8),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(child: Skeleton(height: 68, borderRadius: 14)),
+                SizedBox(width: 12),
+                Expanded(child: Skeleton(height: 68, borderRadius: 14)),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ProfitChartSkeleton extends StatelessWidget {
+  const _ProfitChartSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return AppShimmer(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Skeleton(width: 7, height: 7, borderRadius: 4),
+                SizedBox(width: 8),
+                Skeleton(width: 130, height: 12, borderRadius: 6),
+              ],
+            ),
+            SizedBox(height: 22),
+            SizedBox(
+              height: 178,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  _BarSkeleton(height: 72),
+                  _BarSkeleton(height: 104),
+                  _BarSkeleton(height: 56),
+                  _BarSkeleton(height: 126),
+                  _BarSkeleton(height: 88),
+                  _BarSkeleton(height: 112),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _BarSkeleton extends StatelessWidget {
+  final double height;
+
+  const _BarSkeleton({
+    required this.height,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          const Skeleton(width: 34, height: 10, borderRadius: 5),
+          const SizedBox(height: 8),
+          Skeleton(width: 28, height: height, borderRadius: 6),
+          const SizedBox(height: 12),
+          const Skeleton(width: 28, height: 11, borderRadius: 5),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProfitHistorySkeleton extends StatelessWidget {
+  const _ProfitHistorySkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return AppShimmer(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: const Column(
+          children: [
+            Row(
+              children: [
+                Skeleton(width: 7, height: 7, borderRadius: 4),
+                SizedBox(width: 8),
+                Skeleton(width: 150, height: 12, borderRadius: 6),
+              ],
+            ),
+            SizedBox(height: 22),
+            _HistoryRowSkeleton(),
+            SizedBox(height: 18),
+            _HistoryRowSkeleton(),
+            SizedBox(height: 18),
+            _HistoryRowSkeleton(),
+            SizedBox(height: 18),
+            _HistoryRowSkeleton(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _HistoryRowSkeleton extends StatelessWidget {
+  const _HistoryRowSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Row(
+      children: [
+        Skeleton(width: 38, height: 38, borderRadius: 10),
+        SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Skeleton(height: 14, borderRadius: 6),
+              SizedBox(height: 8),
+              Skeleton(width: 130, height: 12, borderRadius: 6),
+            ],
+          ),
+        ),
+        SizedBox(width: 12),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Skeleton(width: 92, height: 15, borderRadius: 6),
+            SizedBox(height: 8),
+            Skeleton(width: 62, height: 11, borderRadius: 6),
+          ],
         ),
       ],
     );

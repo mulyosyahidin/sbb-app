@@ -4,6 +4,7 @@ import 'package:app/core/theme/app_text_style.dart';
 import 'package:app/features/contract/application/contract_list_controller.dart';
 import 'package:app/features/contract/presentation/widgets/contract_card.dart';
 import 'package:app/shared/widgets/app_bar_header.dart';
+import 'package:app/shared/widgets/app_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -70,35 +71,16 @@ class _ContractsPageState extends ConsumerState<ContractsPage> {
                           .notifier)
                       .refresh(),
                   child: contractState.when(
+                    skipLoadingOnRefresh: false,
                     data: (state) {
                       if (state.contracts.isEmpty) {
                         return ListView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: const EdgeInsets.fromLTRB(16, 18, 16, 24),
                           children: [
                             SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.6,
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.assignment_outlined,
-                                      size: 64,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .outlineVariant,
-                                    ),
-                                    const SizedBox(height: 16),
-                                    Text(
-                                      'Belum ada kontrak',
-                                      style: AppTextStyles.body(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurfaceVariant,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                              height: MediaQuery.of(context).size.height * 0.58,
+                              child: _buildEmptyState(context),
                             ),
                           ],
                         );
@@ -121,17 +103,7 @@ class _ContractsPageState extends ConsumerState<ContractsPage> {
                         },
                       );
                     },
-                    loading: () => ListView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      children: [
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.6,
-                          child: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        ),
-                      ],
-                    ),
+                    loading: () => const _ContractListSkeleton(),
                     error: (error, stack) => ListView(
                       physics: const AlwaysScrollableScrollPhysics(),
                       children: [
@@ -194,6 +166,126 @@ class _ContractsPageState extends ConsumerState<ContractsPage> {
     );
   }
 
+  Widget _buildEmptyState(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isAllFilter = selectedFilter == 'Semua';
+    final subtitle = isAllFilter
+        ? 'Mulai kontrak pertama untuk mencatat investasi, modal, dan masa kontrak dalam satu tempat.'
+        : 'Tidak ada kontrak dengan status $selectedFilter saat ini. Coba status lain atau buat kontrak baru.';
+
+    return Center(
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(20, 22, 20, 20),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: colorScheme.outline),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.03),
+              blurRadius: 18,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 86,
+              height: 86,
+              decoration: BoxDecoration(
+                color: colorScheme.primaryContainer.withValues(alpha: 0.75),
+                shape: BoxShape.circle,
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    width: 54,
+                    height: 66,
+                    decoration: BoxDecoration(
+                      color: colorScheme.surface,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: colorScheme.primary.withValues(alpha: 0.28),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 31,
+                    child: Container(
+                      width: 30,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: colorScheme.primary.withValues(alpha: 0.42),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 43,
+                    child: Container(
+                      width: 36,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: colorScheme.primary.withValues(alpha: 0.28),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    right: 13,
+                    bottom: 13,
+                    child: Container(
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        color: colorScheme.primary,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: colorScheme.surface,
+                          width: 3,
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.add,
+                        size: 16,
+                        color: colorScheme.onPrimary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Belum ada kontrak',
+              textAlign: TextAlign.center,
+              style: AppTextStyles.title(
+                color: colorScheme.onSurface,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              subtitle,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.body(
+                fontSize: 13,
+                height: 1.5,
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildFilters() {
     return SizedBox(
       height: 60,
@@ -241,6 +333,101 @@ class _ContractsPageState extends ConsumerState<ContractsPage> {
           );
         },
       ),
+    );
+  }
+}
+
+class _ContractListSkeleton extends StatelessWidget {
+  const _ContractListSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      itemCount: 5,
+      itemBuilder: (context, index) => const _ContractCardSkeleton(),
+    );
+  }
+}
+
+class _ContractCardSkeleton extends StatelessWidget {
+  const _ContractCardSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return AppShimmer(
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.white),
+        ),
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Skeleton(height: 18, borderRadius: 6),
+                ),
+                SizedBox(width: 40),
+                Skeleton(width: 84, height: 24, borderRadius: 12),
+              ],
+            ),
+            SizedBox(height: 22),
+            Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: _ContractDetailSkeleton(labelWidth: 36),
+                ),
+                SizedBox(width: 12),
+                Expanded(
+                  flex: 3,
+                  child: _ContractDetailSkeleton(labelWidth: 44),
+                ),
+                SizedBox(width: 12),
+                Expanded(
+                  flex: 2,
+                  child: _ContractDetailSkeleton(labelWidth: 58),
+                ),
+              ],
+            ),
+            SizedBox(height: 22),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Skeleton(width: 88, height: 12, borderRadius: 6),
+                Skeleton(width: 150, height: 12, borderRadius: 6),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ContractDetailSkeleton extends StatelessWidget {
+  final double labelWidth;
+
+  const _ContractDetailSkeleton({
+    required this.labelWidth,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Skeleton(width: labelWidth, height: 11, borderRadius: 6),
+        const SizedBox(height: 6),
+        const Skeleton(height: 15, borderRadius: 6),
+      ],
     );
   }
 }

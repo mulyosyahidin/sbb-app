@@ -1,5 +1,6 @@
 import 'package:app/app/app_router.dart';
 import 'package:app/core/errors/failure.dart';
+import 'package:app/core/theme/app_text_style.dart';
 import 'package:app/core/theme/app_theme.dart';
 import 'package:app/core/utils/toast_util.dart';
 import 'package:app/features/auth/register/application/register_controller.dart';
@@ -117,80 +118,30 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
     return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
-          final height = constraints.maxHeight;
           return Stack(
             children: [
-              // Background Image & Gradient
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                height: height * 0.4,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Image.asset(
-                      'assets/images/login_bg.jpg',
-                      fit: BoxFit.cover,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.transparent,
-                            AppColors.onPrimaryContainer.withValues(alpha: 0.8),
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-                      ),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const SizedBox(height: 20),
-                        Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.surface,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurface
-                                  .withValues(alpha: 0.1),
-                              width: 2,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.1),
-                                blurRadius: 10,
-                                spreadRadius: 2,
-                              ),
-                            ],
-                          ),
-                          child: Image.asset(
-                            'assets/icons/logo.png',
-                            height: 40,
-                            width: 40,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        const Text(
-                          'Daftar Akun Baru',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+              Positioned.fill(
+                child: Image.asset(
+                  'assets/images/login_bg.webp',
+                  fit: BoxFit.cover,
                 ),
               ),
-
-              // Scrollable Form Container
+              Positioned.fill(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.black.withValues(alpha: 0.10),
+                        AppColors.primary.withValues(alpha: 0.34),
+                        AppColors.primaryDark.withValues(alpha: 0.92),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      stops: const [0.08, 0.46, 1.0],
+                    ),
+                  ),
+                ),
+              ),
               SingleChildScrollView(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
@@ -198,97 +149,116 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                   ),
                   child: IntrinsicHeight(
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        SizedBox(height: height * 0.35),
+                        SafeArea(
+                          bottom: false,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(24, 26, 24, 0),
+                            child: _buildHero(context),
+                          ),
+                        ),
+                        const Spacer(),
                         Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.surface,
-                              borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(30),
-                              ),
-                            ),
-                            padding: const EdgeInsets.all(24),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                AppTextField(
-                                  controller: _nameController,
-                                  label: 'NAMA',
-                                  prefixIcon: const Icon(Icons.badge_outlined,
-                                      size: 20),
-                                  textCapitalization: TextCapitalization.words,
-                                  errorText: _fieldErrors['name'],
-                                ),
-                                const SizedBox(height: 20),
-
-                                AppTextField(
-                                  controller: _emailController,
-                                  label: 'EMAIL',
-                                  prefixIcon: const Icon(Icons.email_outlined,
-                                      size: 20),
-                                  keyboardType: TextInputType.emailAddress,
-                                  errorText: _fieldErrors['email'],
-                                ),
-                                const SizedBox(height: 20),
-                                AppTextPassword(
-                                  controller: _passwordController,
-                                  label: 'PASSWORD',
-                                  prefixIcon:
-                                      const Icon(Icons.lock_outline, size: 20),
-                                  errorText: _fieldErrors['password'],
-                                ),
-                                const SizedBox(height: 20),
-
-                                AppTextPassword(
-                                  controller: _passwordConfirmController,
-                                  label: 'KONFIRMASI PASSWORD',
-                                  prefixIcon: const Icon(
-                                      Icons.lock_reset_outlined,
-                                      size: 20),
-                                  errorText: _fieldErrors['password'],
-                                ),
-                                const SizedBox(height: 32),
-
-                                // REGISTER BUTTON
-                                PrimaryButton(
-                                  label: 'Daftar Sekarang',
-                                  isLoading: isLoading,
-                                  onPressed: isLoading ? null : _handleRegister,
-                                ),
-
-                                const Spacer(),
-                                const SizedBox(height: 24),
-
-                                // LOGIN LINK
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      'Sudah punya akun? ',
-                                      style: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurfaceVariant,
-                                        fontSize: 14,
-                                      ),
+                          flex: 0,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(24, 22, 24, 24),
+                            child: Theme(
+                              data: _buildFormTheme(context),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Text(
+                                    'Buat akun baru',
+                                    style: AppTextStyles.title(
+                                      color: Colors.white,
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 0,
                                     ),
-                                    GestureDetector(
-                                      onTap: () => context.push(Routes.login),
-                                      child: Text(
-                                        'Masuk',
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    'Daftar untuk mulai mengakses program dan laporan investasi.',
+                                    style: AppTextStyles.body(
+                                      color:
+                                          Colors.white.withValues(alpha: 0.76),
+                                      fontSize: 13,
+                                      height: 1.4,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 22),
+                                  AppTextField(
+                                    controller: _nameController,
+                                    label: 'NAMA',
+                                    prefixIcon: const Icon(Icons.badge_outlined,
+                                        size: 20),
+                                    textCapitalization:
+                                        TextCapitalization.words,
+                                    errorText: _fieldErrors['name'],
+                                  ),
+                                  const SizedBox(height: 18),
+                                  AppTextField(
+                                    controller: _emailController,
+                                    label: 'EMAIL',
+                                    prefixIcon: const Icon(Icons.email_outlined,
+                                        size: 20),
+                                    keyboardType: TextInputType.emailAddress,
+                                    errorText: _fieldErrors['email'],
+                                  ),
+                                  const SizedBox(height: 18),
+                                  AppTextPassword(
+                                    controller: _passwordController,
+                                    label: 'PASSWORD',
+                                    prefixIcon: const Icon(Icons.lock_outline,
+                                        size: 20),
+                                    errorText: _fieldErrors['password'],
+                                  ),
+                                  const SizedBox(height: 18),
+                                  AppTextPassword(
+                                    controller: _passwordConfirmController,
+                                    label: 'KONFIRMASI PASSWORD',
+                                    prefixIcon: const Icon(
+                                        Icons.lock_reset_outlined,
+                                        size: 20),
+                                    errorText: _fieldErrors['password'],
+                                  ),
+                                  const SizedBox(height: 28),
+                                  PrimaryButton(
+                                    label: 'Daftar Sekarang',
+                                    backgroundColor: Colors.white,
+                                    foregroundColor: AppColors.primaryDark,
+                                    isLoading: isLoading,
+                                    onPressed:
+                                        isLoading ? null : _handleRegister,
+                                  ),
+                                  const SizedBox(height: 24),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Sudah punya akun? ',
                                         style: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
+                                          color: Colors.white
+                                              .withValues(alpha: 0.72),
                                           fontSize: 14,
-                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                      GestureDetector(
+                                        onTap: () => context.push(Routes.login),
+                                        child: Text(
+                                          'Masuk',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -301,6 +271,127 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
           );
         },
       ),
+    );
+  }
+
+  ThemeData _buildFormTheme(BuildContext context) {
+    final base = Theme.of(context);
+
+    return base.copyWith(
+      colorScheme: base.colorScheme.copyWith(
+        primary: Colors.white,
+        onSurface: Colors.white,
+        onSurfaceVariant: Colors.white.withValues(alpha: 0.72),
+        surface: Colors.white.withValues(alpha: 0.12),
+        outline: Colors.white.withValues(alpha: 0.26),
+      ),
+      inputDecorationTheme: base.inputDecorationTheme.copyWith(
+        fillColor: Colors.white.withValues(alpha: 0.12),
+        hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.54)),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(
+            color: Colors.white.withValues(alpha: 0.24),
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: Colors.white, width: 1.4),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: base.colorScheme.error),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: base.colorScheme.error, width: 1.4),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHero(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            SizedBox(
+              width: 58,
+              height: 58,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    width: 54,
+                    height: 54,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white.withValues(alpha: 0.15),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.18),
+                          blurRadius: 18,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Image.asset(
+                    'assets/icons/logo.png',
+                    width: 44,
+                    height: 44,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Sarana Bahagia Berkah',
+                    style: AppTextStyles.body(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    'Peternakan digital',
+                    style: AppTextStyles.body(
+                      color: Colors.white.withValues(alpha: 0.72),
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 34),
+        Text(
+          'Mulai perjalanan investasi Anda.',
+          style: AppTextStyles.title(
+            color: Colors.white,
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0,
+            height: 1.12,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          'Buat akun untuk melihat peluang kemitraan, kontrak, dan dokumentasi peternakan.',
+          style: AppTextStyles.body(
+            color: Colors.white.withValues(alpha: 0.76),
+            fontSize: 13,
+            height: 1.45,
+          ),
+        ),
+      ],
     );
   }
 }

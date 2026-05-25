@@ -14,32 +14,76 @@ class HomeGuestCTA extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: colorScheme.primary.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: colorScheme.primary.withValues(alpha: 0.1),
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xFF155B24),
+            Color(0xFF2C8A3C),
+            Color(0xFF1F6E2D),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: colorScheme.primary.withValues(alpha: 0.18),
+            blurRadius: 18,
+            offset: const Offset(0, 10),
+          ),
+        ],
       ),
-      child: Column(
+      child: Stack(
         children: [
-          Icon(Icons.auto_awesome, color: colorScheme.primary, size: 48),
-          const SizedBox(height: 16),
-          Text(
-            'Mulai Investasi Ternak',
-            style: AppTextStyles.heading(
-                fontWeight: FontWeight.bold, color: colorScheme.onSurface),
-            textAlign: TextAlign.center,
+          Positioned(
+            right: -38,
+            top: -46,
+            child: Container(
+              width: 118,
+              height: 118,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.07),
+                shape: BoxShape.circle,
+              ),
+            ),
           ),
-          const SizedBox(height: 8),
-          Text(
-            'Dapatkan hasil maksimal dengan menjadi mitra kami dalam penggemukan sapi berbasis teknologi.',
-            style: AppTextStyles.body(color: colorScheme.onSurfaceVariant),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 24),
-          PrimaryButton(
-            label: 'Daftar Sekarang',
-            onPressed: () => context.push(Routes.register),
+          Column(
+            children: [
+              Container(
+                width: 54,
+                height: 54,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.14),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Icon(Icons.auto_awesome,
+                    color: Colors.white, size: 28),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Mulai Investasi Ternak',
+                style: AppTextStyles.heading(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Daftar untuk melihat program, kontrak, dan laporan bagi hasil secara lengkap.',
+                style: AppTextStyles.body(
+                  color: Colors.white.withValues(alpha: 0.78),
+                  height: 1.45,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              PrimaryButton(
+                label: 'Daftar Sekarang',
+                onPressed: () => context.push(Routes.register),
+                backgroundColor: Colors.white,
+                foregroundColor: const Color(0xFF1F6E2D),
+              ),
+            ],
           ),
         ],
       ),

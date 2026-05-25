@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/app/navigation_keys.dart';
 import 'package:app/app/presentation/navigation_layout.dart';
 import 'package:app/core/auth/application/auth_session_controller.dart';
@@ -252,6 +254,9 @@ GoRouter router(Ref ref) {
                     path: ':id',
                     builder: (context, state) => ContractPage(
                       contractId: state.pathParameters['id'] ?? '',
+                      initialContract: state.extra is Contract
+                          ? state.extra as Contract
+                          : null,
                     ),
                   ),
                 ],
@@ -291,6 +296,8 @@ GoRouter router(Ref ref) {
 
 class RouterNotifier extends ChangeNotifier {
   final Ref _ref;
+  final DateTime _splashStartedAt = DateTime.now();
+  Timer? _splashDelayTimer;
 
   RouterNotifier(this._ref) {
     _ref.listen(
@@ -307,6 +314,11 @@ class RouterNotifier extends ChangeNotifier {
     final isOnSplashPage = location == Routes.splash;
 
     if (session.isLoading) {
+      return null;
+    }
+
+    if (isOnSplashPage && _shouldHoldSplash) {
+      _scheduleSplashRelease();
       return null;
     }
 
@@ -339,5 +351,33 @@ class RouterNotifier extends ChangeNotifier {
     }
 
     return null;
+  }
+
+  bool get _shouldHoldSplash {
+    if (kSplashDisplayDelay == Duration.zero) {
+      return false;
+    }
+
+    final elapsed = DateTime.now().difference(_splashStartedAt);
+    return elapsed < kSplashDisplayDelay;
+  }
+
+  void _scheduleSplashRelease() {
+    if (_splashDelayTimer?.isActive ?? false) {
+      return;
+    }
+
+    final elapsed = DateTime.now().difference(_splashStartedAt);
+    final remaining = kSplashDisplayDelay - elapsed;
+    _splashDelayTimer = Timer(
+      remaining.isNegative ? Duration.zero : remaining,
+      notifyListeners,
+    );
+  }
+
+  @override
+  void dispose() {
+    _splashDelayTimer?.cancel();
+    super.dispose();
   }
 }

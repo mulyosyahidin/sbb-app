@@ -65,7 +65,7 @@ class ActiveContractDetailPartial extends StatelessWidget {
 
   Widget _buildHeroCard(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
         gradient: const LinearGradient(
@@ -88,8 +88,8 @@ class ActiveContractDetailPartial extends StatelessWidget {
       child: Stack(
         children: [
           Positioned(
-            right: -38,
-            top: -46,
+            right: -52,
+            top: -52,
             child: _buildSoftCircle(128),
           ),
           Positioned(
@@ -97,111 +97,114 @@ class ActiveContractDetailPartial extends StatelessWidget {
             bottom: -58,
             child: _buildSoftCircle(116),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 54,
-                    height: 54,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(14),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.08),
-                          blurRadius: 12,
-                        ),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.verified_rounded,
-                      color: _green,
-                      size: 28,
-                    ),
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Kontrak aktif',
-                          style: AppTextStyles.title(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          contract.contractNumber ?? 'SBB-${contract.id}',
-                          style: AppTextStyles.body(
-                            color: Colors.white.withValues(alpha: 0.78),
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: _gold,
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                    child: Text(
-                      contract.status.value.toUpperCase(),
-                      style: AppTextStyles.body(
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 54,
+                      height: 54,
+                      decoration: BoxDecoration(
                         color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
+                        borderRadius: BorderRadius.circular(14),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.08),
+                            blurRadius: 12,
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.verified_rounded,
+                        color: _green,
+                        size: 28,
                       ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              Text(
-                'Total modal',
-                style: AppTextStyles.body(
-                  color: Colors.white.withValues(alpha: 0.72),
-                  fontWeight: FontWeight.w600,
-                  fontSize: 13,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                _currencyFormat.format(contract.cowTotalPrice ?? 0),
-                style: AppTextStyles.title(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 32,
-                ),
-              ),
-              const SizedBox(height: 22),
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildHeroMetric(
-                      label: 'Program',
-                      value: contract.program?.value ?? '-',
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Kontrak aktif',
+                            style: AppTextStyles.title(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            contract.contractNumber ?? 'SBB-${contract.id}',
+                            style: AppTextStyles.body(
+                              color: Colors.white.withValues(alpha: 0.78),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildHeroMetric(
-                      label: 'Durasi',
-                      value: '${contract.contractMonthDuration ?? 0} bln',
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: _gold,
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        contract.status.value.toUpperCase(),
+                        style: AppTextStyles.body(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  'Total modal',
+                  style: AppTextStyles.body(
+                    color: Colors.white.withValues(alpha: 0.72),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
                   ),
-                ],
-              ),
-            ],
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  _currencyFormat.format(contract.cowTotalPrice ?? 0),
+                  style: AppTextStyles.title(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 32,
+                  ),
+                ),
+                const SizedBox(height: 22),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildHeroMetric(
+                        label: 'Program',
+                        value: contract.program?.value ?? '-',
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _buildHeroMetric(
+                        label: 'Durasi',
+                        value: '${contract.contractMonthDuration ?? 0} bln',
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),
