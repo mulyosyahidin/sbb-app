@@ -13,6 +13,7 @@ import 'package:app/features/contract/domain/entities/contract_status.dart';
 import 'package:app/features/contract/presentation/widgets/contract_create_skeleton.dart';
 import 'package:app/shared/forms/app_dropdown_field.dart';
 import 'package:app/shared/forms/app_file_picker_field.dart';
+import 'package:app/shared/forms/app_textarea_field.dart';
 import 'package:app/shared/forms/app_text_field.dart';
 import 'package:app/shared/widgets/app_bar_header.dart';
 import 'package:app/shared/widgets/primary_button.dart';
@@ -41,6 +42,7 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
 
   final _nameController = TextEditingController();
   final _nikController = TextEditingController();
+  final _addressController = TextEditingController();
   File? _kycFile;
   bool _isDataPopulated = false;
   bool _isInitialCheckDone = false;
@@ -62,6 +64,7 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
   void dispose() {
     _nameController.dispose();
     _nikController.dispose();
+    _addressController.dispose();
     super.dispose();
   }
 
@@ -185,6 +188,12 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
                 enabled: !isLoading,
               ),
               const SizedBox(height: 16),
+              AppTextAreaField(
+                label: 'Alamat',
+                controller: _addressController,
+                enabled: !isLoading,
+              ),
+              const SizedBox(height: 16),
               AppFilePickerField(
                 key: ValueKey('kyc_${_initialKycFileName ?? 'none'}'),
                 label: 'KTP',
@@ -246,6 +255,7 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
   void _populateContractData(Contract contract) {
     _nameController.text = contract.userName ?? '';
     _nikController.text = contract.userIdentityNumber ?? '';
+    _addressController.text = contract.address ?? '';
     _initialKycFileName = contract.userIdentityNumberFile?.fileName;
     _loadedContractStatus = contract.status;
     _loadedBankAccountId = contract.bankAccountId;
@@ -786,6 +796,9 @@ class _ContractCreatePageState extends ConsumerState<ContractCreatePage> {
     final dto = SaveDraftRequestDto(
       userName: _nameController.text,
       userIdentityNumber: _nikController.text,
+      address: _addressController.text.trim().isEmpty
+          ? null
+          : _addressController.text.trim(),
       userIdentityNumberFile: _kycFile,
       cowId: selectedCowId,
       cowQuantity: quantity,

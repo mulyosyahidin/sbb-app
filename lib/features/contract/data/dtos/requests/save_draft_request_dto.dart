@@ -10,6 +10,7 @@ abstract class SaveDraftRequestDto with _$SaveDraftRequestDto {
   const factory SaveDraftRequestDto({
     String? userName,
     String? userIdentityNumber,
+    String? address,
     @JsonKey(includeFromJson: false, includeToJson: false)
     File? userIdentityNumberFile,
     int? cowId,

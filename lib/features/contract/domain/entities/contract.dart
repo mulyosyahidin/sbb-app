@@ -11,6 +11,7 @@ class Contract extends Equatable {
   final int userId;
   final String? userName;
   final String? userIdentityNumber;
+  final String? address;
   final int? userIdentityNumberFileId;
   final AppFile? userIdentityNumberFile;
   final int? cowId;
@@ -45,6 +46,7 @@ class Contract extends Equatable {
     required this.userId,
     this.userName,
     this.userIdentityNumber,
+    this.address,
     this.userIdentityNumberFileId,
     this.userIdentityNumberFile,
     this.cowId,
@@ -81,6 +83,7 @@ class Contract extends Equatable {
         userId,
         userName,
         userIdentityNumber,
+        address,
         userIdentityNumberFileId,
         userIdentityNumberFile,
         cowId,

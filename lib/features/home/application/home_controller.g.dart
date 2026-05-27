@@ -39,5 +39,22 @@ final slidersProvider = FutureProvider<List<Slider>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef SlidersRef = FutureProviderRef<List<Slider>>;
+String _$userActivitiesHash() => r'3a4a9072b95ffc64f98bcca152e48fa623a6553b';
+
+/// See also [userActivities].
+@ProviderFor(userActivities)
+final userActivitiesProvider = FutureProvider<List<UserActivity>>.internal(
+  userActivities,
+  name: r'userActivitiesProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$userActivitiesHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef UserActivitiesRef = FutureProviderRef<List<UserActivity>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

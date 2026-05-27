@@ -44,6 +44,12 @@ class _ContractPaymentPageState extends ConsumerState<ContractPaymentPage> {
     decimalDigits: 0,
   );
 
+  static const _green = Color(0xFF1F6E2D);
+  static const _darkGreen = Color(0xFF155B24);
+  static const _tileGreen = Color(0xFF3E8445);
+  static const _gold = Color(0xFFD3AB35);
+  static const _pageBackground = Color(0xFFF5F0E6);
+
   @override
   void dispose() {
     _bankNameController.dispose();
@@ -70,7 +76,7 @@ class _ContractPaymentPageState extends ConsumerState<ContractPaymentPage> {
         ref.watch(contractDetailControllerProvider(widget.contractId));
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: _pageBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -99,13 +105,13 @@ class _ContractPaymentPageState extends ConsumerState<ContractPaymentPage> {
     final isLoading = paymentState.isLoading;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.fromLTRB(16, 18, 16, 28),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _buildPaymentSummary(context, contract),
-          const SizedBox(height: 24),
-          _buildSectionHeader(context, 'Data Rekening Pengirim'),
+          _buildPaymentSummaryHero(contract),
+          const SizedBox(height: 18),
+          _buildSectionTitle(context, 'DATA REKENING PENGIRIM'),
           const SizedBox(height: 12),
           _buildCard(
             context,
@@ -132,8 +138,8 @@ class _ContractPaymentPageState extends ConsumerState<ContractPaymentPage> {
               ),
             ],
           ),
-          const SizedBox(height: 24),
-          _buildSectionHeader(context, 'Bukti Pembayaran'),
+          const SizedBox(height: 18),
+          _buildSectionTitle(context, 'BUKTI PEMBAYARAN'),
           const SizedBox(height: 12),
           _buildCard(
             context,
@@ -179,33 +185,151 @@ class _ContractPaymentPageState extends ConsumerState<ContractPaymentPage> {
     );
   }
 
-  Widget _buildPaymentSummary(BuildContext context, Contract contract) {
-    final colorScheme = Theme.of(context).colorScheme;
-
+  Widget _buildPaymentSummaryHero(Contract contract) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: colorScheme.primary.withValues(alpha: 0.06),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: colorScheme.primary.withValues(alpha: 0.12)),
+        gradient: const LinearGradient(
+          colors: [
+            _darkGreen,
+            Color(0xFF2C8A3C),
+            _green,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: _green.withValues(alpha: 0.18),
+            blurRadius: 18,
+            offset: const Offset(0, 10),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.08),
+                      blurRadius: 12,
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.payments_outlined,
+                  color: _green,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Total Pembayaran',
+                      style: AppTextStyles.body(
+                        color: Colors.white.withValues(alpha: 0.72),
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        _currencyFormat.format(contract.cowTotalPrice ?? 0),
+                        style: AppTextStyles.title(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      contract.contractNumber ?? 'Kontrak',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTextStyles.body(
+                        color: Colors.white.withValues(alpha: 0.72),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 18),
+          Row(
+            children: [
+              Expanded(
+                child: _buildSummaryMetric(
+                  label: 'Jumlah Sapi',
+                  value: '${contract.cowQuantity ?? 0} Ekor',
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildSummaryMetric(
+                  label: 'Harga/Ekor',
+                  value: _currencyFormat.format(contract.cowPrice ?? 0),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSummaryMetric({
+    required String label,
+    required String value,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: _tileGreen,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
           Text(
-            'Total pembayaran',
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: AppTextStyles.body(
+              color: Colors.white.withValues(alpha: 0.72),
+              fontWeight: FontWeight.w600,
               fontSize: 12,
-              color: colorScheme.onSurfaceVariant,
             ),
           ),
-          const SizedBox(height: 4),
-          Text(
-            _currencyFormat.format(contract.cowTotalPrice ?? 0),
-            style: AppTextStyles.title(
-              fontWeight: FontWeight.bold,
-              fontSize: 22,
-              color: colorScheme.primary,
+          const SizedBox(height: 6),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              value,
+              style: AppTextStyles.title(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
             ),
           ),
         ],
@@ -213,14 +337,27 @@ class _ContractPaymentPageState extends ConsumerState<ContractPaymentPage> {
     );
   }
 
-  Widget _buildSectionHeader(BuildContext context, String title) {
-    return Text(
-      title,
-      style: AppTextStyles.title(
-        fontWeight: FontWeight.bold,
-        fontSize: 16,
-        color: Theme.of(context).colorScheme.onSurface,
-      ),
+  Widget _buildSectionTitle(BuildContext context, String title) {
+    return Row(
+      children: [
+        Container(
+          width: 7,
+          height: 7,
+          decoration: const BoxDecoration(
+            color: _gold,
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          title,
+          style: AppTextStyles.body(
+            color: _green,
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
     );
   }
 
@@ -228,15 +365,9 @@ class _ContractPaymentPageState extends ConsumerState<ContractPaymentPage> {
     BuildContext context, {
     required List<Widget> children,
   }) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: colorScheme.outline),
-      ),
+      padding: const EdgeInsets.all(16),
+      decoration: _whiteCardDecoration(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: children,
@@ -250,16 +381,45 @@ class _ContractPaymentPageState extends ConsumerState<ContractPaymentPage> {
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Text(
-          message,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.onSurface,
-            fontWeight: FontWeight.w600,
+        padding: const EdgeInsets.all(16),
+        child: Container(
+          padding: const EdgeInsets.all(18),
+          decoration: _whiteCardDecoration(),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.error_outline,
+                size: 40,
+                color: Theme.of(context).colorScheme.error,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.body(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
         ),
       ),
+    );
+  }
+
+  BoxDecoration _whiteCardDecoration() {
+    return BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(14),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.06),
+          blurRadius: 14,
+          offset: const Offset(0, 6),
+        ),
+      ],
     );
   }
 

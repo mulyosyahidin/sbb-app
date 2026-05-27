@@ -10,6 +10,7 @@ _SaveDraftRequestDto _$SaveDraftRequestDtoFromJson(Map<String, dynamic> json) =>
     _SaveDraftRequestDto(
       userName: json['user_name'] as String?,
       userIdentityNumber: json['user_identity_number'] as String?,
+      address: json['address'] as String?,
       cowId: (json['cow_id'] as num?)?.toInt(),
       cowQuantity: (json['cow_quantity'] as num?)?.toInt(),
       cowTotalPrice: (json['cow_total_price'] as num?)?.toDouble(),
@@ -25,6 +26,7 @@ Map<String, dynamic> _$SaveDraftRequestDtoToJson(
     <String, dynamic>{
       'user_name': instance.userName,
       'user_identity_number': instance.userIdentityNumber,
+      'address': instance.address,
       'cow_id': instance.cowId,
       'cow_quantity': instance.cowQuantity,
       'cow_total_price': instance.cowTotalPrice,

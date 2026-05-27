@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:app/core/services/notification_service.dart';
 import 'package:app/core/utils/logger_util.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,6 +28,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 class FcmService {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  final DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
   NotificationService? _notificationService;
 
   Future<void> init([NotificationService? notificationService]) async {
@@ -39,7 +43,8 @@ class FcmService {
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       LoggerUtil.success('User granted permission');
-    } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
       LoggerUtil.warning('User granted provisional permission');
     } else {
       LoggerUtil.error('User declined or has not accepted permission');
@@ -86,11 +91,50 @@ class FcmService {
 
   Future<String?> getToken() async {
     try {
+      if (Platform.isIOS) {
+        final isSimulator = await _isIosSimulator();
+        if (isSimulator) {
+          LoggerUtil.warning(
+            'Skipping FCM token fetch on iOS simulator because APNS token is unavailable.',
+          );
+          return 'ios-simulator-fcm-token-unavailable';
+        }
+
+        final apnsToken = await _waitForApnsToken();
+        if (apnsToken == null) {
+          LoggerUtil.warning('APNS token is not available yet.');
+          return null;
+        }
+      }
+
       return await _messaging.getToken();
     } catch (e) {
       LoggerUtil.error('Error fetching FCM token: $e');
       return null;
     }
+  }
+
+  Future<bool> _isIosSimulator() async {
+    if (!Platform.isIOS) return false;
+
+    final iosInfo = await _deviceInfo.iosInfo;
+    return !iosInfo.isPhysicalDevice;
+  }
+
+  Future<String?> _waitForApnsToken() async {
+    const retryDelay = Duration(milliseconds: 500);
+    const maxAttempts = 20;
+
+    for (var attempt = 0; attempt < maxAttempts; attempt++) {
+      final apnsToken = await _messaging.getAPNSToken();
+      if (apnsToken != null) {
+        return apnsToken;
+      }
+
+      await Future.delayed(retryDelay);
+    }
+
+    return null;
   }
 
   Stream<String> onTokenRefresh() {

@@ -17,6 +17,7 @@ T _$identity<T>(T value) => value;
 mixin _$SaveDraftRequestDto {
   String? get userName;
   String? get userIdentityNumber;
+  String? get address;
   @JsonKey(includeFromJson: false, includeToJson: false)
   File? get userIdentityNumberFile;
   int? get cowId;
@@ -47,6 +48,7 @@ mixin _$SaveDraftRequestDto {
                 other.userName == userName) &&
             (identical(other.userIdentityNumber, userIdentityNumber) ||
                 other.userIdentityNumber == userIdentityNumber) &&
+            (identical(other.address, address) || other.address == address) &&
             (identical(other.userIdentityNumberFile, userIdentityNumberFile) ||
                 other.userIdentityNumberFile == userIdentityNumberFile) &&
             (identical(other.cowId, cowId) || other.cowId == cowId) &&
@@ -71,6 +73,7 @@ mixin _$SaveDraftRequestDto {
       runtimeType,
       userName,
       userIdentityNumber,
+      address,
       userIdentityNumberFile,
       cowId,
       cowQuantity,
@@ -82,7 +85,7 @@ mixin _$SaveDraftRequestDto {
 
   @override
   String toString() {
-    return 'SaveDraftRequestDto(userName: $userName, userIdentityNumber: $userIdentityNumber, userIdentityNumberFile: $userIdentityNumberFile, cowId: $cowId, cowQuantity: $cowQuantity, cowTotalPrice: $cowTotalPrice, bankAccountId: $bankAccountId, program: $program, contractMonthDuration: $contractMonthDuration, deleteUserIdentityNumberFile: $deleteUserIdentityNumberFile)';
+    return 'SaveDraftRequestDto(userName: $userName, userIdentityNumber: $userIdentityNumber, address: $address, userIdentityNumberFile: $userIdentityNumberFile, cowId: $cowId, cowQuantity: $cowQuantity, cowTotalPrice: $cowTotalPrice, bankAccountId: $bankAccountId, program: $program, contractMonthDuration: $contractMonthDuration, deleteUserIdentityNumberFile: $deleteUserIdentityNumberFile)';
   }
 }
 
@@ -95,6 +98,7 @@ abstract mixin class $SaveDraftRequestDtoCopyWith<$Res> {
   $Res call(
       {String? userName,
       String? userIdentityNumber,
+      String? address,
       @JsonKey(includeFromJson: false, includeToJson: false)
       File? userIdentityNumberFile,
       int? cowId,
@@ -121,6 +125,7 @@ class _$SaveDraftRequestDtoCopyWithImpl<$Res>
   $Res call({
     Object? userName = freezed,
     Object? userIdentityNumber = freezed,
+    Object? address = freezed,
     Object? userIdentityNumberFile = freezed,
     Object? cowId = freezed,
     Object? cowQuantity = freezed,
@@ -138,6 +143,10 @@ class _$SaveDraftRequestDtoCopyWithImpl<$Res>
       userIdentityNumber: freezed == userIdentityNumber
           ? _self.userIdentityNumber
           : userIdentityNumber // ignore: cast_nullable_to_non_nullable
+              as String?,
+      address: freezed == address
+          ? _self.address
+          : address // ignore: cast_nullable_to_non_nullable
               as String?,
       userIdentityNumberFile: freezed == userIdentityNumberFile
           ? _self.userIdentityNumberFile
@@ -181,6 +190,7 @@ class _SaveDraftRequestDto implements SaveDraftRequestDto {
   const _SaveDraftRequestDto(
       {this.userName,
       this.userIdentityNumber,
+      this.address,
       @JsonKey(includeFromJson: false, includeToJson: false)
       this.userIdentityNumberFile,
       this.cowId,
@@ -197,6 +207,8 @@ class _SaveDraftRequestDto implements SaveDraftRequestDto {
   final String? userName;
   @override
   final String? userIdentityNumber;
+  @override
+  final String? address;
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   final File? userIdentityNumberFile;
@@ -240,6 +252,7 @@ class _SaveDraftRequestDto implements SaveDraftRequestDto {
                 other.userName == userName) &&
             (identical(other.userIdentityNumber, userIdentityNumber) ||
                 other.userIdentityNumber == userIdentityNumber) &&
+            (identical(other.address, address) || other.address == address) &&
             (identical(other.userIdentityNumberFile, userIdentityNumberFile) ||
                 other.userIdentityNumberFile == userIdentityNumberFile) &&
             (identical(other.cowId, cowId) || other.cowId == cowId) &&
@@ -264,6 +277,7 @@ class _SaveDraftRequestDto implements SaveDraftRequestDto {
       runtimeType,
       userName,
       userIdentityNumber,
+      address,
       userIdentityNumberFile,
       cowId,
       cowQuantity,
@@ -275,7 +289,7 @@ class _SaveDraftRequestDto implements SaveDraftRequestDto {
 
   @override
   String toString() {
-    return 'SaveDraftRequestDto(userName: $userName, userIdentityNumber: $userIdentityNumber, userIdentityNumberFile: $userIdentityNumberFile, cowId: $cowId, cowQuantity: $cowQuantity, cowTotalPrice: $cowTotalPrice, bankAccountId: $bankAccountId, program: $program, contractMonthDuration: $contractMonthDuration, deleteUserIdentityNumberFile: $deleteUserIdentityNumberFile)';
+    return 'SaveDraftRequestDto(userName: $userName, userIdentityNumber: $userIdentityNumber, address: $address, userIdentityNumberFile: $userIdentityNumberFile, cowId: $cowId, cowQuantity: $cowQuantity, cowTotalPrice: $cowTotalPrice, bankAccountId: $bankAccountId, program: $program, contractMonthDuration: $contractMonthDuration, deleteUserIdentityNumberFile: $deleteUserIdentityNumberFile)';
   }
 }
 
@@ -290,6 +304,7 @@ abstract mixin class _$SaveDraftRequestDtoCopyWith<$Res>
   $Res call(
       {String? userName,
       String? userIdentityNumber,
+      String? address,
       @JsonKey(includeFromJson: false, includeToJson: false)
       File? userIdentityNumberFile,
       int? cowId,
@@ -316,6 +331,7 @@ class __$SaveDraftRequestDtoCopyWithImpl<$Res>
   $Res call({
     Object? userName = freezed,
     Object? userIdentityNumber = freezed,
+    Object? address = freezed,
     Object? userIdentityNumberFile = freezed,
     Object? cowId = freezed,
     Object? cowQuantity = freezed,
@@ -333,6 +349,10 @@ class __$SaveDraftRequestDtoCopyWithImpl<$Res>
       userIdentityNumber: freezed == userIdentityNumber
           ? _self.userIdentityNumber
           : userIdentityNumber // ignore: cast_nullable_to_non_nullable
+              as String?,
+      address: freezed == address
+          ? _self.address
+          : address // ignore: cast_nullable_to_non_nullable
               as String?,
       userIdentityNumberFile: freezed == userIdentityNumberFile
           ? _self.userIdentityNumberFile

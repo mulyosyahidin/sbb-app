@@ -272,6 +272,8 @@ class ActiveContractDetailPartial extends StatelessWidget {
             context, 'No. Kontrak', contract.contractNumber ?? '-'),
         _buildSummaryRow(context, 'Nama Lengkap', contract.userName ?? '-'),
         _buildSummaryRow(context, 'NIK', contract.userIdentityNumber ?? '-'),
+        if (contract.address != null && contract.address!.trim().isNotEmpty)
+          _buildSummaryRow(context, 'Alamat', contract.address!),
         _buildSummaryRow(context, 'Program', contract.program?.value ?? '-'),
         _buildSummaryRow(
             context, 'Durasi', '${contract.contractMonthDuration ?? 0} Bulan'),

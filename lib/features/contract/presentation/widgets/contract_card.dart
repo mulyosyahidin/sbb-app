@@ -106,18 +106,6 @@ class ContractCard extends StatelessWidget {
                     isBold: true,
                   ),
                 ),
-                if (!isDraft)
-                  Expanded(
-                    flex: 2,
-                    child: _buildDetailItem(
-                      context,
-                      'Bagi Hasil',
-                      item.profitSharingPercentage != null
-                          ? '${item.profitSharingPercentage!.toInt()}%'
-                          : '-',
-                      isBold: true,
-                    ),
-                  ),
               ],
             ),
             const SizedBox(height: 20),
@@ -133,7 +121,7 @@ class ContractCard extends StatelessWidget {
                 ),
                 Text(
                   item.startDate != null && item.endDate != null
-                      ? '${DateFormat('dd MMM yyyy').format(item.startDate!)} - ${DateFormat('dd MMM yyyy').format(item.endDate!)}'
+                      ? '${DateFormat('dd MMM yyyy', 'id_ID').format(item.startDate!)} - ${DateFormat('dd MMM yyyy', 'id_ID').format(item.endDate!)}'
                       : '${item.contractMonthDuration ?? 0} Bulan',
                   style: AppTextStyles.body(
                     fontSize: 12,

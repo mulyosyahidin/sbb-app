@@ -14,6 +14,7 @@ class ContractMapper {
       userId: dto.userId,
       userName: dto.userName,
       userIdentityNumber: dto.userIdentityNumber,
+      address: dto.address,
       userIdentityNumberFileId: dto.userIdentityNumberFileId,
       userIdentityNumberFile: dto.userIdentityNumberFile != null
           ? AppFileMapper.toEntity(dto.userIdentityNumberFile!)

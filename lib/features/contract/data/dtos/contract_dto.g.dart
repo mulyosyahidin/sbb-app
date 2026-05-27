@@ -12,6 +12,7 @@ _ContractDto _$ContractDtoFromJson(Map<String, dynamic> json) => _ContractDto(
       userId: (json['user_id'] as num).toInt(),
       userName: json['user_name'] as String?,
       userIdentityNumber: json['user_identity_number'] as String?,
+      address: json['address'] as String?,
       userIdentityNumberFileId: const IntStringConverter()
           .fromJson(json['user_identity_number_file_id']),
       userIdentityNumberFile: json['user_identity_number_file'] == null
@@ -70,6 +71,7 @@ Map<String, dynamic> _$ContractDtoToJson(_ContractDto instance) =>
       'user_id': instance.userId,
       'user_name': instance.userName,
       'user_identity_number': instance.userIdentityNumber,
+      'address': instance.address,
       'user_identity_number_file_id':
           const IntStringConverter().toJson(instance.userIdentityNumberFileId),
       'user_identity_number_file': instance.userIdentityNumberFile,

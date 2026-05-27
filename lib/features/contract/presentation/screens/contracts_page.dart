@@ -2,6 +2,9 @@ import 'package:app/app/app_router.dart';
 import 'package:app/core/theme/app_theme.dart';
 import 'package:app/core/theme/app_text_style.dart';
 import 'package:app/features/contract/application/contract_list_controller.dart';
+import 'package:app/features/contract/domain/entities/contract.dart';
+import 'package:app/features/contract/domain/entities/contract_status.dart';
+import 'package:app/features/contract/presentation/screens/partials/contract_card/draft_contract_card_partial.dart';
 import 'package:app/features/contract/presentation/widgets/contract_card.dart';
 import 'package:app/shared/widgets/app_bar_header.dart';
 import 'package:app/shared/widgets/app_shimmer.dart';
@@ -99,7 +102,7 @@ class _ContractsPageState extends ConsumerState<ContractsPage> {
                               child: Center(child: CircularProgressIndicator()),
                             );
                           }
-                          return ContractCard(item: state.contracts[index]);
+                          return _buildContractCard(state.contracts[index]);
                         },
                       );
                     },
@@ -335,6 +338,23 @@ class _ContractsPageState extends ConsumerState<ContractsPage> {
       ),
     );
   }
+
+  Widget _buildContractCard(Contract contract) {
+    switch (contract.status) {
+      case ContractStatus.draft:
+        return DraftContractCardPartial(contract: contract);
+      case ContractStatus.waitingVerification:
+      case ContractStatus.waitingPaymentVerification:
+      case ContractStatus.waitingPayment:
+      case ContractStatus.paymentRejected:
+      case ContractStatus.active:
+      case ContractStatus.extended:
+      case ContractStatus.completed:
+      case ContractStatus.cancelled:
+      case ContractStatus.rejected:
+        return ContractCard(item: contract);
+    }
+  }
 }
 
 class _ContractListSkeleton extends StatelessWidget {
@@ -389,11 +409,6 @@ class _ContractCardSkeleton extends StatelessWidget {
                 Expanded(
                   flex: 3,
                   child: _ContractDetailSkeleton(labelWidth: 44),
-                ),
-                SizedBox(width: 12),
-                Expanded(
-                  flex: 2,
-                  child: _ContractDetailSkeleton(labelWidth: 58),
                 ),
               ],
             ),

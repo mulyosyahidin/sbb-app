@@ -14,6 +14,7 @@ class ApiEndpoint {
   static const String resendVerificationEmail =
       '/user/resend-verification-email';
   static const String getUserSummary = '/user/summary';
+  static const String getUserActivities = '/user/activities';
 
   // Bank Accounts
   static const String getAllPaginatedBankAccounts = '/user/bank-accounts';

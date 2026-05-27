@@ -2,8 +2,11 @@ import 'package:app/core/auth/application/token_storage.dart';
 import 'package:app/core/auth/domain/entities/user.dart';
 import 'package:app/core/domain/entities/user_device.dart';
 import 'package:app/features/home/data/mappers/slider_mapper.dart';
+import 'package:app/features/home/data/mappers/user_activity_mapper.dart';
 import 'package:app/features/home/data/repositories/slider_repository_impl.dart';
+import 'package:app/features/home/data/repositories/user_activity_repository_impl.dart';
 import 'package:app/features/home/domain/entities/slider.dart';
+import 'package:app/features/home/domain/entities/user_activity.dart';
 import 'package:app/features/partnership/application/partnership_controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -49,5 +52,16 @@ Future<List<Slider>> sliders(Ref ref) async {
   return result.fold(
     (l) => throw l,
     (r) => SliderMapper.toEntityList(r.sliders),
+  );
+}
+
+@Riverpod(keepAlive: true)
+Future<List<UserActivity>> userActivities(Ref ref) async {
+  final repository = ref.watch(userActivityRepositoryProvider);
+  final result = await repository.getUserActivities();
+
+  return result.fold(
+    (l) => throw l,
+    (r) => UserActivityMapper.toEntityList(r.activities).take(5).toList(),
   );
 }

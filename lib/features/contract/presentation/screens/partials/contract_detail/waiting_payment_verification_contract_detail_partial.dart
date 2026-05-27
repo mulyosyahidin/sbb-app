@@ -18,12 +18,17 @@ class WaitingPaymentVerificationContractDetailPartial extends StatelessWidget {
     decimalDigits: 0,
   );
 
+  static const _warning = Color(0xFFFF9800);
+  static const _darkWarning = Color(0xFF9E5F00);
+  static const _middleWarning = Color(0xFFD88911);
+  static const _tileWarning = Color(0xFFE89B22);
+  static const _gold = Color(0xFFD3AB35);
+  static const _pageBackground = Color(0xFFF5F0E6);
+
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Scaffold(
-      backgroundColor: colorScheme.surface,
+      backgroundColor: _pageBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -33,17 +38,17 @@ class WaitingPaymentVerificationContractDetailPartial extends StatelessWidget {
             ),
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.fromLTRB(16, 18, 16, 28),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _buildVerificationMessage(context),
-                    const SizedBox(height: 24),
-                    _buildSectionHeader(context, 'Ringkasan Pembayaran'),
+                    _buildVerificationSummaryHero(),
+                    const SizedBox(height: 18),
+                    _buildSectionTitle(context, 'RINGKASAN PEMBAYARAN'),
                     const SizedBox(height: 12),
                     _buildPaymentSummaryCard(context),
-                    const SizedBox(height: 24),
-                    _buildSectionHeader(context, 'Ringkasan Kontrak'),
+                    const SizedBox(height: 18),
+                    _buildSectionTitle(context, 'RINGKASAN KONTRAK'),
                     const SizedBox(height: 12),
                     _buildContractSummaryCard(context),
                     const SizedBox(height: 40),
@@ -57,118 +62,185 @@ class WaitingPaymentVerificationContractDetailPartial extends StatelessWidget {
     );
   }
 
-  Widget _buildVerificationMessage(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    const warningColor = Color(0xFFFF9800);
-
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: warningColor.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: warningColor.withValues(alpha: 0.18)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: warningColor.withValues(alpha: 0.14),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: const Icon(
-              Icons.fact_check_outlined,
-              color: warningColor,
-              size: 24,
-            ),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Pembayaran sedang diverifikasi',
-                  style: AppTextStyles.body(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                    color: colorScheme.onSurface,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  'Admin sedang memeriksa bukti pembayaran Anda. Tidak ada tindakan yang perlu dilakukan saat ini.',
-                  style: AppTextStyles.body(
-                    fontSize: 13,
-                    height: 1.45,
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSectionHeader(BuildContext context, String title) {
-    return Text(
-      title,
-      style: AppTextStyles.title(
-        fontWeight: FontWeight.bold,
-        fontSize: 16,
-        color: Theme.of(context).colorScheme.onSurface,
-      ),
-    );
-  }
-
-  Widget _buildPaymentSummaryCard(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
+  Widget _buildVerificationSummaryHero() {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: colorScheme.primary.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: colorScheme.primary.withValues(alpha: 0.1)),
+        gradient: const LinearGradient(
+          colors: [
+            _darkWarning,
+            _middleWarning,
+            _warning,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: _warning.withValues(alpha: 0.18),
+            blurRadius: 18,
+            offset: const Offset(0, 10),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _buildSummaryRow(
-              context, 'Jumlah Sapi', '${contract.cowQuantity ?? 0} Ekor'),
-          _buildSummaryRow(
-            context,
-            'Harga Per Ekor',
-            _currencyFormat.format(contract.cowPrice ?? 0),
-          ),
-          const Divider(height: 32),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Total Pembayaran',
-                style: AppTextStyles.body(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                  color: colorScheme.onSurface,
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.08),
+                      blurRadius: 12,
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.fact_check_outlined,
+                  color: _warning,
+                  size: 24,
                 ),
               ),
-              Text(
-                _currencyFormat.format(contract.cowTotalPrice ?? 0),
-                style: AppTextStyles.title(
-                  fontWeight: FontWeight.bold,
-                  color: colorScheme.primary,
-                  fontSize: 18,
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Pembayaran Sedang Diverifikasi',
+                      style: AppTextStyles.title(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 19,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Admin sedang memeriksa bukti pembayaran Anda. Tidak ada tindakan yang perlu dilakukan saat ini.',
+                      style: AppTextStyles.body(
+                        fontSize: 13,
+                        height: 1.45,
+                        color: Colors.white.withValues(alpha: 0.76),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 18),
+          Row(
+            children: [
+              Expanded(
+                child: _buildSummaryMetric(
+                  label: 'Total Bayar',
+                  value: _currencyFormat.format(contract.cowTotalPrice ?? 0),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildSummaryMetric(
+                  label: 'Jumlah Sapi',
+                  value: '${contract.cowQuantity ?? 0} Ekor',
                 ),
               ),
             ],
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildSummaryMetric({
+    required String label,
+    required String value,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: _tileWarning,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AppTextStyles.body(
+              color: Colors.white.withValues(alpha: 0.72),
+              fontWeight: FontWeight.w600,
+              fontSize: 12,
+            ),
+          ),
+          const SizedBox(height: 6),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              value,
+              style: AppTextStyles.title(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(BuildContext context, String title) {
+    return Row(
+      children: [
+        Container(
+          width: 7,
+          height: 7,
+          decoration: const BoxDecoration(
+            color: _gold,
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          title,
+          style: AppTextStyles.body(
+            color: _warning,
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPaymentSummaryCard(BuildContext context) {
+    return _buildDetailCard(
+      context,
+      children: [
+        _buildSummaryRow(
+            context, 'Jumlah Sapi', '${contract.cowQuantity ?? 0} Ekor'),
+        _buildSummaryRow(
+          context,
+          'Harga Per Ekor',
+          _currencyFormat.format(contract.cowPrice ?? 0),
+        ),
+        _buildSummaryRow(
+          context,
+          'Total Pembayaran',
+          _currencyFormat.format(contract.cowTotalPrice ?? 0),
+        ),
+      ],
     );
   }
 
@@ -179,6 +251,8 @@ class WaitingPaymentVerificationContractDetailPartial extends StatelessWidget {
         _buildSummaryRow(
             context, 'No. Kontrak', contract.contractNumber ?? '-'),
         _buildSummaryRow(context, 'Nama Lengkap', contract.userName ?? '-'),
+        if (contract.address != null && contract.address!.trim().isNotEmpty)
+          _buildSummaryRow(context, 'Alamat', contract.address!),
         _buildSummaryRow(context, 'Jenis Sapi', contract.cowName ?? '-'),
         _buildSummaryRow(context, 'Program', contract.program?.value ?? '-'),
         _buildSummaryRow(
@@ -192,15 +266,9 @@ class WaitingPaymentVerificationContractDetailPartial extends StatelessWidget {
     BuildContext context, {
     required List<Widget> children,
   }) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: colorScheme.outline),
-      ),
+      padding: const EdgeInsets.all(16),
+      decoration: _whiteCardDecoration(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: children,
@@ -217,6 +285,7 @@ class WaitingPaymentVerificationContractDetailPartial extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,
@@ -239,6 +308,20 @@ class WaitingPaymentVerificationContractDetailPartial extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  BoxDecoration _whiteCardDecoration() {
+    return BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(14),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.06),
+          blurRadius: 14,
+          offset: const Offset(0, 6),
+        ),
+      ],
     );
   }
 }

@@ -22,6 +22,7 @@ mixin _$ContractDto {
   int get userId;
   String? get userName;
   String? get userIdentityNumber;
+  String? get address;
   @IntStringConverter()
   int? get userIdentityNumberFileId;
   AppFileDto? get userIdentityNumberFile;
@@ -86,6 +87,7 @@ mixin _$ContractDto {
                 other.userName == userName) &&
             (identical(other.userIdentityNumber, userIdentityNumber) ||
                 other.userIdentityNumber == userIdentityNumber) &&
+            (identical(other.address, address) || other.address == address) &&
             (identical(
                     other.userIdentityNumberFileId, userIdentityNumberFileId) ||
                 other.userIdentityNumberFileId == userIdentityNumberFileId) &&
@@ -146,6 +148,7 @@ mixin _$ContractDto {
         userId,
         userName,
         userIdentityNumber,
+        address,
         userIdentityNumberFileId,
         userIdentityNumberFile,
         cowId,
@@ -177,7 +180,7 @@ mixin _$ContractDto {
 
   @override
   String toString() {
-    return 'ContractDto(id: $id, contractNumber: $contractNumber, userId: $userId, userName: $userName, userIdentityNumber: $userIdentityNumber, userIdentityNumberFileId: $userIdentityNumberFileId, userIdentityNumberFile: $userIdentityNumberFile, cowId: $cowId, cowImageFileId: $cowImageFileId, cowName: $cowName, cowPrice: $cowPrice, cowWeightKg: $cowWeightKg, cowQuantity: $cowQuantity, cowTotalPrice: $cowTotalPrice, bankAccountId: $bankAccountId, bankName: $bankName, bankAccountName: $bankAccountName, bankAccountNumber: $bankAccountNumber, program: $program, contractMonthDuration: $contractMonthDuration, status: $status, note: $note, profitSharingPercentage: $profitSharingPercentage, totalProfitPaid: $totalProfitPaid, totalProfitPaidMonths: $totalProfitPaidMonths, notes: $notes, latestNote: $latestNote, paymentSchedules: $paymentSchedules, startDate: $startDate, endDate: $endDate, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'ContractDto(id: $id, contractNumber: $contractNumber, userId: $userId, userName: $userName, userIdentityNumber: $userIdentityNumber, address: $address, userIdentityNumberFileId: $userIdentityNumberFileId, userIdentityNumberFile: $userIdentityNumberFile, cowId: $cowId, cowImageFileId: $cowImageFileId, cowName: $cowName, cowPrice: $cowPrice, cowWeightKg: $cowWeightKg, cowQuantity: $cowQuantity, cowTotalPrice: $cowTotalPrice, bankAccountId: $bankAccountId, bankName: $bankName, bankAccountName: $bankAccountName, bankAccountNumber: $bankAccountNumber, program: $program, contractMonthDuration: $contractMonthDuration, status: $status, note: $note, profitSharingPercentage: $profitSharingPercentage, totalProfitPaid: $totalProfitPaid, totalProfitPaidMonths: $totalProfitPaidMonths, notes: $notes, latestNote: $latestNote, paymentSchedules: $paymentSchedules, startDate: $startDate, endDate: $endDate, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }
 
@@ -193,6 +196,7 @@ abstract mixin class $ContractDtoCopyWith<$Res> {
       @IntStringConverter() int userId,
       String? userName,
       String? userIdentityNumber,
+      String? address,
       @IntStringConverter() int? userIdentityNumberFileId,
       AppFileDto? userIdentityNumberFile,
       @IntStringConverter() int? cowId,
@@ -242,6 +246,7 @@ class _$ContractDtoCopyWithImpl<$Res> implements $ContractDtoCopyWith<$Res> {
     Object? userId = null,
     Object? userName = freezed,
     Object? userIdentityNumber = freezed,
+    Object? address = freezed,
     Object? userIdentityNumberFileId = freezed,
     Object? userIdentityNumberFile = freezed,
     Object? cowId = freezed,
@@ -290,6 +295,10 @@ class _$ContractDtoCopyWithImpl<$Res> implements $ContractDtoCopyWith<$Res> {
       userIdentityNumber: freezed == userIdentityNumber
           ? _self.userIdentityNumber
           : userIdentityNumber // ignore: cast_nullable_to_non_nullable
+              as String?,
+      address: freezed == address
+          ? _self.address
+          : address // ignore: cast_nullable_to_non_nullable
               as String?,
       userIdentityNumberFileId: freezed == userIdentityNumberFileId
           ? _self.userIdentityNumberFileId
@@ -440,6 +449,7 @@ class _ContractDto implements ContractDto {
       @IntStringConverter() required this.userId,
       this.userName,
       this.userIdentityNumber,
+      this.address,
       @IntStringConverter() this.userIdentityNumberFileId,
       this.userIdentityNumberFile,
       @IntStringConverter() this.cowId,
@@ -484,6 +494,8 @@ class _ContractDto implements ContractDto {
   final String? userName;
   @override
   final String? userIdentityNumber;
+  @override
+  final String? address;
   @override
   @IntStringConverter()
   final int? userIdentityNumberFileId;
@@ -597,6 +609,7 @@ class _ContractDto implements ContractDto {
                 other.userName == userName) &&
             (identical(other.userIdentityNumber, userIdentityNumber) ||
                 other.userIdentityNumber == userIdentityNumber) &&
+            (identical(other.address, address) || other.address == address) &&
             (identical(
                     other.userIdentityNumberFileId, userIdentityNumberFileId) ||
                 other.userIdentityNumberFileId == userIdentityNumberFileId) &&
@@ -657,6 +670,7 @@ class _ContractDto implements ContractDto {
         userId,
         userName,
         userIdentityNumber,
+        address,
         userIdentityNumberFileId,
         userIdentityNumberFile,
         cowId,
@@ -688,7 +702,7 @@ class _ContractDto implements ContractDto {
 
   @override
   String toString() {
-    return 'ContractDto(id: $id, contractNumber: $contractNumber, userId: $userId, userName: $userName, userIdentityNumber: $userIdentityNumber, userIdentityNumberFileId: $userIdentityNumberFileId, userIdentityNumberFile: $userIdentityNumberFile, cowId: $cowId, cowImageFileId: $cowImageFileId, cowName: $cowName, cowPrice: $cowPrice, cowWeightKg: $cowWeightKg, cowQuantity: $cowQuantity, cowTotalPrice: $cowTotalPrice, bankAccountId: $bankAccountId, bankName: $bankName, bankAccountName: $bankAccountName, bankAccountNumber: $bankAccountNumber, program: $program, contractMonthDuration: $contractMonthDuration, status: $status, note: $note, profitSharingPercentage: $profitSharingPercentage, totalProfitPaid: $totalProfitPaid, totalProfitPaidMonths: $totalProfitPaidMonths, notes: $notes, latestNote: $latestNote, paymentSchedules: $paymentSchedules, startDate: $startDate, endDate: $endDate, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'ContractDto(id: $id, contractNumber: $contractNumber, userId: $userId, userName: $userName, userIdentityNumber: $userIdentityNumber, address: $address, userIdentityNumberFileId: $userIdentityNumberFileId, userIdentityNumberFile: $userIdentityNumberFile, cowId: $cowId, cowImageFileId: $cowImageFileId, cowName: $cowName, cowPrice: $cowPrice, cowWeightKg: $cowWeightKg, cowQuantity: $cowQuantity, cowTotalPrice: $cowTotalPrice, bankAccountId: $bankAccountId, bankName: $bankName, bankAccountName: $bankAccountName, bankAccountNumber: $bankAccountNumber, program: $program, contractMonthDuration: $contractMonthDuration, status: $status, note: $note, profitSharingPercentage: $profitSharingPercentage, totalProfitPaid: $totalProfitPaid, totalProfitPaidMonths: $totalProfitPaidMonths, notes: $notes, latestNote: $latestNote, paymentSchedules: $paymentSchedules, startDate: $startDate, endDate: $endDate, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }
 
@@ -706,6 +720,7 @@ abstract mixin class _$ContractDtoCopyWith<$Res>
       @IntStringConverter() int userId,
       String? userName,
       String? userIdentityNumber,
+      String? address,
       @IntStringConverter() int? userIdentityNumberFileId,
       AppFileDto? userIdentityNumberFile,
       @IntStringConverter() int? cowId,
@@ -757,6 +772,7 @@ class __$ContractDtoCopyWithImpl<$Res> implements _$ContractDtoCopyWith<$Res> {
     Object? userId = null,
     Object? userName = freezed,
     Object? userIdentityNumber = freezed,
+    Object? address = freezed,
     Object? userIdentityNumberFileId = freezed,
     Object? userIdentityNumberFile = freezed,
     Object? cowId = freezed,
@@ -805,6 +821,10 @@ class __$ContractDtoCopyWithImpl<$Res> implements _$ContractDtoCopyWith<$Res> {
       userIdentityNumber: freezed == userIdentityNumber
           ? _self.userIdentityNumber
           : userIdentityNumber // ignore: cast_nullable_to_non_nullable
+              as String?,
+      address: freezed == address
+          ? _self.address
+          : address // ignore: cast_nullable_to_non_nullable
               as String?,
       userIdentityNumberFileId: freezed == userIdentityNumberFileId
           ? _self.userIdentityNumberFileId

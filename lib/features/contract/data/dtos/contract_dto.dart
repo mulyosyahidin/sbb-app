@@ -19,6 +19,7 @@ abstract class ContractDto with _$ContractDto {
     @IntStringConverter() required int userId,
     String? userName,
     String? userIdentityNumber,
+    String? address,
     @IntStringConverter() int? userIdentityNumberFileId,
     AppFileDto? userIdentityNumberFile,
     @IntStringConverter() int? cowId,

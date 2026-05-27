@@ -1,43 +1,61 @@
-import 'package:app/core/domain/entities/app_file.dart';
 import 'package:app/core/theme/app_text_style.dart';
 import 'package:app/features/contract/domain/entities/contract.dart';
 import 'package:app/shared/widgets/app_bar_header.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-class WaitingVerificationContractDetailPartial extends StatelessWidget {
+class ContractDetailStatusLayout extends StatelessWidget {
   final Contract contract;
+  final String subtitle;
+  final String title;
+  final String message;
+  final IconData icon;
+  final List<ContractDetailSection> sections;
+  final Widget? action;
+  final Color accentColor;
+  final Color darkAccentColor;
+  final Color middleAccentColor;
+  final Color tileAccentColor;
 
-  const WaitingVerificationContractDetailPartial({
+  const ContractDetailStatusLayout({
     super.key,
     required this.contract,
+    required this.subtitle,
+    required this.title,
+    required this.message,
+    required this.icon,
+    required this.sections,
+    this.action,
+    this.accentColor = green,
+    this.darkAccentColor = darkGreen,
+    this.middleAccentColor = const Color(0xFF2C8A3C),
+    this.tileAccentColor = tileGreen,
   });
 
-  static final _currencyFormat = NumberFormat.currency(
+  static final currencyFormat = NumberFormat.currency(
     locale: 'id_ID',
     symbol: 'Rp ',
     decimalDigits: 0,
   );
 
-  static const _warning = Color(0xFFFF9800);
-  static const _darkWarning = Color(0xFF9E5F00);
-  static const _middleWarning = Color(0xFFD88911);
-  static const _tileWarning = Color(0xFFE89B22);
-  static const _softWarning = Color(0xFFFFF1D8);
-  static const _gold = Color(0xFFD3AB35);
-  static const _pageBackground = Color(0xFFF5F0E6);
+  static final dateFormat = DateFormat('dd MMMM yyyy', 'id_ID');
+
+  static const green = Color(0xFF1F6E2D);
+  static const darkGreen = Color(0xFF155B24);
+  static const tileGreen = Color(0xFF3E8445);
+  static const gold = Color(0xFFD3AB35);
+  static const pageBackground = Color(0xFFF5F0E6);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _pageBackground,
+      backgroundColor: pageBackground,
       body: SafeArea(
         child: Column(
           children: [
-            const AppBarHeader(
+            AppBarHeader(
               title: 'Detail Kontrak',
-              subtitle: 'Menunggu Verifikasi',
+              subtitle: subtitle,
             ),
             Expanded(
               child: SingleChildScrollView(
@@ -45,29 +63,21 @@ class WaitingVerificationContractDetailPartial extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _buildVerificationSummaryCard(),
-                    const SizedBox(height: 18),
-                    _buildSectionTitle(context, 'DATA DIRI'),
-                    const SizedBox(height: 12),
-                    _buildUserCard(context),
-                    if (contract.userIdentityNumberFile != null) ...[
+                    _buildHeroCard(),
+                    for (final section in sections) ...[
                       const SizedBox(height: 18),
-                      _buildSectionTitle(context, 'DOKUMEN'),
+                      _buildSectionTitle(section.title),
                       const SizedBox(height: 12),
-                      _buildKycCard(context, contract.userIdentityNumberFile!),
+                      _buildSectionCard(
+                        context,
+                        children: section.children,
+                      ),
                     ],
-                    const SizedBox(height: 18),
-                    _buildSectionTitle(context, 'DATA SAPI'),
-                    const SizedBox(height: 12),
-                    _buildCowCard(context),
-                    const SizedBox(height: 18),
-                    _buildSectionTitle(context, 'PROGRAM KONTRAK'),
-                    const SizedBox(height: 12),
-                    _buildProgramCard(context),
-                    const SizedBox(height: 18),
-                    _buildSectionTitle(context, 'REKENING'),
-                    const SizedBox(height: 12),
-                    _buildBankCard(context),
+                    if (action != null) ...[
+                      const SizedBox(height: 24),
+                      action!,
+                    ],
+                    const SizedBox(height: 40),
                   ],
                 ),
               ),
@@ -78,23 +88,23 @@ class WaitingVerificationContractDetailPartial extends StatelessWidget {
     );
   }
 
-  Widget _buildVerificationSummaryCard() {
+  Widget _buildHeroCard() {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
-        gradient: const LinearGradient(
-          colors: [
-            _darkWarning,
-            _middleWarning,
-            _warning,
+        gradient: LinearGradient(
+          colors: <Color>[
+            darkAccentColor,
+            middleAccentColor,
+            accentColor,
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         boxShadow: [
           BoxShadow(
-            color: _warning.withValues(alpha: 0.18),
+            color: accentColor.withValues(alpha: 0.18),
             blurRadius: 18,
             offset: const Offset(0, 10),
           ),
@@ -119,9 +129,9 @@ class WaitingVerificationContractDetailPartial extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: const Icon(
-                  Icons.verified_user_outlined,
-                  color: _warning,
+                child: Icon(
+                  icon,
+                  color: accentColor,
                   size: 24,
                 ),
               ),
@@ -131,7 +141,7 @@ class WaitingVerificationContractDetailPartial extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Menunggu Verifikasi',
+                      title,
                       style: AppTextStyles.title(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -140,7 +150,7 @@ class WaitingVerificationContractDetailPartial extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      'Admin sedang memverifikasi data kontrak Anda. Tidak ada tindakan yang perlu dilakukan saat ini.',
+                      message,
                       style: AppTextStyles.body(
                         fontSize: 13,
                         height: 1.45,
@@ -158,7 +168,7 @@ class WaitingVerificationContractDetailPartial extends StatelessWidget {
               Expanded(
                 child: _buildSummaryMetric(
                   label: 'Total Modal',
-                  value: _currencyFormat.format(contract.cowTotalPrice ?? 0),
+                  value: currencyFormat.format(contract.cowTotalPrice ?? 0),
                 ),
               ),
               const SizedBox(width: 12),
@@ -182,7 +192,7 @@ class WaitingVerificationContractDetailPartial extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color: _tileWarning,
+        color: tileAccentColor,
         borderRadius: BorderRadius.circular(14),
       ),
       child: Column(
@@ -216,14 +226,14 @@ class WaitingVerificationContractDetailPartial extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionTitle(BuildContext context, String title) {
+  Widget _buildSectionTitle(String title) {
     return Row(
       children: [
         Container(
           width: 7,
           height: 7,
           decoration: const BoxDecoration(
-            color: _gold,
+            color: gold,
             shape: BoxShape.circle,
           ),
         ),
@@ -231,7 +241,7 @@ class WaitingVerificationContractDetailPartial extends StatelessWidget {
         Text(
           title,
           style: AppTextStyles.body(
-            color: _warning,
+            color: accentColor,
             fontSize: 12,
             fontWeight: FontWeight.bold,
           ),
@@ -240,59 +250,7 @@ class WaitingVerificationContractDetailPartial extends StatelessWidget {
     );
   }
 
-  Widget _buildUserCard(BuildContext context) {
-    return _buildDetailCard(
-      context,
-      children: [
-        _buildSummaryRow(context, 'Nama Lengkap', contract.userName ?? '-'),
-        _buildSummaryRow(context, 'NIK', contract.userIdentityNumber ?? '-'),
-        if (contract.address != null && contract.address!.trim().isNotEmpty)
-          _buildSummaryRow(context, 'Alamat', contract.address!),
-      ],
-    );
-  }
-
-  Widget _buildCowCard(BuildContext context) {
-    return _buildDetailCard(
-      context,
-      children: [
-        _buildSummaryRow(context, 'Jenis Sapi', contract.cowName ?? '-'),
-        _buildSummaryRow(
-            context, 'Berat Sapi', '${contract.cowWeightKg ?? 0} Kg'),
-        _buildSummaryRow(
-          context,
-          'Harga Per Ekor',
-          _currencyFormat.format(contract.cowPrice ?? 0),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildProgramCard(BuildContext context) {
-    return _buildDetailCard(
-      context,
-      children: [
-        _buildSummaryRow(context, 'Program', contract.program?.value ?? '-'),
-        _buildSummaryRow(
-            context, 'Durasi', '${contract.contractMonthDuration ?? 0} Bulan'),
-        _buildSummaryRow(context, 'Status Kontrak', contract.status.value),
-      ],
-    );
-  }
-
-  Widget _buildBankCard(BuildContext context) {
-    return _buildDetailCard(
-      context,
-      children: [
-        _buildSummaryRow(context, 'Nama Bank', contract.bankName ?? '-'),
-        _buildSummaryRow(
-            context, 'Nomor Rekening', contract.bankAccountNumber ?? '-'),
-        _buildSummaryRow(context, 'Atas Nama', contract.bankAccountName ?? '-'),
-      ],
-    );
-  }
-
-  Widget _buildDetailCard(
+  Widget _buildSectionCard(
     BuildContext context, {
     required List<Widget> children,
   }) {
@@ -306,78 +264,7 @@ class WaitingVerificationContractDetailPartial extends StatelessWidget {
     );
   }
 
-  Widget _buildKycCard(BuildContext context, AppFile file) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return InkWell(
-      onTap: () async {
-        final url = Uri.parse(file.fileUrl);
-        try {
-          final launched = await launchUrl(
-            url,
-            mode: LaunchMode.inAppBrowserView,
-          );
-          if (!launched) {
-            await launchUrl(url, mode: LaunchMode.externalApplication);
-          }
-        } catch (e) {
-          await launchUrl(url, mode: LaunchMode.externalApplication);
-        }
-      },
-      borderRadius: BorderRadius.circular(14),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: _whiteCardDecoration(),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: _softWarning,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Icon(
-                Icons.assignment_ind_rounded,
-                color: _warning,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Kartu Tanda Penduduk (KTP)',
-                    style: AppTextStyles.body(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    file.fileName,
-                    style: AppTextStyles.body(
-                      fontSize: 12,
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.open_in_new_rounded,
-              size: 18,
-              color: colorScheme.onSurfaceVariant,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSummaryRow(
+  static Widget row(
     BuildContext context,
     String label,
     String value,
@@ -412,7 +299,7 @@ class WaitingVerificationContractDetailPartial extends StatelessWidget {
     );
   }
 
-  BoxDecoration _whiteCardDecoration() {
+  static BoxDecoration _whiteCardDecoration() {
     return BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(14),
@@ -425,4 +312,14 @@ class WaitingVerificationContractDetailPartial extends StatelessWidget {
       ],
     );
   }
+}
+
+class ContractDetailSection {
+  final String title;
+  final List<Widget> children;
+
+  const ContractDetailSection({
+    required this.title,
+    required this.children,
+  });
 }
