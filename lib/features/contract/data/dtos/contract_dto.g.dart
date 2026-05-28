@@ -54,12 +54,20 @@ _ContractDto _$ContractDtoFromJson(Map<String, dynamic> json) => _ContractDto(
       paymentSchedules: (json['payment_schedules'] as List<dynamic>?)
           ?.map((e) => PaymentScheduleDto.fromJson(e as Map<String, dynamic>))
           .toList(),
+      contractDocuments: (json['contract_documents'] as List<dynamic>?)
+          ?.map((e) => ContractDocumentDto.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      latestContractDocument: json['latest_contract_document'] == null
+          ? null
+          : ContractDocumentDto.fromJson(
+              json['latest_contract_document'] as Map<String, dynamic>),
       startDate: json['start_date'] == null
           ? null
           : DateTime.parse(json['start_date'] as String),
       endDate: json['end_date'] == null
           ? null
           : DateTime.parse(json['end_date'] as String),
+      isDocumentAccepted: (json['is_document_accepted'] as num).toInt(),
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
     );
@@ -103,8 +111,11 @@ Map<String, dynamic> _$ContractDtoToJson(_ContractDto instance) =>
       'notes': instance.notes,
       'latest_note': instance.latestNote,
       'payment_schedules': instance.paymentSchedules,
+      'contract_documents': instance.contractDocuments,
+      'latest_contract_document': instance.latestContractDocument,
       'start_date': instance.startDate?.toIso8601String(),
       'end_date': instance.endDate?.toIso8601String(),
+      'is_document_accepted': instance.isDocumentAccepted,
       'created_at': instance.createdAt.toIso8601String(),
       'updated_at': instance.updatedAt.toIso8601String(),
     };

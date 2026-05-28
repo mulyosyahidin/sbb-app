@@ -1,12 +1,16 @@
 import 'package:app/app/app_router.dart';
+import 'package:app/core/errors/failure.dart';
 import 'package:app/core/theme/app_text_style.dart';
+import 'package:app/core/utils/toast_util.dart';
+import 'package:app/features/contract/application/contract_document_controller.dart';
 import 'package:app/features/contract/domain/entities/contract.dart';
 import 'package:app/shared/widgets/app_bar_header.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-class ActiveContractDetailPartial extends StatelessWidget {
+class ActiveContractDetailPartial extends ConsumerWidget {
   final Contract contract;
 
   const ActiveContractDetailPartial({
@@ -26,9 +30,24 @@ class ActiveContractDetailPartial extends StatelessWidget {
   static const _tileGreen = Color(0xFF3E8445);
   static const _gold = Color(0xFFD3AB35);
   static const _pageBackground = Color(0xFFF5F0E6);
+  static const _documentStatusAccepted = 'Diterima';
+  static const _documentStatusRejected = 'Ditolak';
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen(contractDocumentControllerProvider, (previous, next) {
+      if (next is AsyncError) {
+        final error = next.error;
+        ToastUtil.showError(
+          context,
+          title: 'Gagal',
+          description: error is Failure ? error.message : error.toString(),
+        );
+      }
+    });
+
+    final documentState = ref.watch(contractDocumentControllerProvider);
+
     return Scaffold(
       backgroundColor: _pageBackground,
       body: SafeArea(
@@ -47,6 +66,14 @@ class ActiveContractDetailPartial extends StatelessWidget {
                     _buildHeroCard(context),
                     const SizedBox(height: 18),
                     _buildContractSummaryCard(context),
+                    if (_shouldShowContractDocumentBox) ...[
+                      const SizedBox(height: 12),
+                      _buildContractDocumentBox(
+                        context,
+                        ref,
+                        isLoading: documentState.isLoading,
+                      ),
+                    ],
                     const SizedBox(height: 12),
                     _buildCowCard(context),
                     const SizedBox(height: 12),
@@ -292,6 +319,177 @@ class ActiveContractDetailPartial extends StatelessWidget {
     );
   }
 
+  Widget _buildContractDocumentBox(
+    BuildContext context,
+    WidgetRef ref, {
+    required bool isLoading,
+  }) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final hasContractDocument = contract.latestContractDocument != null ||
+        (contract.contractDocuments?.isNotEmpty ?? false);
+    final shouldShowActions =
+        !hasContractDocument || _isLatestContractDocumentRejected;
+    final message = _contractDocumentMessage(hasContractDocument);
+    final rejectedNote = contract.latestContractDocument?.note;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF8E1),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: _gold.withValues(alpha: 0.38),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(
+                  Icons.description_outlined,
+                  color: _green,
+                  size: 22,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  message,
+                  style: AppTextStyles.body(
+                    color: colorScheme.onSurface,
+                    fontSize: 13,
+                    height: 1.45,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          if (_isLatestContractDocumentRejected &&
+              rejectedNote != null &&
+              rejectedNote.trim().isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: _gold.withValues(alpha: 0.28),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    'Catatan Admin',
+                    style: AppTextStyles.body(
+                      color: _green,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    rejectedNote,
+                    style: AppTextStyles.body(
+                      color: colorScheme.onSurface,
+                      fontSize: 12,
+                      height: 1.45,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          if (shouldShowActions) ...[
+            const SizedBox(height: 14),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: isLoading
+                        ? null
+                        : () => _sendContractDocument(context, ref),
+                    icon: isLoading
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.file_download_outlined, size: 18),
+                    label: const FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text('Download'),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: _green,
+                      side: BorderSide(
+                        color: _green.withValues(alpha: 0.45),
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      textStyle: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () => context.push(
+                      Routes.contractDocumentUpload.replaceAll(
+                        ':id',
+                        contract.id.toString(),
+                      ),
+                    ),
+                    icon: const Icon(Icons.upload_file_rounded, size: 18),
+                    label: const FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text('Upload'),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _green,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      textStyle: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
   Widget _buildCowCard(BuildContext context) {
     return _buildSectionCard(
       context,
@@ -366,6 +564,44 @@ class ActiveContractDetailPartial extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  bool get _shouldShowContractDocumentBox {
+    if (contract.isDocumentAccepted) return false;
+    return contract.latestContractDocument?.status != _documentStatusAccepted;
+  }
+
+  bool get _isLatestContractDocumentRejected {
+    return contract.latestContractDocument?.status == _documentStatusRejected;
+  }
+
+  String _contractDocumentMessage(bool hasContractDocument) {
+    if (_isLatestContractDocumentRejected) {
+      return 'Dokumen kontrak ditolak. Silahkan lakukan perbaikan sesuai dengan catatan dari admin dan upload kembali dokumen kontrak yang sudah diperbaiki.';
+    }
+
+    if (hasContractDocument) {
+      return 'Dokumen kontrak sedang diverifikasi. Harap tunggu informasi selanjutnya dari admin.';
+    }
+
+    return 'Silahkan download dan tanda tangani dokumen kontrak kemudian upload kembali';
+  }
+
+  Future<void> _sendContractDocument(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final message = await ref
+        .read(contractDocumentControllerProvider.notifier)
+        .sendContractDocument(contractId: contract.id);
+
+    if (!context.mounted || message == null) return;
+
+    ToastUtil.showSuccess(
+      context,
+      title: 'Berhasil',
+      description: message,
     );
   }
 

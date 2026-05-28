@@ -5,6 +5,7 @@ import 'package:app/core/utils/error_util.dart';
 import 'package:app/features/contract/data/datasources/contract_remote_data_source.dart';
 import 'package:app/features/contract/data/dtos/requests/save_draft_request_dto.dart';
 import 'package:app/features/contract/data/dtos/requests/store_payment_proof_request_dto.dart';
+import 'package:app/features/contract/data/dtos/requests/upload_contract_document_request_dto.dart';
 import 'package:app/features/contract/data/dtos/responses/get_contract_response_dto.dart';
 import 'package:app/features/contract/data/dtos/responses/get_contracts_response_dto.dart';
 import 'package:app/features/contract/data/dtos/responses/get_draft_contract_response_dto.dart';
@@ -136,6 +137,48 @@ class ContractRepositoryImpl implements ContractRepository {
     } catch (e) {
       return Left(
         _mapExceptionToFailure(e, 'ContractRepositoryImpl.storePaymentProof'),
+      );
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> sendContractDocument({
+    required int contractId,
+  }) async {
+    try {
+      final responseDto = await _remoteDataSource.sendContractDocument(
+        contractId: contractId,
+      );
+
+      return Right(responseDto.message);
+    } catch (e) {
+      return Left(
+        _mapExceptionToFailure(
+          e,
+          'ContractRepositoryImpl.sendContractDocument',
+        ),
+      );
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> uploadContractDocument({
+    required int contractId,
+    required UploadContractDocumentRequestDto request,
+  }) async {
+    try {
+      final responseDto = await _remoteDataSource.uploadContractDocument(
+        contractId: contractId,
+        request: request,
+      );
+
+      return Right(responseDto.message);
+    } catch (e) {
+      return Left(
+        _mapExceptionToFailure(
+          e,
+          'ContractRepositoryImpl.uploadContractDocument',
+        ),
       );
     }
   }

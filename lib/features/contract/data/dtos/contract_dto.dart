@@ -1,5 +1,6 @@
 import 'package:app/core/dtos/app_file_dto.dart';
 import 'package:app/core/utils/json_converters.dart';
+import 'package:app/features/contract/data/dtos/contract_document_dto.dart';
 import 'package:app/features/contract/data/dtos/contract_note_dto.dart';
 import 'package:app/features/contract/data/dtos/payment_schedule_dto.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -43,8 +44,11 @@ abstract class ContractDto with _$ContractDto {
     List<ContractNoteDto>? notes,
     @JsonKey(readValue: _readLatestNote) ContractNoteDto? latestNote,
     List<PaymentScheduleDto>? paymentSchedules,
+    List<ContractDocumentDto>? contractDocuments,
+    ContractDocumentDto? latestContractDocument,
     DateTime? startDate,
     DateTime? endDate,
+    @IntStringConverter() required int isDocumentAccepted,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) = _ContractDto;

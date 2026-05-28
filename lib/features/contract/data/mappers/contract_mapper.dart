@@ -1,5 +1,6 @@
 import 'package:app/core/mappers/app_file_mapper.dart';
 import 'package:app/features/contract/data/dtos/contract_dto.dart';
+import 'package:app/features/contract/data/mappers/contract_document_mapper.dart';
 import 'package:app/features/contract/data/mappers/contract_note_mapper.dart';
 import 'package:app/features/contract/data/mappers/payment_schedule_mapper.dart';
 import 'package:app/features/contract/domain/entities/contract.dart';
@@ -47,8 +48,15 @@ class ContractMapper {
       paymentSchedules: dto.paymentSchedules != null
           ? PaymentScheduleMapper.toEntityList(dto.paymentSchedules!)
           : null,
+      contractDocuments: dto.contractDocuments != null
+          ? ContractDocumentMapper.toEntityList(dto.contractDocuments!)
+          : null,
+      latestContractDocument: dto.latestContractDocument != null
+          ? ContractDocumentMapper.toEntity(dto.latestContractDocument!)
+          : null,
       startDate: dto.startDate,
       endDate: dto.endDate,
+      isDocumentAccepted: dto.isDocumentAccepted == 1,
       createdAt: dto.createdAt,
       updatedAt: dto.updatedAt,
     );

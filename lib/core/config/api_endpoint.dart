@@ -61,4 +61,7 @@ class ApiEndpoint {
   static const String getContractById = '/contracts/{id}';
   static const String storeContractPaymentProof =
       '/contracts/{contract}/payment-proofs';
+  static const String getContractDocument = '/contracts/{contract}/email-pdf';
+  static const String sendContractDocument = '/contracts/{contract}/send-contract-document';
+  static const String uploadContractDocument = '/contracts/{contract}/documents';
 }

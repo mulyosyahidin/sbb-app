@@ -3,7 +3,9 @@ import 'package:app/core/networks/dio_client.dart';
 import 'package:app/core/utils/logger_util.dart';
 import 'package:app/features/contract/data/dtos/requests/save_draft_request_dto.dart';
 import 'package:app/features/contract/data/dtos/requests/store_payment_proof_request_dto.dart';
+import 'package:app/features/contract/data/dtos/requests/upload_contract_document_request_dto.dart';
 import 'package:app/features/contract/data/dtos/responses/check_draft_response_dto.dart';
+import 'package:app/features/contract/data/dtos/responses/contract_document_response_dto.dart';
 import 'package:app/features/contract/data/dtos/responses/get_contract_response_dto.dart';
 import 'package:app/features/contract/data/dtos/responses/get_draft_contract_response_dto.dart';
 import 'package:app/features/contract/data/dtos/responses/get_contracts_response_dto.dart';
@@ -24,6 +26,13 @@ abstract class ContractRemoteDataSource {
   Future<StorePaymentProofResponseDto> storePaymentProof({
     required int contractId,
     required StorePaymentProofRequestDto request,
+  });
+  Future<ContractDocumentResponseDto> sendContractDocument({
+    required int contractId,
+  });
+  Future<ContractDocumentResponseDto> uploadContractDocument({
+    required int contractId,
+    required UploadContractDocumentRequestDto request,
   });
   Future<GetContractsResponseDto> getContracts({int page = 1, String? status});
 }
@@ -256,6 +265,77 @@ class ContractRemoteDataSourceImpl implements ContractRemoteDataSource {
     }
 
     throw Exception('Gagal mengunggah bukti pembayaran');
+  }
+
+  @override
+  Future<ContractDocumentResponseDto> sendContractDocument({
+    required int contractId,
+  }) async {
+    final endpoint = ApiEndpoint.sendContractDocument.replaceAll(
+      '{contract}',
+      contractId.toString(),
+    );
+    ContractDocumentResponseDto? responseDto;
+
+    try {
+      LoggerUtil.api("POST", endpoint);
+      final response = await _dio.post(endpoint);
+      responseDto = ContractDocumentResponseDto.fromJson(response.data);
+    } on DioException catch (e) {
+      LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
+      if (e.response != null) {
+        responseDto = ContractDocumentResponseDto.fromJson(e.response!.data);
+      }
+    }
+
+    if (responseDto != null) {
+      if (responseDto.success) {
+        return responseDto;
+      } else {
+        throw responseDto.toException();
+      }
+    }
+
+    throw Exception('Gagal mengirim dokumen kontrak');
+  }
+
+  @override
+  Future<ContractDocumentResponseDto> uploadContractDocument({
+    required int contractId,
+    required UploadContractDocumentRequestDto request,
+  }) async {
+    final endpoint = ApiEndpoint.uploadContractDocument.replaceAll(
+      '{contract}',
+      contractId.toString(),
+    );
+    ContractDocumentResponseDto? responseDto;
+
+    try {
+      LoggerUtil.api("POST", endpoint);
+
+      final response = await _dio.post(
+        endpoint,
+        data: FormData.fromMap({
+          'file': await MultipartFile.fromFile(request.file.path),
+        }),
+      );
+      responseDto = ContractDocumentResponseDto.fromJson(response.data);
+    } on DioException catch (e) {
+      LoggerUtil.error("Api Error on endpoint $endpoint: ${e.message}");
+      if (e.response != null) {
+        responseDto = ContractDocumentResponseDto.fromJson(e.response!.data);
+      }
+    }
+
+    if (responseDto != null) {
+      if (responseDto.success) {
+        return responseDto;
+      } else {
+        throw responseDto.toException();
+      }
+    }
+
+    throw Exception('Gagal mengunggah dokumen kontrak');
   }
 }
 

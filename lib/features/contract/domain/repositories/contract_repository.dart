@@ -1,6 +1,7 @@
 import 'package:app/core/errors/failure.dart';
 import 'package:app/features/contract/data/dtos/requests/save_draft_request_dto.dart';
 import 'package:app/features/contract/data/dtos/requests/store_payment_proof_request_dto.dart';
+import 'package:app/features/contract/data/dtos/requests/upload_contract_document_request_dto.dart';
 import 'package:app/features/contract/data/dtos/responses/get_contract_response_dto.dart';
 import 'package:app/features/contract/data/dtos/responses/get_contracts_response_dto.dart';
 import 'package:app/features/contract/data/dtos/responses/get_draft_contract_response_dto.dart';
@@ -19,6 +20,13 @@ abstract class ContractRepository {
   Future<Either<Failure, StorePaymentProofResponseData>> storePaymentProof({
     required int contractId,
     required StorePaymentProofRequestDto request,
+  });
+  Future<Either<Failure, String>> sendContractDocument({
+    required int contractId,
+  });
+  Future<Either<Failure, String>> uploadContractDocument({
+    required int contractId,
+    required UploadContractDocumentRequestDto request,
   });
   Future<Either<Failure, GetContractsResponseData>> getContracts({
     int page = 1,

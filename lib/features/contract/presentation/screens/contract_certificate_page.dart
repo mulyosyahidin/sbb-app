@@ -1,6 +1,8 @@
 import 'package:app/core/errors/failure.dart';
 import 'package:app/core/theme/app_text_style.dart';
+import 'package:app/core/utils/toast_util.dart';
 import 'package:app/features/contract/application/contract_detail_controller.dart';
+import 'package:app/features/contract/application/contract_document_controller.dart';
 import 'package:app/features/contract/domain/entities/contract.dart';
 import 'package:app/shared/widgets/app_bar_header.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +36,7 @@ class ContractCertificatePage extends ConsumerWidget {
   }
 }
 
-class _ContractCertificateContent extends StatelessWidget {
+class _ContractCertificateContent extends ConsumerWidget {
   final Contract contract;
 
   const _ContractCertificateContent({
@@ -54,7 +56,20 @@ class _ContractCertificateContent extends StatelessWidget {
   );
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen(contractDocumentControllerProvider, (previous, next) {
+      if (next is AsyncError) {
+        final error = next.error;
+        ToastUtil.showError(
+          context,
+          title: 'Gagal',
+          description: error is Failure ? error.message : error.toString(),
+        );
+      }
+    });
+
+    final documentState = ref.watch(contractDocumentControllerProvider);
+
     return Scaffold(
       backgroundColor: _pageBackground,
       body: SafeArea(
@@ -84,7 +99,11 @@ class _ContractCertificateContent extends StatelessWidget {
                     const SizedBox(height: 12),
                     _buildLegalNotice(context),
                     const SizedBox(height: 16),
-                    _buildActions(context),
+                    _buildActions(
+                      context,
+                      ref,
+                      isLoading: documentState.isLoading,
+                    ),
                   ],
                 ),
               ),
@@ -408,29 +427,38 @@ class _ContractCertificateContent extends StatelessWidget {
     );
   }
 
-  Widget _buildActions(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: _buildActionButton(
-            context,
-            label: 'Unduh PDF',
-            icon: Icons.file_download_outlined,
-            foregroundColor: Theme.of(context).colorScheme.onSurface,
-            backgroundColor: Colors.white,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildActionButton(
-            context,
-            label: 'Bagikan',
-            icon: Icons.share_outlined,
-            foregroundColor: Colors.white,
-            backgroundColor: _green,
-          ),
-        ),
-      ],
+  Widget _buildActions(
+    BuildContext context,
+    WidgetRef ref, {
+    required bool isLoading,
+  }) {
+    return _buildActionButton(
+      context,
+      label: 'Unduh PDF',
+      icon: Icons.file_download_outlined,
+      foregroundColor: Theme.of(context).colorScheme.onSurface,
+      backgroundColor: Colors.white,
+      isLoading: isLoading,
+      onPressed: contract.isDocumentAccepted && !isLoading
+          ? () => _sendContractDocument(context, ref)
+          : null,
+    );
+  }
+
+  Future<void> _sendContractDocument(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final message = await ref
+        .read(contractDocumentControllerProvider.notifier)
+        .sendContractDocument(contractId: contract.id);
+
+    if (!context.mounted || message == null) return;
+
+    ToastUtil.showSuccess(
+      context,
+      title: 'Berhasil',
+      description: message,
     );
   }
 
@@ -440,16 +468,20 @@ class _ContractCertificateContent extends StatelessWidget {
     required IconData icon,
     required Color foregroundColor,
     required Color backgroundColor,
+    required VoidCallback? onPressed,
+    bool isLoading = false,
   }) {
     return SizedBox(
       height: 52,
       child: ElevatedButton.icon(
-        onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('$label belum tersedia.')),
-          );
-        },
-        icon: Icon(icon, size: 18),
+        onPressed: onPressed,
+        icon: isLoading
+            ? const SizedBox(
+                width: 18,
+                height: 18,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : Icon(icon, size: 18),
         label: Text(label),
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,

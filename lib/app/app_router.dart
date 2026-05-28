@@ -11,6 +11,7 @@ import 'package:app/features/auth/register/presentation/screens/register_page.da
 import 'package:app/features/contract/domain/entities/contract.dart';
 import 'package:app/features/contract/presentation/screens/contract_certificate_page.dart';
 import 'package:app/features/contract/presentation/screens/contract_create_page.dart';
+import 'package:app/features/contract/presentation/screens/contract_document_upload_page.dart';
 import 'package:app/features/contract/presentation/screens/contract_payment_page.dart';
 import 'package:app/features/contract/presentation/screens/contract_payment_schedules_page.dart';
 import 'package:app/features/contract/presentation/screens/contract_preview_page.dart';
@@ -55,6 +56,7 @@ class Routes {
   static const cowCatalog = "/contract/catalog";
   static const contractDetail = "/contract/:id";
   static const contractPayment = "/contract/:id/payment";
+  static const contractDocumentUpload = "/contract/:id/document-upload";
   static const contractPaymentSchedules = "/contract/:id/payment-schedules";
   static const contractCertificate = "/contract/:id/certificate";
   static const profit = "/profit";
@@ -82,6 +84,7 @@ class Routes {
     cowCatalog,
     contractDetail,
     contractPayment,
+    contractDocumentUpload,
     contractPaymentSchedules,
     contractCertificate,
     profit,
@@ -229,6 +232,12 @@ GoRouter router(Ref ref) {
                   GoRoute(
                     path: ':id/payment',
                     builder: (context, state) => ContractPaymentPage(
+                      contractId: state.pathParameters['id'] ?? '',
+                    ),
+                  ),
+                  GoRoute(
+                    path: ':id/document-upload',
+                    builder: (context, state) => ContractDocumentUploadPage(
                       contractId: state.pathParameters['id'] ?? '',
                     ),
                   ),

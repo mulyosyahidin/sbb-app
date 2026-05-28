@@ -59,8 +59,12 @@ mixin _$ContractDto {
   @JsonKey(readValue: _readLatestNote)
   ContractNoteDto? get latestNote;
   List<PaymentScheduleDto>? get paymentSchedules;
+  List<ContractDocumentDto>? get contractDocuments;
+  ContractDocumentDto? get latestContractDocument;
   DateTime? get startDate;
   DateTime? get endDate;
+  @IntStringConverter()
+  int get isDocumentAccepted;
   DateTime get createdAt;
   DateTime get updatedAt;
 
@@ -130,9 +134,15 @@ mixin _$ContractDto {
                 other.latestNote == latestNote) &&
             const DeepCollectionEquality()
                 .equals(other.paymentSchedules, paymentSchedules) &&
+            const DeepCollectionEquality()
+                .equals(other.contractDocuments, contractDocuments) &&
+            (identical(other.latestContractDocument, latestContractDocument) ||
+                other.latestContractDocument == latestContractDocument) &&
             (identical(other.startDate, startDate) ||
                 other.startDate == startDate) &&
             (identical(other.endDate, endDate) || other.endDate == endDate) &&
+            (identical(other.isDocumentAccepted, isDocumentAccepted) ||
+                other.isDocumentAccepted == isDocumentAccepted) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -172,15 +182,18 @@ mixin _$ContractDto {
         const DeepCollectionEquality().hash(notes),
         latestNote,
         const DeepCollectionEquality().hash(paymentSchedules),
+        const DeepCollectionEquality().hash(contractDocuments),
+        latestContractDocument,
         startDate,
         endDate,
+        isDocumentAccepted,
         createdAt,
         updatedAt
       ]);
 
   @override
   String toString() {
-    return 'ContractDto(id: $id, contractNumber: $contractNumber, userId: $userId, userName: $userName, userIdentityNumber: $userIdentityNumber, address: $address, userIdentityNumberFileId: $userIdentityNumberFileId, userIdentityNumberFile: $userIdentityNumberFile, cowId: $cowId, cowImageFileId: $cowImageFileId, cowName: $cowName, cowPrice: $cowPrice, cowWeightKg: $cowWeightKg, cowQuantity: $cowQuantity, cowTotalPrice: $cowTotalPrice, bankAccountId: $bankAccountId, bankName: $bankName, bankAccountName: $bankAccountName, bankAccountNumber: $bankAccountNumber, program: $program, contractMonthDuration: $contractMonthDuration, status: $status, note: $note, profitSharingPercentage: $profitSharingPercentage, totalProfitPaid: $totalProfitPaid, totalProfitPaidMonths: $totalProfitPaidMonths, notes: $notes, latestNote: $latestNote, paymentSchedules: $paymentSchedules, startDate: $startDate, endDate: $endDate, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'ContractDto(id: $id, contractNumber: $contractNumber, userId: $userId, userName: $userName, userIdentityNumber: $userIdentityNumber, address: $address, userIdentityNumberFileId: $userIdentityNumberFileId, userIdentityNumberFile: $userIdentityNumberFile, cowId: $cowId, cowImageFileId: $cowImageFileId, cowName: $cowName, cowPrice: $cowPrice, cowWeightKg: $cowWeightKg, cowQuantity: $cowQuantity, cowTotalPrice: $cowTotalPrice, bankAccountId: $bankAccountId, bankName: $bankName, bankAccountName: $bankAccountName, bankAccountNumber: $bankAccountNumber, program: $program, contractMonthDuration: $contractMonthDuration, status: $status, note: $note, profitSharingPercentage: $profitSharingPercentage, totalProfitPaid: $totalProfitPaid, totalProfitPaidMonths: $totalProfitPaidMonths, notes: $notes, latestNote: $latestNote, paymentSchedules: $paymentSchedules, contractDocuments: $contractDocuments, latestContractDocument: $latestContractDocument, startDate: $startDate, endDate: $endDate, isDocumentAccepted: $isDocumentAccepted, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }
 
@@ -220,13 +233,17 @@ abstract mixin class $ContractDtoCopyWith<$Res> {
       List<ContractNoteDto>? notes,
       @JsonKey(readValue: _readLatestNote) ContractNoteDto? latestNote,
       List<PaymentScheduleDto>? paymentSchedules,
+      List<ContractDocumentDto>? contractDocuments,
+      ContractDocumentDto? latestContractDocument,
       DateTime? startDate,
       DateTime? endDate,
+      @IntStringConverter() int isDocumentAccepted,
       DateTime createdAt,
       DateTime updatedAt});
 
   $AppFileDtoCopyWith<$Res>? get userIdentityNumberFile;
   $ContractNoteDtoCopyWith<$Res>? get latestNote;
+  $ContractDocumentDtoCopyWith<$Res>? get latestContractDocument;
 }
 
 /// @nodoc
@@ -270,8 +287,11 @@ class _$ContractDtoCopyWithImpl<$Res> implements $ContractDtoCopyWith<$Res> {
     Object? notes = freezed,
     Object? latestNote = freezed,
     Object? paymentSchedules = freezed,
+    Object? contractDocuments = freezed,
+    Object? latestContractDocument = freezed,
     Object? startDate = freezed,
     Object? endDate = freezed,
+    Object? isDocumentAccepted = null,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -392,6 +412,14 @@ class _$ContractDtoCopyWithImpl<$Res> implements $ContractDtoCopyWith<$Res> {
           ? _self.paymentSchedules
           : paymentSchedules // ignore: cast_nullable_to_non_nullable
               as List<PaymentScheduleDto>?,
+      contractDocuments: freezed == contractDocuments
+          ? _self.contractDocuments
+          : contractDocuments // ignore: cast_nullable_to_non_nullable
+              as List<ContractDocumentDto>?,
+      latestContractDocument: freezed == latestContractDocument
+          ? _self.latestContractDocument
+          : latestContractDocument // ignore: cast_nullable_to_non_nullable
+              as ContractDocumentDto?,
       startDate: freezed == startDate
           ? _self.startDate
           : startDate // ignore: cast_nullable_to_non_nullable
@@ -400,6 +428,10 @@ class _$ContractDtoCopyWithImpl<$Res> implements $ContractDtoCopyWith<$Res> {
           ? _self.endDate
           : endDate // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      isDocumentAccepted: null == isDocumentAccepted
+          ? _self.isDocumentAccepted
+          : isDocumentAccepted // ignore: cast_nullable_to_non_nullable
+              as int,
       createdAt: null == createdAt
           ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -438,6 +470,21 @@ class _$ContractDtoCopyWithImpl<$Res> implements $ContractDtoCopyWith<$Res> {
       return _then(_self.copyWith(latestNote: value));
     });
   }
+
+  /// Create a copy of ContractDto
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $ContractDocumentDtoCopyWith<$Res>? get latestContractDocument {
+    if (_self.latestContractDocument == null) {
+      return null;
+    }
+
+    return $ContractDocumentDtoCopyWith<$Res>(_self.latestContractDocument!,
+        (value) {
+      return _then(_self.copyWith(latestContractDocument: value));
+    });
+  }
 }
 
 /// @nodoc
@@ -473,12 +520,16 @@ class _ContractDto implements ContractDto {
       final List<ContractNoteDto>? notes,
       @JsonKey(readValue: _readLatestNote) this.latestNote,
       final List<PaymentScheduleDto>? paymentSchedules,
+      final List<ContractDocumentDto>? contractDocuments,
+      this.latestContractDocument,
       this.startDate,
       this.endDate,
+      @IntStringConverter() required this.isDocumentAccepted,
       required this.createdAt,
       required this.updatedAt})
       : _notes = notes,
-        _paymentSchedules = paymentSchedules;
+        _paymentSchedules = paymentSchedules,
+        _contractDocuments = contractDocuments;
   factory _ContractDto.fromJson(Map<String, dynamic> json) =>
       _$ContractDtoFromJson(json);
 
@@ -572,10 +623,26 @@ class _ContractDto implements ContractDto {
     return EqualUnmodifiableListView(value);
   }
 
+  final List<ContractDocumentDto>? _contractDocuments;
+  @override
+  List<ContractDocumentDto>? get contractDocuments {
+    final value = _contractDocuments;
+    if (value == null) return null;
+    if (_contractDocuments is EqualUnmodifiableListView)
+      return _contractDocuments;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  @override
+  final ContractDocumentDto? latestContractDocument;
   @override
   final DateTime? startDate;
   @override
   final DateTime? endDate;
+  @override
+  @IntStringConverter()
+  final int isDocumentAccepted;
   @override
   final DateTime createdAt;
   @override
@@ -652,9 +719,15 @@ class _ContractDto implements ContractDto {
                 other.latestNote == latestNote) &&
             const DeepCollectionEquality()
                 .equals(other._paymentSchedules, _paymentSchedules) &&
+            const DeepCollectionEquality()
+                .equals(other._contractDocuments, _contractDocuments) &&
+            (identical(other.latestContractDocument, latestContractDocument) ||
+                other.latestContractDocument == latestContractDocument) &&
             (identical(other.startDate, startDate) ||
                 other.startDate == startDate) &&
             (identical(other.endDate, endDate) || other.endDate == endDate) &&
+            (identical(other.isDocumentAccepted, isDocumentAccepted) ||
+                other.isDocumentAccepted == isDocumentAccepted) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -694,15 +767,18 @@ class _ContractDto implements ContractDto {
         const DeepCollectionEquality().hash(_notes),
         latestNote,
         const DeepCollectionEquality().hash(_paymentSchedules),
+        const DeepCollectionEquality().hash(_contractDocuments),
+        latestContractDocument,
         startDate,
         endDate,
+        isDocumentAccepted,
         createdAt,
         updatedAt
       ]);
 
   @override
   String toString() {
-    return 'ContractDto(id: $id, contractNumber: $contractNumber, userId: $userId, userName: $userName, userIdentityNumber: $userIdentityNumber, address: $address, userIdentityNumberFileId: $userIdentityNumberFileId, userIdentityNumberFile: $userIdentityNumberFile, cowId: $cowId, cowImageFileId: $cowImageFileId, cowName: $cowName, cowPrice: $cowPrice, cowWeightKg: $cowWeightKg, cowQuantity: $cowQuantity, cowTotalPrice: $cowTotalPrice, bankAccountId: $bankAccountId, bankName: $bankName, bankAccountName: $bankAccountName, bankAccountNumber: $bankAccountNumber, program: $program, contractMonthDuration: $contractMonthDuration, status: $status, note: $note, profitSharingPercentage: $profitSharingPercentage, totalProfitPaid: $totalProfitPaid, totalProfitPaidMonths: $totalProfitPaidMonths, notes: $notes, latestNote: $latestNote, paymentSchedules: $paymentSchedules, startDate: $startDate, endDate: $endDate, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'ContractDto(id: $id, contractNumber: $contractNumber, userId: $userId, userName: $userName, userIdentityNumber: $userIdentityNumber, address: $address, userIdentityNumberFileId: $userIdentityNumberFileId, userIdentityNumberFile: $userIdentityNumberFile, cowId: $cowId, cowImageFileId: $cowImageFileId, cowName: $cowName, cowPrice: $cowPrice, cowWeightKg: $cowWeightKg, cowQuantity: $cowQuantity, cowTotalPrice: $cowTotalPrice, bankAccountId: $bankAccountId, bankName: $bankName, bankAccountName: $bankAccountName, bankAccountNumber: $bankAccountNumber, program: $program, contractMonthDuration: $contractMonthDuration, status: $status, note: $note, profitSharingPercentage: $profitSharingPercentage, totalProfitPaid: $totalProfitPaid, totalProfitPaidMonths: $totalProfitPaidMonths, notes: $notes, latestNote: $latestNote, paymentSchedules: $paymentSchedules, contractDocuments: $contractDocuments, latestContractDocument: $latestContractDocument, startDate: $startDate, endDate: $endDate, isDocumentAccepted: $isDocumentAccepted, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 }
 
@@ -744,8 +820,11 @@ abstract mixin class _$ContractDtoCopyWith<$Res>
       List<ContractNoteDto>? notes,
       @JsonKey(readValue: _readLatestNote) ContractNoteDto? latestNote,
       List<PaymentScheduleDto>? paymentSchedules,
+      List<ContractDocumentDto>? contractDocuments,
+      ContractDocumentDto? latestContractDocument,
       DateTime? startDate,
       DateTime? endDate,
+      @IntStringConverter() int isDocumentAccepted,
       DateTime createdAt,
       DateTime updatedAt});
 
@@ -753,6 +832,8 @@ abstract mixin class _$ContractDtoCopyWith<$Res>
   $AppFileDtoCopyWith<$Res>? get userIdentityNumberFile;
   @override
   $ContractNoteDtoCopyWith<$Res>? get latestNote;
+  @override
+  $ContractDocumentDtoCopyWith<$Res>? get latestContractDocument;
 }
 
 /// @nodoc
@@ -796,8 +877,11 @@ class __$ContractDtoCopyWithImpl<$Res> implements _$ContractDtoCopyWith<$Res> {
     Object? notes = freezed,
     Object? latestNote = freezed,
     Object? paymentSchedules = freezed,
+    Object? contractDocuments = freezed,
+    Object? latestContractDocument = freezed,
     Object? startDate = freezed,
     Object? endDate = freezed,
+    Object? isDocumentAccepted = null,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -918,6 +1002,14 @@ class __$ContractDtoCopyWithImpl<$Res> implements _$ContractDtoCopyWith<$Res> {
           ? _self._paymentSchedules
           : paymentSchedules // ignore: cast_nullable_to_non_nullable
               as List<PaymentScheduleDto>?,
+      contractDocuments: freezed == contractDocuments
+          ? _self._contractDocuments
+          : contractDocuments // ignore: cast_nullable_to_non_nullable
+              as List<ContractDocumentDto>?,
+      latestContractDocument: freezed == latestContractDocument
+          ? _self.latestContractDocument
+          : latestContractDocument // ignore: cast_nullable_to_non_nullable
+              as ContractDocumentDto?,
       startDate: freezed == startDate
           ? _self.startDate
           : startDate // ignore: cast_nullable_to_non_nullable
@@ -926,6 +1018,10 @@ class __$ContractDtoCopyWithImpl<$Res> implements _$ContractDtoCopyWith<$Res> {
           ? _self.endDate
           : endDate // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      isDocumentAccepted: null == isDocumentAccepted
+          ? _self.isDocumentAccepted
+          : isDocumentAccepted // ignore: cast_nullable_to_non_nullable
+              as int,
       createdAt: null == createdAt
           ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -962,6 +1058,21 @@ class __$ContractDtoCopyWithImpl<$Res> implements _$ContractDtoCopyWith<$Res> {
 
     return $ContractNoteDtoCopyWith<$Res>(_self.latestNote!, (value) {
       return _then(_self.copyWith(latestNote: value));
+    });
+  }
+
+  /// Create a copy of ContractDto
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $ContractDocumentDtoCopyWith<$Res>? get latestContractDocument {
+    if (_self.latestContractDocument == null) {
+      return null;
+    }
+
+    return $ContractDocumentDtoCopyWith<$Res>(_self.latestContractDocument!,
+        (value) {
+      return _then(_self.copyWith(latestContractDocument: value));
     });
   }
 }

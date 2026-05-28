@@ -1,4 +1,5 @@
 import 'package:app/core/domain/entities/app_file.dart';
+import 'package:app/features/contract/domain/entities/contract_document.dart';
 import 'package:app/features/contract/domain/entities/contract_note.dart';
 import 'package:app/features/contract/domain/entities/contract_program.dart';
 import 'package:app/features/contract/domain/entities/contract_status.dart';
@@ -35,8 +36,11 @@ class Contract extends Equatable {
   final List<ContractNote>? notes;
   final ContractNote? latestNote;
   final List<PaymentSchedule>? paymentSchedules;
+  final List<ContractDocument>? contractDocuments;
+  final ContractDocument? latestContractDocument;
   final DateTime? startDate;
   final DateTime? endDate;
+  final bool isDocumentAccepted;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -70,10 +74,13 @@ class Contract extends Equatable {
     this.notes,
     this.latestNote,
     this.paymentSchedules,
+    this.contractDocuments,
+    this.latestContractDocument,
     this.startDate,
     this.endDate,
     required this.createdAt,
     required this.updatedAt,
+    required this.isDocumentAccepted,
   });
 
   @override
@@ -107,8 +114,11 @@ class Contract extends Equatable {
         notes,
         latestNote,
         paymentSchedules,
+        contractDocuments,
+        latestContractDocument,
         startDate,
         endDate,
+        isDocumentAccepted,
         createdAt,
         updatedAt,
       ];
