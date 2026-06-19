@@ -35,11 +35,15 @@ class BankAccountCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+            width: 0.5,
+          ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
+              color: Theme.of(context).shadowColor.withValues(alpha: 0.06),
               blurRadius: 14,
               offset: const Offset(0, 6),
             ),
@@ -66,7 +70,9 @@ class BankAccountCard extends StatelessWidget {
                       width: 42,
                       height: 42,
                       decoration: BoxDecoration(
-                        color: _softGreen,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? _green.withValues(alpha: 0.15)
+                            : _softGreen,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(
@@ -108,7 +114,9 @@ class BankAccountCard extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: _softGreen,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? _green.withValues(alpha: 0.15)
+                              : _softGreen,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Row(
@@ -173,7 +181,9 @@ class BankAccountCard extends StatelessWidget {
                             onPressed: isProcessing ? null : onSetPrimary,
                             style: OutlinedButton.styleFrom(
                               foregroundColor: _green,
-                              backgroundColor: _softGreen,
+                              backgroundColor: Theme.of(context).brightness == Brightness.dark
+                                  ? _green.withValues(alpha: 0.15)
+                                  : _softGreen,
                               side: BorderSide(
                                 color: _green.withValues(alpha: 0.18),
                                 width: 0.5,

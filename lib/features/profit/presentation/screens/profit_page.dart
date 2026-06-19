@@ -20,7 +20,6 @@ class ProfitPage extends ConsumerWidget {
   static const _tileGreen = Color(0xFF3E8445);
   static const _softGreen = Color(0xFFE9F6DF);
   static const _gold = Color(0xFFD3AB35);
-  static const _pageBackground = Color(0xFFF5F0E6);
 
   static final _currencyFormat = NumberFormat.currency(
     locale: 'id_ID',
@@ -33,7 +32,6 @@ class ProfitPage extends ConsumerWidget {
     final profitState = ref.watch(profitControllerProvider);
 
     return Scaffold(
-      backgroundColor: _pageBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -250,7 +248,7 @@ class ProfitPage extends ConsumerWidget {
 
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: _whiteCardDecoration(),
+      decoration: _whiteCardDecoration(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -292,7 +290,12 @@ class ProfitPage extends ConsumerWidget {
                           constraints: const BoxConstraints(maxWidth: 32),
                           height: item.totalPaid <= 0 ? 8 : barHeight,
                           decoration: BoxDecoration(
-                            color: isHighlight ? _green : _softGreen,
+                            color: isHighlight
+                                ? _green
+                                : (Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? _green.withValues(alpha: 0.15)
+                                    : _softGreen),
                             borderRadius: BorderRadius.circular(6),
                           ),
                         ),
@@ -322,7 +325,7 @@ class ProfitPage extends ConsumerWidget {
   ) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: _whiteCardDecoration(),
+      decoration: _whiteCardDecoration(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -370,7 +373,9 @@ class ProfitPage extends ConsumerWidget {
                   width: 38,
                   height: 38,
                   decoration: BoxDecoration(
-                    color: _softGreen,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? _green.withValues(alpha: 0.15)
+                        : _softGreen,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Icon(
@@ -481,7 +486,7 @@ class ProfitPage extends ConsumerWidget {
         padding: const EdgeInsets.all(16),
         child: Container(
           padding: const EdgeInsets.all(18),
-          decoration: _whiteCardDecoration(),
+          decoration: _whiteCardDecoration(context),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -535,13 +540,17 @@ class ProfitPage extends ConsumerWidget {
     }
   }
 
-  BoxDecoration _whiteCardDecoration() {
+  BoxDecoration _whiteCardDecoration(BuildContext context) {
     return BoxDecoration(
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.surface,
       borderRadius: BorderRadius.circular(14),
+      border: Border.all(
+        color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+        width: 0.5,
+      ),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withValues(alpha: 0.06),
+          color: Theme.of(context).shadowColor.withValues(alpha: 0.06),
           blurRadius: 14,
           offset: const Offset(0, 6),
         ),
@@ -578,8 +587,12 @@ class _ProfitSummarySkeleton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+            width: 0.5,
+          ),
         ),
         child: const Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -624,8 +637,12 @@ class _ProfitChartSkeleton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+            width: 0.5,
+          ),
         ),
         child: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -692,8 +709,12 @@ class _ProfitHistorySkeleton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+            width: 0.5,
+          ),
         ),
         child: const Column(
           children: [

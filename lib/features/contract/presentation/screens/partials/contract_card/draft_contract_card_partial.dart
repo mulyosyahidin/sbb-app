@@ -32,7 +32,7 @@ class DraftContractCardPartial extends StatelessWidget {
           border: Border.all(color: colorScheme.outline),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.02),
+              color: Theme.of(context).shadowColor.withValues(alpha: 0.02),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -105,9 +105,8 @@ class DraftContractCardPartial extends StatelessWidget {
   }
 
   Widget _buildDraftBadge(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final color = isDark ? colorScheme.outline : Colors.grey;
+    final color = isDark ? Colors.grey[400]! : Colors.grey;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),

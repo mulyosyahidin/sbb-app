@@ -77,11 +77,15 @@ class HomeMenuGrid extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+                width: 0.5,
+              ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
+                  color: Theme.of(context).shadowColor.withValues(alpha: 0.05),
                   blurRadius: 14,
                   offset: const Offset(0, 6),
                 ),

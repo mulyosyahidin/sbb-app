@@ -29,7 +29,6 @@ class ActiveContractDetailPartial extends ConsumerWidget {
   static const _darkGreen = Color(0xFF155B24);
   static const _tileGreen = Color(0xFF3E8445);
   static const _gold = Color(0xFFD3AB35);
-  static const _pageBackground = Color(0xFFF5F0E6);
   static const _documentStatusAccepted = 'Diterima';
   static const _documentStatusRejected = 'Ditolak';
 
@@ -49,7 +48,6 @@ class ActiveContractDetailPartial extends ConsumerWidget {
     final documentState = ref.watch(contractDocumentControllerProvider);
 
     return Scaffold(
-      backgroundColor: _pageBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -335,14 +333,16 @@ class ActiveContractDetailPartial extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF8E1),
+        color: Theme.of(context).brightness == Brightness.dark
+            ? _gold.withValues(alpha: 0.1)
+            : const Color(0xFFFFF8E1),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: _gold.withValues(alpha: 0.38),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.04),
             blurRadius: 12,
             offset: const Offset(0, 5),
           ),
@@ -358,7 +358,7 @@ class ActiveContractDetailPartial extends ConsumerWidget {
                 width: 38,
                 height: 38,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Icon(
@@ -388,7 +388,7 @@ class ActiveContractDetailPartial extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: _gold.withValues(alpha: 0.28),
@@ -536,7 +536,8 @@ class ActiveContractDetailPartial extends ConsumerWidget {
             label: 'Jadwal Pembayaran',
             icon: Icons.event_note_rounded,
             foregroundColor: Theme.of(context).colorScheme.onSurface,
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            isOutlined: true,
             onPressed: () => context.push(
               Routes.contractPaymentSchedules.replaceAll(
                 ':id',
@@ -612,6 +613,7 @@ class ActiveContractDetailPartial extends ConsumerWidget {
     required Color foregroundColor,
     required Color backgroundColor,
     required VoidCallback onPressed,
+    bool isOutlined = false,
   }) {
     return SizedBox(
       height: 52,
@@ -625,8 +627,16 @@ class ActiveContractDetailPartial extends ConsumerWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
           foregroundColor: foregroundColor,
-          elevation: backgroundColor == Colors.white ? 0 : 2,
+          elevation: isOutlined ? 0 : 2,
           shadowColor: _green.withValues(alpha: 0.18),
+          side: isOutlined
+              ? BorderSide(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .outline
+                      .withValues(alpha: 0.5),
+                )
+              : BorderSide.none,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -649,11 +659,15 @@ class ActiveContractDetailPartial extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+          width: 0.5,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.06),
             blurRadius: 14,
             offset: const Offset(0, 6),
           ),

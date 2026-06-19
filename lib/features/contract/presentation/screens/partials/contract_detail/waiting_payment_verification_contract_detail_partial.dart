@@ -23,12 +23,10 @@ class WaitingPaymentVerificationContractDetailPartial extends StatelessWidget {
   static const _middleWarning = Color(0xFFD88911);
   static const _tileWarning = Color(0xFFE89B22);
   static const _gold = Color(0xFFD3AB35);
-  static const _pageBackground = Color(0xFFF5F0E6);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _pageBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -268,7 +266,7 @@ class WaitingPaymentVerificationContractDetailPartial extends StatelessWidget {
   }) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: _whiteCardDecoration(),
+      decoration: _whiteCardDecoration(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: children,
@@ -311,13 +309,17 @@ class WaitingPaymentVerificationContractDetailPartial extends StatelessWidget {
     );
   }
 
-  BoxDecoration _whiteCardDecoration() {
+  BoxDecoration _whiteCardDecoration(BuildContext context) {
     return BoxDecoration(
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.surface,
       borderRadius: BorderRadius.circular(14),
+      border: Border.all(
+        color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+        width: 0.5,
+      ),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withValues(alpha: 0.06),
+          color: Theme.of(context).shadowColor.withValues(alpha: 0.06),
           blurRadius: 14,
           offset: const Offset(0, 6),
         ),

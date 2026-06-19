@@ -10,10 +10,10 @@ class BankAccountSkeleton extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
             width: 0.5,
           ),
         ),
@@ -55,7 +55,7 @@ class BankAccountSkeleton extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: Container(
                 height: 1,
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.15),
               ),
             ),
 

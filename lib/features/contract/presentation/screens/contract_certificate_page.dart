@@ -46,7 +46,6 @@ class _ContractCertificateContent extends ConsumerWidget {
   static const _green = Color(0xFF1F6E2D);
   static const _softGreen = Color(0xFFE9F6DF);
   static const _gold = Color(0xFFD3AB35);
-  static const _pageBackground = Color(0xFFF5F0E6);
 
   static final _dateFormat = DateFormat('dd MMM yyyy', 'id_ID');
   static final _currencyFormat = NumberFormat.currency(
@@ -71,7 +70,6 @@ class _ContractCertificateContent extends ConsumerWidget {
     final documentState = ref.watch(contractDocumentControllerProvider);
 
     return Scaffold(
-      backgroundColor: _pageBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -398,9 +396,15 @@ class _ContractCertificateContent extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF7EF),
+        color: Theme.of(context).brightness == Brightness.dark
+            ? _gold.withValues(alpha: 0.1)
+            : const Color(0xFFFAF7EF),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFEAE0C8)),
+        border: Border.all(
+          color: Theme.of(context).brightness == Brightness.dark
+              ? _gold.withValues(alpha: 0.2)
+              : const Color(0xFFEAE0C8),
+        ),
       ),
       child: Column(
         children: [
@@ -437,7 +441,8 @@ class _ContractCertificateContent extends ConsumerWidget {
       label: 'Unduh PDF',
       icon: Icons.file_download_outlined,
       foregroundColor: Theme.of(context).colorScheme.onSurface,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      isOutlined: true,
       isLoading: isLoading,
       onPressed: contract.isDocumentAccepted && !isLoading
           ? () => _sendContractDocument(context, ref)
@@ -470,6 +475,7 @@ class _ContractCertificateContent extends ConsumerWidget {
     required Color backgroundColor,
     required VoidCallback? onPressed,
     bool isLoading = false,
+    bool isOutlined = false,
   }) {
     return SizedBox(
       height: 52,
@@ -486,8 +492,16 @@ class _ContractCertificateContent extends ConsumerWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
           foregroundColor: foregroundColor,
-          elevation: backgroundColor == Colors.white ? 0 : 2,
+          elevation: isOutlined ? 0 : 2,
           shadowColor: _green.withValues(alpha: 0.18),
+          side: isOutlined
+              ? BorderSide(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .outline
+                      .withValues(alpha: 0.5),
+                )
+              : BorderSide.none,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -551,11 +565,15 @@ class _ContractCertificateContent extends ConsumerWidget {
     return Container(
       padding: padding,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+          width: 0.5,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.06),
             blurRadius: 14,
             offset: const Offset(0, 6),
           ),

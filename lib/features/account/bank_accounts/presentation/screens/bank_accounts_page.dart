@@ -25,7 +25,6 @@ class _BankAccountsPageState extends ConsumerState<BankAccountsPage> {
   static const _green = Color(0xFF1F6E2D);
   static const _softGreen = Color(0xFFE9F6DF);
   static const _gold = Color(0xFFD3AB35);
-  static const _pageBackground = Color(0xFFF5F0E6);
 
   @override
   void initState() {
@@ -72,7 +71,6 @@ class _BankAccountsPageState extends ConsumerState<BankAccountsPage> {
     final hasQuery = _searchController.text.isNotEmpty;
 
     return Scaffold(
-      backgroundColor: _pageBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -89,11 +87,20 @@ class _BankAccountsPageState extends ConsumerState<BankAccountsPage> {
                     child: Container(
                       height: 48,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.surface,
                         borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .outline
+                              .withValues(alpha: 0.5),
+                          width: 0.5,
+                        ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.06),
+                            color: Theme.of(context)
+                                .shadowColor
+                                .withValues(alpha: 0.06),
                             blurRadius: 14,
                             offset: const Offset(0, 6),
                           ),
@@ -248,6 +255,7 @@ class _BankAccountsPageState extends ConsumerState<BankAccountsPage> {
                       height: MediaQuery.of(context).size.height * 0.6,
                       child: Center(
                         child: _buildWhiteCard(
+                          context: context,
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -301,6 +309,7 @@ class _BankAccountsPageState extends ConsumerState<BankAccountsPage> {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: _buildWhiteCard(
+          context: context,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -308,7 +317,9 @@ class _BankAccountsPageState extends ConsumerState<BankAccountsPage> {
                 width: 64,
                 height: 64,
                 decoration: BoxDecoration(
-                  color: _softGreen,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? _green.withValues(alpha: 0.15)
+                      : _softGreen,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Icon(
@@ -339,16 +350,21 @@ class _BankAccountsPageState extends ConsumerState<BankAccountsPage> {
     );
   }
 
-  Widget _buildWhiteCard({required Widget child}) {
+  Widget _buildWhiteCard(
+      {required BuildContext context, required Widget child}) {
     return Container(
       padding: const EdgeInsets.all(18),
       margin: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+          width: 0.5,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.06),
             blurRadius: 14,
             offset: const Offset(0, 6),
           ),

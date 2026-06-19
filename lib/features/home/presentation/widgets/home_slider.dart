@@ -132,7 +132,8 @@ class _HomeSliderState extends ConsumerState<HomeSlider> {
         height: 140,
         width: double.infinity,
         decoration: BoxDecoration(
-          color: Colors.grey[200],
+          color: colorScheme.surface,
+          border: Border.all(color: colorScheme.outline.withValues(alpha: 0.5)),
           borderRadius: BorderRadius.circular(16),
         ),
         child: const Center(

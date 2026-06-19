@@ -107,11 +107,15 @@ class AccountStatsRow extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+          width: 0.5,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.06),
             blurRadius: 14,
             offset: const Offset(0, 6),
           ),
@@ -122,8 +126,10 @@ class AccountStatsRow extends ConsumerWidget {
           Container(
             width: 34,
             height: 34,
-            decoration: const BoxDecoration(
-              color: _softGreen,
+            decoration: BoxDecoration(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? _green.withValues(alpha: 0.15)
+                  : _softGreen,
               shape: BoxShape.circle,
             ),
             child: Icon(

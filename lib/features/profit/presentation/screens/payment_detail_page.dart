@@ -25,7 +25,6 @@ class PaymentDetailPage extends ConsumerWidget {
   static const _tileGreen = Color(0xFF3E8445);
   static const _softGreen = Color(0xFFE9F6DF);
   static const _gold = Color(0xFFD3AB35);
-  static const _pageBackground = Color(0xFFF5F0E6);
 
   static final _currencyFormat = NumberFormat.currency(
     locale: 'id_ID',
@@ -40,7 +39,6 @@ class PaymentDetailPage extends ConsumerWidget {
     final profitState = ref.watch(profitControllerProvider);
 
     return Scaffold(
-      backgroundColor: _pageBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -271,7 +269,7 @@ class PaymentDetailPage extends ConsumerWidget {
   }) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: _whiteCardDecoration(),
+      decoration: _whiteCardDecoration(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -334,14 +332,16 @@ class PaymentDetailPage extends ConsumerWidget {
       borderRadius: BorderRadius.circular(14),
       child: Container(
         padding: const EdgeInsets.all(16),
-        decoration: _whiteCardDecoration(),
+        decoration: _whiteCardDecoration(context),
         child: Row(
           children: [
             Container(
               width: 42,
               height: 42,
               decoration: BoxDecoration(
-                color: _softGreen,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? _green.withValues(alpha: 0.15)
+                    : _softGreen,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
@@ -432,7 +432,7 @@ class PaymentDetailPage extends ConsumerWidget {
             label: 'Buka Bukti',
             icon: Icons.open_in_new_rounded,
             foregroundColor: Theme.of(context).colorScheme.onSurface,
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).colorScheme.surface,
             onPressed: history.paymentProofFile == null
                 ? null
                 : () => _openProof(context, history.paymentProofFile!.fileUrl),
@@ -477,10 +477,10 @@ class PaymentDetailPage extends ConsumerWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
           foregroundColor: foregroundColor,
-          disabledBackgroundColor: Colors.white.withValues(alpha: 0.55),
+          disabledBackgroundColor: Theme.of(context).colorScheme.surface.withValues(alpha: 0.55),
           disabledForegroundColor:
               Theme.of(context).colorScheme.onSurfaceVariant,
-          elevation: backgroundColor == Colors.white ? 0 : 2,
+          elevation: backgroundColor == Theme.of(context).colorScheme.surface ? 0 : 2,
           shadowColor: _green.withValues(alpha: 0.18),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -524,7 +524,7 @@ class PaymentDetailPage extends ConsumerWidget {
         padding: const EdgeInsets.all(16),
         child: Container(
           padding: const EdgeInsets.all(18),
-          decoration: _whiteCardDecoration(),
+          decoration: _whiteCardDecoration(context),
           child: Text(
             'Data pembayaran tidak ditemukan.',
             textAlign: TextAlign.center,
@@ -548,7 +548,7 @@ class PaymentDetailPage extends ConsumerWidget {
         padding: const EdgeInsets.all(16),
         child: Container(
           padding: const EdgeInsets.all(18),
-          decoration: _whiteCardDecoration(),
+          decoration: _whiteCardDecoration(context),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -606,13 +606,17 @@ class PaymentDetailPage extends ConsumerWidget {
     }
   }
 
-  BoxDecoration _whiteCardDecoration() {
+  BoxDecoration _whiteCardDecoration(BuildContext context) {
     return BoxDecoration(
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.surface,
       borderRadius: BorderRadius.circular(14),
+      border: Border.all(
+        color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+        width: 0.5,
+      ),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withValues(alpha: 0.06),
+          color: Theme.of(context).shadowColor.withValues(alpha: 0.06),
           blurRadius: 14,
           offset: const Offset(0, 6),
         ),
@@ -653,8 +657,12 @@ class _AmountHeroSkeleton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+            width: 0.5,
+          ),
         ),
         child: const Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -690,8 +698,12 @@ class _DetailSectionSkeleton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+            width: 0.5,
+          ),
         ),
         child: Column(
           children: [
@@ -752,8 +764,12 @@ class _ContractLinkSkeleton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+            width: 0.5,
+          ),
         ),
         child: const Row(
           children: [
@@ -786,8 +802,12 @@ class _ProofSectionSkeleton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+            width: 0.5,
+          ),
         ),
         child: const Column(
           children: [

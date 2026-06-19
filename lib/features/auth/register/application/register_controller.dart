@@ -32,7 +32,7 @@ class RegisterController extends _$RegisterController {
       final deviceId = await ref.read(fetchDeviceIdProvider.future);
       final details = await ref.read(fetchDeviceDetailsProvider.future);
 
-      if (fcmToken == null || deviceId == null) {
+      if (deviceId == null) {
         throw Exception('Failed to get required device information');
       }
 
@@ -41,7 +41,7 @@ class RegisterController extends _$RegisterController {
         email: email,
         password: password,
         passwordConfirmation: passwordConfirmation,
-        fcmToken: fcmToken,
+        fcmToken: fcmToken ?? FcmService.unavailableToken,
         deviceId: deviceId,
         deviceBrand: details['brand'] ?? 'Unknown',
         deviceModel: details['model'] ?? 'Unknown',

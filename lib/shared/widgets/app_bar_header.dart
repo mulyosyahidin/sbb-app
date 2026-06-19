@@ -68,7 +68,7 @@ class AppBarHeader extends StatelessWidget {
                             color: Theme.of(context).colorScheme.outline),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.03),
+                            color: Theme.of(context).shadowColor.withValues(alpha: 0.03),
                             blurRadius: 4,
                             offset: const Offset(0, 2),
                           ),

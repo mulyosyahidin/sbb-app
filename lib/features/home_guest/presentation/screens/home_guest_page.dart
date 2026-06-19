@@ -8,14 +8,12 @@ import 'package:flutter/material.dart';
 class HomeGuestPage extends StatelessWidget {
   const HomeGuestPage({super.key});
 
-  static const _pageBackground = Color(0xFFF5F0E6);
   static const _green = Color(0xFF1F6E2D);
   static const _gold = Color(0xFFD3AB35);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _pageBackground,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,11 +116,15 @@ class _GuestValueCard extends StatelessWidget {
       constraints: const BoxConstraints(minHeight: 156),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+          width: 0.5,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.05),
             blurRadius: 14,
             offset: const Offset(0, 6),
           ),

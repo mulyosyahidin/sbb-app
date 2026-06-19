@@ -27,6 +27,10 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 class FcmService {
+  static const unavailableToken = 'fcm-token-unavailable';
+  static const iosSimulatorUnavailableToken =
+      'ios-simulator-fcm-token-unavailable';
+
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   final DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
   NotificationService? _notificationService;
@@ -97,20 +101,22 @@ class FcmService {
           LoggerUtil.warning(
             'Skipping FCM token fetch on iOS simulator because APNS token is unavailable.',
           );
-          return 'ios-simulator-fcm-token-unavailable';
+          return iosSimulatorUnavailableToken;
         }
 
         final apnsToken = await _waitForApnsToken();
         if (apnsToken == null) {
-          LoggerUtil.warning('APNS token is not available yet.');
-          return null;
+          LoggerUtil.warning(
+            'APNS token is not available. Continuing without push token.',
+          );
+          return unavailableToken;
         }
       }
 
-      return await _messaging.getToken();
+      return await _messaging.getToken() ?? unavailableToken;
     } catch (e) {
       LoggerUtil.error('Error fetching FCM token: $e');
-      return null;
+      return unavailableToken;
     }
   }
 

@@ -23,7 +23,6 @@ class _CalculatorPageState extends State<CalculatorPage> {
   static const _tileGreen = Color(0xFF3E8445);
   static const _softGreen = Color(0xFFE9F6DF);
   static const _gold = Color(0xFFD3AB35);
-  static const _pageBackground = Color(0xFFF5F0E6);
 
   final _currencyFormat = NumberFormat.currency(
     locale: 'id_ID',
@@ -59,7 +58,6 @@ class _CalculatorPageState extends State<CalculatorPage> {
     final totalFinalReturn = totalModal + totalProfit;
 
     return Scaffold(
-      backgroundColor: _pageBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -98,7 +96,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
   Widget _buildInputSection(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: _whiteCardDecoration(),
+      decoration: _whiteCardDecoration(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -140,7 +138,10 @@ class _CalculatorPageState extends State<CalculatorPage> {
           SliderTheme(
             data: SliderThemeData(
               activeTrackColor: _green,
-              inactiveTrackColor: _softGreen,
+              inactiveTrackColor:
+                  Theme.of(context).brightness == Brightness.dark
+                      ? _green.withValues(alpha: 0.15)
+                      : _softGreen,
               thumbColor: _green,
               overlayColor: _green.withValues(alpha: 0.1),
             ),
@@ -164,7 +165,9 @@ class _CalculatorPageState extends State<CalculatorPage> {
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: _softGreen,
+          color: Theme.of(context).brightness == Brightness.dark
+              ? _green.withValues(alpha: 0.15)
+              : _softGreen,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Icon(icon, color: _green, size: 20),
@@ -313,7 +316,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
   }) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: _whiteCardDecoration(),
+      decoration: _whiteCardDecoration(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -382,7 +385,11 @@ class _CalculatorPageState extends State<CalculatorPage> {
                 width: 38,
                 height: 38,
                 decoration: BoxDecoration(
-                  color: isLast ? _green : _softGreen,
+                  color: isLast
+                      ? _green
+                      : (colorScheme.brightness == Brightness.dark
+                          ? _green.withValues(alpha: 0.15)
+                          : _softGreen),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Center(
@@ -444,13 +451,17 @@ class _CalculatorPageState extends State<CalculatorPage> {
     );
   }
 
-  BoxDecoration _whiteCardDecoration() {
+  BoxDecoration _whiteCardDecoration(BuildContext context) {
     return BoxDecoration(
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.surface,
       borderRadius: BorderRadius.circular(14),
+      border: Border.all(
+        color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+        width: 0.5,
+      ),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withValues(alpha: 0.06),
+          color: Theme.of(context).shadowColor.withValues(alpha: 0.06),
           blurRadius: 14,
           offset: const Offset(0, 6),
         ),

@@ -12,7 +12,6 @@ class AccountHeader extends ConsumerWidget {
   static const _darkGreen = Color(0xFF155B24);
   static const _tileGreen = Color(0xFF3E8445);
   static const _gold = Color(0xFFD3AB35);
-  static const _pageBackground = Color(0xFFF5F0E6);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,7 +22,6 @@ class AccountHeader extends ConsumerWidget {
 
     return Container(
       width: double.infinity,
-      color: _pageBackground,
       padding: const EdgeInsets.fromLTRB(16, 32, 16, 0),
       child: Container(
         padding: const EdgeInsets.all(24),

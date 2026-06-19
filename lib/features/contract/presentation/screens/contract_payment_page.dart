@@ -48,7 +48,6 @@ class _ContractPaymentPageState extends ConsumerState<ContractPaymentPage> {
   static const _darkGreen = Color(0xFF155B24);
   static const _tileGreen = Color(0xFF3E8445);
   static const _gold = Color(0xFFD3AB35);
-  static const _pageBackground = Color(0xFFF5F0E6);
 
   @override
   void dispose() {
@@ -76,7 +75,6 @@ class _ContractPaymentPageState extends ConsumerState<ContractPaymentPage> {
         ref.watch(contractDetailControllerProvider(widget.contractId));
 
     return Scaffold(
-      backgroundColor: _pageBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -367,7 +365,7 @@ class _ContractPaymentPageState extends ConsumerState<ContractPaymentPage> {
   }) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: _whiteCardDecoration(),
+      decoration: _whiteCardDecoration(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: children,
@@ -384,7 +382,7 @@ class _ContractPaymentPageState extends ConsumerState<ContractPaymentPage> {
         padding: const EdgeInsets.all(16),
         child: Container(
           padding: const EdgeInsets.all(18),
-          decoration: _whiteCardDecoration(),
+          decoration: _whiteCardDecoration(context),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -409,13 +407,17 @@ class _ContractPaymentPageState extends ConsumerState<ContractPaymentPage> {
     );
   }
 
-  BoxDecoration _whiteCardDecoration() {
+  BoxDecoration _whiteCardDecoration(BuildContext context) {
     return BoxDecoration(
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.surface,
       borderRadius: BorderRadius.circular(14),
+      border: Border.all(
+        color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+        width: 0.5,
+      ),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withValues(alpha: 0.06),
+          color: Theme.of(context).shadowColor.withValues(alpha: 0.06),
           blurRadius: 14,
           offset: const Offset(0, 6),
         ),

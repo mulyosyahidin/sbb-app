@@ -26,12 +26,10 @@ class WaitingVerificationContractDetailPartial extends StatelessWidget {
   static const _tileWarning = Color(0xFFE89B22);
   static const _softWarning = Color(0xFFFFF1D8);
   static const _gold = Color(0xFFD3AB35);
-  static const _pageBackground = Color(0xFFF5F0E6);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _pageBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -298,7 +296,7 @@ class WaitingVerificationContractDetailPartial extends StatelessWidget {
   }) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: _whiteCardDecoration(),
+      decoration: _whiteCardDecoration(context),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: children,
@@ -327,13 +325,15 @@ class WaitingVerificationContractDetailPartial extends StatelessWidget {
       borderRadius: BorderRadius.circular(14),
       child: Container(
         padding: const EdgeInsets.all(16),
-        decoration: _whiteCardDecoration(),
+        decoration: _whiteCardDecoration(context),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: _softWarning,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? _warning.withValues(alpha: 0.15)
+                    : _softWarning,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: const Icon(
@@ -412,13 +412,17 @@ class WaitingVerificationContractDetailPartial extends StatelessWidget {
     );
   }
 
-  BoxDecoration _whiteCardDecoration() {
+  BoxDecoration _whiteCardDecoration(BuildContext context) {
     return BoxDecoration(
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.surface,
       borderRadius: BorderRadius.circular(14),
+      border: Border.all(
+        color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+        width: 0.5,
+      ),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withValues(alpha: 0.06),
+          color: Theme.of(context).shadowColor.withValues(alpha: 0.06),
           blurRadius: 14,
           offset: const Offset(0, 6),
         ),

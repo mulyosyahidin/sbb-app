@@ -206,7 +206,7 @@ class _PaymentSchedulesContent extends StatelessWidget {
         border: Border.all(color: colorScheme.outline.withValues(alpha: 0.35)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.04),
             blurRadius: 14,
             offset: const Offset(0, 6),
           ),
@@ -257,7 +257,7 @@ class _PaymentSchedulesContent extends StatelessWidget {
     required bool showDivider,
   }) {
     final colorScheme = Theme.of(context).colorScheme;
-    final statusStyle = _statusStyle(schedule);
+    final statusStyle = _statusStyle(context, schedule);
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -281,7 +281,9 @@ class _PaymentSchedulesContent extends StatelessWidget {
                 style: AppTextStyles.body(
                   fontWeight: FontWeight.bold,
                   fontSize: 13,
-                  color: _summaryGreen,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? const Color(0xFF81C784)
+                      : _summaryGreen,
                 ),
               ),
             ),
@@ -400,21 +402,32 @@ class _PaymentSchedulesContent extends StatelessWidget {
     );
   }
 
-  _ScheduleStatusStyle _statusStyle(PaymentSchedule schedule) {
+  _ScheduleStatusStyle _statusStyle(
+      BuildContext context, PaymentSchedule schedule) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     if (schedule.status == PaymentScheduleStatus.success) {
-      return const _ScheduleStatusStyle(
+      return _ScheduleStatusStyle(
         label: 'Berhasil',
-        textColor: Color(0xFF226B2F),
-        backgroundColor: Color(0xFFEFF8EA),
-        borderColor: Color(0xFFE1EFD9),
+        textColor: isDark ? const Color(0xFF81C784) : const Color(0xFF226B2F),
+        backgroundColor: isDark
+            ? const Color(0xFF1B5E20).withValues(alpha: 0.2)
+            : const Color(0xFFEFF8EA),
+        borderColor: isDark
+            ? const Color(0xFF388E3C).withValues(alpha: 0.5)
+            : const Color(0xFFE1EFD9),
       );
     }
 
-    return const _ScheduleStatusStyle(
+    return _ScheduleStatusStyle(
       label: 'Terjadwal',
-      textColor: Color(0xFF6F7480),
-      backgroundColor: Color(0xFFF5F5F4),
-      borderColor: Color(0xFFE1E1DF),
+      textColor: isDark ? const Color(0xFF9E9E9E) : const Color(0xFF6F7480),
+      backgroundColor: isDark
+          ? const Color(0xFF424242).withValues(alpha: 0.2)
+          : const Color(0xFFF5F5F4),
+      borderColor: isDark
+          ? const Color(0xFF616161).withValues(alpha: 0.5)
+          : const Color(0xFFE1E1DF),
     );
   }
 }

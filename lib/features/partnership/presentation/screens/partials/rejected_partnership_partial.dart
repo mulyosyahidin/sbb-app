@@ -65,9 +65,15 @@ class _RejectedHero extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: _cream,
+        color: Theme.of(context).brightness == Brightness.dark
+            ? _red.withValues(alpha: 0.1)
+            : _cream,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: _red.withValues(alpha: 0.22)),
+        border: Border.all(
+          color: Theme.of(context).brightness == Brightness.dark
+              ? _red.withValues(alpha: 0.3)
+              : _red.withValues(alpha: 0.22),
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -85,7 +91,9 @@ class _RejectedHero extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: _softRed,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? _red.withValues(alpha: 0.15)
+                      : _softRed,
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: const Icon(
@@ -124,7 +132,9 @@ class _RejectedHero extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.72),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white.withValues(alpha: 0.1)
+                  : Colors.white.withValues(alpha: 0.72),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Row(
@@ -162,9 +172,15 @@ class _ReviewNotesCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: _softRed,
+        color: Theme.of(context).brightness == Brightness.dark
+            ? _red.withValues(alpha: 0.1)
+            : _softRed,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: _red.withValues(alpha: 0.16)),
+        border: Border.all(
+          color: Theme.of(context).brightness == Brightness.dark
+              ? _red.withValues(alpha: 0.3)
+              : _red.withValues(alpha: 0.16),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -216,7 +232,9 @@ class _ReviewNoteItem extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.78),
+        color: Theme.of(context).brightness == Brightness.dark
+            ? Colors.white.withValues(alpha: 0.1)
+            : Colors.white.withValues(alpha: 0.78),
         borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
@@ -281,9 +299,15 @@ class _LevelBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: _softGold,
+        color: Theme.of(context).brightness == Brightness.dark
+            ? _gold.withValues(alpha: 0.15)
+            : _softGold,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: _gold.withValues(alpha: 0.18)),
+        border: Border.all(
+          color: Theme.of(context).brightness == Brightness.dark
+              ? _gold.withValues(alpha: 0.3)
+              : _gold.withValues(alpha: 0.18),
+        ),
       ),
       child: Row(
         children: [

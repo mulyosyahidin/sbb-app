@@ -62,9 +62,15 @@ class _UnregisteredHero extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: _cream,
+        color: Theme.of(context).brightness == Brightness.dark
+            ? _gold.withValues(alpha: 0.1)
+            : _cream,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: _gold.withValues(alpha: 0.28)),
+        border: Border.all(
+          color: Theme.of(context).brightness == Brightness.dark
+              ? _gold.withValues(alpha: 0.3)
+              : _gold.withValues(alpha: 0.28),
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -82,7 +88,9 @@ class _UnregisteredHero extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: _gold.withValues(alpha: 0.14),
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? _gold.withValues(alpha: 0.2)
+                      : _gold.withValues(alpha: 0.14),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: const Icon(
@@ -121,7 +129,9 @@ class _UnregisteredHero extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.72),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white.withValues(alpha: 0.1)
+                  : Colors.white.withValues(alpha: 0.72),
               borderRadius: BorderRadius.circular(14),
             ),
             child: const Row(
@@ -205,7 +215,9 @@ class _ChecklistItem extends StatelessWidget {
             width: 30,
             height: 30,
             decoration: BoxDecoration(
-              color: _softGreen,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? _green.withValues(alpha: 0.15)
+                  : _softGreen,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, color: _green, size: 17),
@@ -234,9 +246,15 @@ class _PartnerBenefitCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: _softGreen,
+        color: Theme.of(context).brightness == Brightness.dark
+            ? _green.withValues(alpha: 0.1)
+            : _softGreen,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: _green.withValues(alpha: 0.12)),
+        border: Border.all(
+          color: Theme.of(context).brightness == Brightness.dark
+              ? _green.withValues(alpha: 0.3)
+              : _green.withValues(alpha: 0.12),
+        ),
       ),
       child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -289,7 +307,9 @@ class _BenefitItem extends StatelessWidget {
           width: 34,
           height: 34,
           decoration: BoxDecoration(
-            color: _softGold,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? _gold.withValues(alpha: 0.15)
+                : _softGold,
             borderRadius: BorderRadius.circular(11),
           ),
           child: Icon(icon, color: _gold, size: 19),

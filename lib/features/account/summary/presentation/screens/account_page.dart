@@ -12,7 +12,6 @@ class AccountPage extends ConsumerWidget {
 
   static const _green = Color(0xFF1F6E2D);
   static const _gold = Color(0xFFD3AB35);
-  static const _pageBackground = Color(0xFFF5F0E6);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,7 +22,6 @@ class AccountPage extends ConsumerWidget {
         context.go(Routes.home);
       },
       child: Scaffold(
-        backgroundColor: _pageBackground,
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -56,11 +54,15 @@ class AccountPage extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+          width: 0.5,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.06),
             blurRadius: 14,
             offset: const Offset(0, 6),
           ),

@@ -38,7 +38,6 @@ class _PartnershipRegisterPageState
   Map<String, String> _fieldErrors = {};
   bool _hasSubmitted = false;
 
-  static const _pageBackground = Color(0xFFF5F0E6);
   static const _softGreen = Color(0xFFE9F6DF);
 
   static const _levels = [
@@ -167,7 +166,6 @@ class _PartnershipRegisterPageState
     });
 
     return Scaffold(
-      backgroundColor: _pageBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -193,7 +191,9 @@ class _PartnershipRegisterPageState
                       Container(
                         padding: const EdgeInsets.all(14),
                         decoration: BoxDecoration(
-                          color: _softGreen,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? const Color(0xFF1F6E2D).withValues(alpha: 0.15)
+                              : _softGreen,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: const Row(

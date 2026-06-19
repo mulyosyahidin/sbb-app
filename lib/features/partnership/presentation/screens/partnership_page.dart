@@ -13,14 +13,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class PartnershipPage extends ConsumerWidget {
   const PartnershipPage({super.key});
 
-  static const _pageBackground = Color(0xFFF5F0E6);
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(partnerControllerProvider);
 
     return Scaffold(
-      backgroundColor: _pageBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -182,8 +179,12 @@ class _HeroSkeleton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+            width: 0.5,
+          ),
         ),
         child: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,8 +256,12 @@ class _InfoCardSkeleton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+            width: 0.5,
+          ),
         ),
         child: const Column(
           children: [

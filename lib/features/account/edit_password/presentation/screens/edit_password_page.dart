@@ -27,7 +27,6 @@ class _EditPasswordPageState extends ConsumerState<EditPasswordPage> {
   static const _green = Color(0xFF1F6E2D);
   static const _softGreen = Color(0xFFE9F6DF);
   static const _gold = Color(0xFFD3AB35);
-  static const _pageBackground = Color(0xFFF5F0E6);
 
   @override
   void dispose() {
@@ -106,7 +105,6 @@ class _EditPasswordPageState extends ConsumerState<EditPasswordPage> {
     final isLoading = ref.watch(editPasswordControllerProvider).isLoading;
 
     return Scaffold(
-      backgroundColor: _pageBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -120,13 +118,16 @@ class _EditPasswordPageState extends ConsumerState<EditPasswordPage> {
                       child: Padding(
                         padding: const EdgeInsets.all(16),
                         child: _buildWhiteCard(
+                          context: context,
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Container(
                                 padding: const EdgeInsets.all(22),
-                                decoration: const BoxDecoration(
-                                  color: _softGreen,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).brightness == Brightness.dark
+                                      ? _green.withValues(alpha: 0.15)
+                                      : _softGreen,
                                   shape: BoxShape.circle,
                                 ),
                                 child: const Icon(
@@ -162,6 +163,7 @@ class _EditPasswordPageState extends ConsumerState<EditPasswordPage> {
                   : SingleChildScrollView(
                       padding: const EdgeInsets.fromLTRB(16, 18, 16, 28),
                       child: _buildWhiteCard(
+                        context: context,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
@@ -205,15 +207,19 @@ class _EditPasswordPageState extends ConsumerState<EditPasswordPage> {
     );
   }
 
-  Widget _buildWhiteCard({required Widget child}) {
+  Widget _buildWhiteCard({required BuildContext context, required Widget child}) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+          width: 0.5,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.06),
             blurRadius: 14,
             offset: const Offset(0, 6),
           ),

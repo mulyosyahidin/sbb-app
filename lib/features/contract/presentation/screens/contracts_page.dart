@@ -1,5 +1,4 @@
 import 'package:app/app/app_router.dart';
-import 'package:app/core/theme/app_theme.dart';
 import 'package:app/core/theme/app_text_style.dart';
 import 'package:app/features/contract/application/contract_list_controller.dart';
 import 'package:app/features/contract/domain/entities/contract.dart';
@@ -59,7 +58,9 @@ class _ContractsPageState extends ConsumerState<ContractsPage> {
         ref.watch(contractListControllerProvider(selectedFilter));
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark,
+      value: Theme.of(context).brightness == Brightness.dark
+          ? SystemUiOverlayStyle.light
+          : SystemUiOverlayStyle.dark,
       child: Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: SafeArea(
@@ -145,8 +146,8 @@ class _ContractsPageState extends ConsumerState<ContractsPage> {
     return AppBarHeader(
       title: 'Daftar Kontrak',
       subtitle: '$totalCount kontrak terdaftar',
-      titleColor: AppColors.textPrimaryLight,
-      subtitleColor: AppColors.textSecondaryLight,
+      titleColor: Theme.of(context).colorScheme.onSurface,
+      subtitleColor: Theme.of(context).colorScheme.onSurfaceVariant,
       trailing: InkWell(
         onTap: () => context.push(Routes.contractCreate),
         borderRadius: BorderRadius.circular(10),
@@ -381,9 +382,9 @@ class _ContractCardSkeleton extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 16),
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white),
+          border: Border.all(color: Theme.of(context).colorScheme.outline),
         ),
         child: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,

@@ -68,9 +68,15 @@ class _PendingHero extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: _cream,
+        color: Theme.of(context).brightness == Brightness.dark
+            ? _gold.withValues(alpha: 0.1)
+            : _cream,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: _gold.withValues(alpha: 0.28)),
+        border: Border.all(
+          color: Theme.of(context).brightness == Brightness.dark
+              ? _gold.withValues(alpha: 0.3)
+              : _gold.withValues(alpha: 0.28),
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -127,7 +133,9 @@ class _PendingHero extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.72),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white.withValues(alpha: 0.1)
+                  : Colors.white.withValues(alpha: 0.72),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Row(
@@ -164,9 +172,15 @@ class _ReviewProgressCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: _softGreen,
+        color: Theme.of(context).brightness == Brightness.dark
+            ? _green.withValues(alpha: 0.1)
+            : _softGreen,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: _green.withValues(alpha: 0.12)),
+        border: Border.all(
+          color: Theme.of(context).brightness == Brightness.dark
+              ? _green.withValues(alpha: 0.3)
+              : _green.withValues(alpha: 0.12),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -238,7 +252,11 @@ class _ProgressItem extends StatelessWidget {
           width: 34,
           height: 34,
           decoration: BoxDecoration(
-            color: isComplete ? _green : _softGold,
+            color: isComplete
+                ? _green
+                : (Theme.of(context).brightness == Brightness.dark
+                    ? _gold.withValues(alpha: 0.15)
+                    : _softGold),
             borderRadius: BorderRadius.circular(11),
           ),
           child: Icon(
@@ -321,9 +339,15 @@ class _LevelBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: _softGold,
+        color: Theme.of(context).brightness == Brightness.dark
+            ? _gold.withValues(alpha: 0.15)
+            : _softGold,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: _gold.withValues(alpha: 0.18)),
+        border: Border.all(
+          color: Theme.of(context).brightness == Brightness.dark
+              ? _gold.withValues(alpha: 0.3)
+              : _gold.withValues(alpha: 0.18),
+        ),
       ),
       child: Row(
         children: [
@@ -373,7 +397,9 @@ class _DocumentCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: _softGreen,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? _green.withValues(alpha: 0.15)
+                  : _softGreen,
               borderRadius: BorderRadius.circular(14),
             ),
             child: Row(
@@ -382,7 +408,9 @@ class _DocumentCard extends StatelessWidget {
                   width: 36,
                   height: 36,
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.7),
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white.withValues(alpha: 0.1)
+                        : Colors.white.withValues(alpha: 0.7),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(
