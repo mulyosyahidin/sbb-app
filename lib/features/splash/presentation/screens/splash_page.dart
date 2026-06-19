@@ -108,7 +108,7 @@ class _SplashPageState extends ConsumerState<SplashPage>
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            'Investasi ternak yang transparan dan terukur',
+                            'Usaha ternak sapi yang transparan dan terukur',
                             textAlign: TextAlign.center,
                             style: AppTextStyles.body(
                               color: Theme.of(context)
