@@ -7,6 +7,7 @@ import 'package:app/features/auth/register/application/register_controller.dart'
 import 'package:app/shared/forms/app_text_field.dart';
 import 'package:app/shared/forms/app_text_password.dart';
 import 'package:app/shared/widgets/primary_button.dart';
+import 'package:app/features/auth/referral/application/pending_referral_code_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -107,7 +108,12 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
         setState(() => _isRedirecting = true);
         Future.delayed(const Duration(seconds: 3), () {
           if (!context.mounted) return;
-          context.go(Routes.home);
+          final isPending = ref.read(pendingReferralCodeProvider);
+          if (isPending) {
+            context.go(Routes.referralCode);
+          } else {
+            context.go(Routes.home);
+          }
         });
       }
     });

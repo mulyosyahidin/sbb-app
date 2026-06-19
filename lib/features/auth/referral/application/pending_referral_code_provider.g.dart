@@ -1,27 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'register_controller.dart';
+part of 'pending_referral_code_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$registerControllerHash() =>
-    r'4ab81496610fdec2409f5d4347f710abf631de9d';
+String _$pendingReferralCodeHash() =>
+    r'8cacece04101a506d6a3d73981862d8120896012';
 
-/// See also [RegisterController].
-@ProviderFor(RegisterController)
-final registerControllerProvider =
-    AutoDisposeAsyncNotifierProvider<RegisterController, void>.internal(
-  RegisterController.new,
-  name: r'registerControllerProvider',
+/// See also [PendingReferralCode].
+@ProviderFor(PendingReferralCode)
+final pendingReferralCodeProvider =
+    NotifierProvider<PendingReferralCode, bool>.internal(
+  PendingReferralCode.new,
+  name: r'pendingReferralCodeProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$registerControllerHash,
+      : _$pendingReferralCodeHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$RegisterController = AutoDisposeAsyncNotifier<void>;
+typedef _$PendingReferralCode = Notifier<bool>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

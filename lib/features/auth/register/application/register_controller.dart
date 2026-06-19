@@ -11,6 +11,8 @@ import 'package:app/features/auth/register/data/repositories/register_repository
 import 'package:app/features/auth/register/domain/repositories/register_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import 'package:app/features/auth/referral/application/pending_referral_code_provider.dart';
+
 part 'register_controller.g.dart';
 
 @riverpod
@@ -62,6 +64,8 @@ class RegisterController extends _$RegisterController {
           await tokenStorage.saveUser(user);
           await tokenStorage.saveAccessToken(registerUser.accessToken);
           await tokenStorage.saveDevice(userDevice);
+
+          ref.read(pendingReferralCodeProvider.notifier).setPending(true);
 
           ref.read(authSessionControllerProvider.notifier).updateSession(
                 AuthSession.authenticated(

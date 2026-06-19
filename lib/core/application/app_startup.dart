@@ -1,6 +1,7 @@
 import 'package:app/core/auth/application/auth_session_controller.dart';
 import 'package:app/features/home/application/home_controller.dart';
 import 'package:app/features/partnership/application/partnership_controller.dart';
+import 'package:app/features/preference/application/preference_controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -10,6 +11,7 @@ part 'app_startup.g.dart';
 Future<void> appStartup(Ref ref) async {
   // 1. Inisialisasi Data Publik (Paralel)
   ref.watch(slidersProvider.future);
+  ref.watch(companyBankAccountProvider.future);
 
   // 2. Pantau Status Sesi
   final authState = ref.watch(authSessionControllerProvider);

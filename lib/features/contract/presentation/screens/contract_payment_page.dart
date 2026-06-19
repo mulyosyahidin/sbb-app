@@ -8,6 +8,7 @@ import 'package:app/features/contract/application/contract_detail_controller.dar
 import 'package:app/features/contract/application/contract_payment_controller.dart';
 import 'package:app/features/contract/data/dtos/requests/store_payment_proof_request_dto.dart';
 import 'package:app/features/contract/domain/entities/contract.dart';
+import 'package:app/features/preference/application/preference_controller.dart';
 import 'package:app/shared/forms/app_file_picker_field.dart';
 import 'package:app/shared/forms/app_text_field.dart';
 import 'package:app/shared/widgets/app_bar_header.dart';
@@ -109,6 +110,7 @@ class _ContractPaymentPageState extends ConsumerState<ContractPaymentPage> {
         children: [
           _buildPaymentSummaryHero(contract),
           const SizedBox(height: 18),
+          _buildCompanyBankAccountInfo(context),
           _buildSectionTitle(context, 'DATA REKENING PENGIRIM'),
           const SizedBox(height: 12),
           _buildCard(
@@ -180,6 +182,84 @@ class _ContractPaymentPageState extends ConsumerState<ContractPaymentPage> {
           const SizedBox(height: 40),
         ],
       ),
+    );
+  }
+
+  Widget _buildCompanyBankAccountInfo(BuildContext context) {
+    final companyBankAsync = ref.watch(companyBankAccountProvider);
+
+    return companyBankAsync.when(
+      data: (bankAccount) {
+        if (bankAccount == null) return const SizedBox.shrink();
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildSectionTitle(context, 'TRANSFER KE REKENING'),
+            const SizedBox(height: 12),
+            _buildCard(
+              context,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: _green.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(
+                        Icons.account_balance_rounded,
+                        color: _green,
+                        size: 28,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            bankAccount.name,
+                            style: AppTextStyles.body(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            bankAccount.accountNumber,
+                            style: AppTextStyles.title(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: _green,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'a.n ${bankAccount.accountName}',
+                            style: AppTextStyles.body(
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 18),
+          ],
+        );
+      },
+      loading: () => const Padding(
+        padding: EdgeInsets.only(bottom: 18.0),
+        child: Center(child: CircularProgressIndicator()),
+      ),
+      error: (e, s) => const SizedBox.shrink(),
     );
   }
 

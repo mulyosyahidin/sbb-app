@@ -37,6 +37,8 @@ import 'package:app/features/account/bank_accounts/presentation/screens/bank_acc
 import 'package:app/features/account/bank_accounts/domain/entities/bank_account.dart';
 import 'package:app/features/splash/presentation/screens/splash_page.dart';
 import 'package:app/features/welcome/presentation/screens/welcome_page.dart';
+import 'package:app/features/auth/referral/application/pending_referral_code_provider.dart';
+import 'package:app/features/auth/referral/presentation/screens/referral_code_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -49,6 +51,7 @@ class Routes {
   static const welcome = "/welcome";
   static const login = "/login";
   static const register = "/register";
+  static const referralCode = "/referral-code";
   static const homeGate = "/home-gate";
   static const home = "/home";
   static const contract = "/contract";
@@ -79,6 +82,7 @@ class Routes {
 
   static const authenticatedRoutes = [
     home,
+    referralCode,
     contract,
     contractCreate,
     cowCatalog,
@@ -130,6 +134,10 @@ GoRouter router(Ref ref) {
       GoRoute(
         path: Routes.register,
         builder: (context, state) => const RegisterPage(),
+      ),
+      GoRoute(
+        path: Routes.referralCode,
+        builder: (context, state) => const ReferralCodePage(),
       ),
       GoRoute(
         path: Routes.homeGuest,
@@ -345,6 +353,12 @@ class RouterNotifier extends ChangeNotifier {
           location == Routes.login ||
           location == Routes.register ||
           location == Routes.homeGuest) {
+            
+        final isPendingReferral = _ref.read(pendingReferralCodeProvider);
+        if (isPendingReferral) {
+          return Routes.referralCode;
+        }
+        
         return Routes.home;
       }
     }

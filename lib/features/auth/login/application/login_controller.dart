@@ -16,6 +16,8 @@ import 'package:app/features/auth/login/domain/repositories/login_repository.dar
 import 'package:app/features/home/application/home_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import 'package:app/features/auth/referral/application/pending_referral_code_provider.dart';
+
 part 'login_controller.g.dart';
 
 @riverpod
@@ -99,6 +101,7 @@ class LoginController extends _$LoginController {
         (failure) => throw failure,
         (data) async {
           // 4. Handle success
+          ref.read(pendingReferralCodeProvider.notifier).setPending(true);
           await _handleLoginSuccess(data);
         },
       );

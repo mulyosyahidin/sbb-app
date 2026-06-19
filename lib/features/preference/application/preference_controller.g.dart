@@ -1,27 +1,28 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'register_controller.dart';
+part of 'preference_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$registerControllerHash() =>
-    r'4ab81496610fdec2409f5d4347f710abf631de9d';
+String _$companyBankAccountHash() =>
+    r'e03af5139e3048d89ebfea541ad79803602024e1';
 
-/// See also [RegisterController].
-@ProviderFor(RegisterController)
-final registerControllerProvider =
-    AutoDisposeAsyncNotifierProvider<RegisterController, void>.internal(
-  RegisterController.new,
-  name: r'registerControllerProvider',
+/// See also [companyBankAccount].
+@ProviderFor(companyBankAccount)
+final companyBankAccountProvider = FutureProvider<CompanyBankAccount?>.internal(
+  companyBankAccount,
+  name: r'companyBankAccountProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$registerControllerHash,
+      : _$companyBankAccountHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$RegisterController = AutoDisposeAsyncNotifier<void>;
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef CompanyBankAccountRef = FutureProviderRef<CompanyBankAccount?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -1,27 +1,29 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'register_controller.dart';
+part of 'preference_repository_impl.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$registerControllerHash() =>
-    r'4ab81496610fdec2409f5d4347f710abf631de9d';
+String _$preferenceRepositoryHash() =>
+    r'8c12881ccdd69a1ca19f18e156ffcd5e0fa56417';
 
-/// See also [RegisterController].
-@ProviderFor(RegisterController)
-final registerControllerProvider =
-    AutoDisposeAsyncNotifierProvider<RegisterController, void>.internal(
-  RegisterController.new,
-  name: r'registerControllerProvider',
+/// See also [preferenceRepository].
+@ProviderFor(preferenceRepository)
+final preferenceRepositoryProvider =
+    AutoDisposeProvider<PreferenceRepository>.internal(
+  preferenceRepository,
+  name: r'preferenceRepositoryProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$registerControllerHash,
+      : _$preferenceRepositoryHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$RegisterController = AutoDisposeAsyncNotifier<void>;
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef PreferenceRepositoryRef = AutoDisposeProviderRef<PreferenceRepository>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

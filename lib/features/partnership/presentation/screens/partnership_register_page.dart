@@ -41,9 +41,9 @@ class _PartnershipRegisterPageState
   static const _softGreen = Color(0xFFE9F6DF);
 
   static const _levels = [
-    _PartnershipLevelOption(value: 1, label: 'Partner'),
+    _PartnershipLevelOption(value: 1, label: 'Mitra'),
     _PartnershipLevelOption(value: 2, label: 'Konsultan'),
-    _PartnershipLevelOption(value: 3, label: 'Partner Konsultan'),
+    _PartnershipLevelOption(value: 3, label: 'Mitra Konsultan'),
   ];
 
   bool get _isUpdateMode => widget.initialApplication != null;

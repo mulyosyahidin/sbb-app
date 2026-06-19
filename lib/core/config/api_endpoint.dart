@@ -64,4 +64,7 @@ class ApiEndpoint {
   static const String getContractDocument = '/contracts/{contract}/email-pdf';
   static const String sendContractDocument = '/contracts/{contract}/send-contract-document';
   static const String uploadContractDocument = '/contracts/{contract}/documents';
+
+  // Preference
+  static const String preferenceBankAccount = '/preference/bank-account';
 }
