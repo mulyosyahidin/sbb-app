@@ -1,0 +1,755 @@
+import 'package:app/app/app_router.dart';
+import 'package:app/core/errors/failure.dart';
+import 'package:app/core/theme/app_text_style.dart';
+import 'package:app/core/utils/toast_util.dart';
+import 'package:app/features/contract/application/contract_document_controller.dart';
+import 'package:app/features/contract/domain/entities/contract.dart';
+import 'package:app/shared/widgets/app_bar_header.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+
+class ActiveContractDetailPartial extends ConsumerWidget {
+  final Contract contract;
+
+  const ActiveContractDetailPartial({
+    super.key,
+    required this.contract,
+  });
+
+  static final _currencyFormat = NumberFormat.currency(
+    locale: 'id_ID',
+    symbol: 'Rp ',
+    decimalDigits: 0,
+  );
+
+  static final _dateFormat = DateFormat('dd MMMM yyyy', 'id_ID');
+  static const _green = Color(0xFF1F6E2D);
+  static const _darkGreen = Color(0xFF155B24);
+  static const _tileGreen = Color(0xFF3E8445);
+  static const _gold = Color(0xFFD3AB35);
+  static const _documentStatusAccepted = 'Diterima';
+  static const _documentStatusRejected = 'Ditolak';
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen(contractDocumentControllerProvider, (previous, next) {
+      if (next is AsyncError) {
+        final error = next.error;
+        ToastUtil.showError(
+          context,
+          title: 'Gagal',
+          description: error is Failure ? error.message : error.toString(),
+        );
+      }
+    });
+
+    final documentState = ref.watch(contractDocumentControllerProvider);
+
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: [
+            const AppBarHeader(
+              title: 'Detail Kontrak',
+              subtitle: 'Aktif',
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(16, 18, 16, 28),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _buildHeroCard(context),
+                    const SizedBox(height: 18),
+                    _buildContractSummaryCard(context),
+                    if (_shouldShowContractDocumentBox) ...[
+                      const SizedBox(height: 12),
+                      _buildContractDocumentBox(
+                        context,
+                        ref,
+                        isLoading: documentState.isLoading,
+                      ),
+                    ],
+                    const SizedBox(height: 12),
+                    _buildCowCard(context),
+                    const SizedBox(height: 12),
+                    _buildBankCard(context),
+                    const SizedBox(height: 16),
+                    _buildActions(context),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeroCard(BuildContext context) {
+    return Container(
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        gradient: const LinearGradient(
+          colors: [
+            _darkGreen,
+            Color(0xFF2C8A3C),
+            _green,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: _green.withValues(alpha: 0.18),
+            blurRadius: 18,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            right: -52,
+            top: -52,
+            child: _buildSoftCircle(128),
+          ),
+          Positioned(
+            left: -42,
+            bottom: -58,
+            child: _buildSoftCircle(116),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 54,
+                      height: 54,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(14),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.08),
+                            blurRadius: 12,
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.verified_rounded,
+                        color: _green,
+                        size: 28,
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Kontrak aktif',
+                            style: AppTextStyles.title(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            contract.contractNumber ?? 'SBB-${contract.id}',
+                            style: AppTextStyles.body(
+                              color: Colors.white.withValues(alpha: 0.78),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: _gold,
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        contract.status.value.toUpperCase(),
+                        style: AppTextStyles.body(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  'Total modal',
+                  style: AppTextStyles.body(
+                    color: Colors.white.withValues(alpha: 0.72),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  _currencyFormat.format(contract.cowTotalPrice ?? 0),
+                  style: AppTextStyles.title(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 32,
+                  ),
+                ),
+                const SizedBox(height: 22),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildHeroMetric(
+                        label: 'Program',
+                        value: contract.program?.value ?? '-',
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _buildHeroMetric(
+                        label: 'Durasi',
+                        value: '${contract.contractMonthDuration ?? 0} bln',
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSoftCircle(double size) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.06),
+        shape: BoxShape.circle,
+      ),
+    );
+  }
+
+  Widget _buildHeroMetric({
+    required String label,
+    required String value,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: _tileGreen,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AppTextStyles.body(
+              color: Colors.white.withValues(alpha: 0.72),
+              fontWeight: FontWeight.w600,
+              fontSize: 12,
+            ),
+          ),
+          const SizedBox(height: 6),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              value,
+              style: AppTextStyles.title(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildContractSummaryCard(BuildContext context) {
+    return _buildSectionCard(
+      context,
+      title: 'RINGKASAN KONTRAK',
+      children: [
+        _buildSummaryRow(
+            context, 'No. Kontrak', contract.contractNumber ?? '-'),
+        _buildSummaryRow(context, 'Nama Lengkap', contract.userName ?? '-'),
+        _buildSummaryRow(context, 'NIK', contract.userIdentityNumber ?? '-'),
+        if (contract.address != null && contract.address!.trim().isNotEmpty)
+          _buildSummaryRow(context, 'Alamat', contract.address!),
+        _buildSummaryRow(context, 'Program', contract.program?.value ?? '-'),
+        _buildSummaryRow(
+            context, 'Durasi', '${contract.contractMonthDuration ?? 0} Bulan'),
+        _buildSummaryRow(
+          context,
+          'Tanggal Mulai',
+          _formatDate(contract.startDate),
+        ),
+        _buildSummaryRow(
+          context,
+          'Tanggal Selesai',
+          _formatDate(contract.endDate),
+        ),
+        _buildSummaryRow(context, 'Status', contract.status.value),
+      ],
+    );
+  }
+
+  Widget _buildContractDocumentBox(
+    BuildContext context,
+    WidgetRef ref, {
+    required bool isLoading,
+  }) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final hasContractDocument = contract.latestContractDocument != null ||
+        (contract.contractDocuments?.isNotEmpty ?? false);
+    final shouldShowActions =
+        !hasContractDocument || _isLatestContractDocumentRejected;
+    final message = _contractDocumentMessage(hasContractDocument);
+    final rejectedNote = contract.latestContractDocument?.note;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).brightness == Brightness.dark
+            ? _gold.withValues(alpha: 0.1)
+            : const Color(0xFFFFF8E1),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: _gold.withValues(alpha: 0.38),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(
+                  Icons.description_outlined,
+                  color: _green,
+                  size: 22,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  message,
+                  style: AppTextStyles.body(
+                    color: colorScheme.onSurface,
+                    fontSize: 13,
+                    height: 1.45,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          if (_isLatestContractDocumentRejected &&
+              rejectedNote != null &&
+              rejectedNote.trim().isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: _gold.withValues(alpha: 0.28),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    'Catatan Admin',
+                    style: AppTextStyles.body(
+                      color: _green,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    rejectedNote,
+                    style: AppTextStyles.body(
+                      color: colorScheme.onSurface,
+                      fontSize: 12,
+                      height: 1.45,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          if (shouldShowActions) ...[
+            const SizedBox(height: 14),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: isLoading
+                        ? null
+                        : () => _sendContractDocument(context, ref),
+                    icon: isLoading
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.file_download_outlined, size: 18),
+                    label: const FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text('Download'),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: _green,
+                      side: BorderSide(
+                        color: _green.withValues(alpha: 0.45),
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      textStyle: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () => context.push(
+                      Routes.contractDocumentUpload.replaceAll(
+                        ':id',
+                        contract.id.toString(),
+                      ),
+                    ),
+                    icon: const Icon(Icons.upload_file_rounded, size: 18),
+                    label: const FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text('Upload'),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _green,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      textStyle: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCowCard(BuildContext context) {
+    return _buildSectionCard(
+      context,
+      title: 'DATA SAPI',
+      children: [
+        _buildSummaryRow(context, 'Jenis Sapi', contract.cowName ?? '-'),
+        _buildSummaryRow(
+            context, 'Jumlah Sapi', '${contract.cowQuantity ?? 0} Ekor'),
+        _buildSummaryRow(
+            context, 'Berat Sapi', '${contract.cowWeightKg ?? 0} Kg'),
+        _buildSummaryRow(
+          context,
+          'Harga Per Ekor',
+          _currencyFormat.format(contract.cowPrice ?? 0),
+        ),
+        _buildSummaryRow(
+          context,
+          'Total Modal',
+          _currencyFormat.format(contract.cowTotalPrice ?? 0),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBankCard(BuildContext context) {
+    return _buildSectionCard(
+      context,
+      title: 'REKENING',
+      children: [
+        _buildSummaryRow(context, 'Nama Bank', contract.bankName ?? '-'),
+        _buildSummaryRow(
+            context, 'Nomor Rekening', contract.bankAccountNumber ?? '-'),
+        _buildSummaryRow(context, 'Atas Nama', contract.bankAccountName ?? '-'),
+      ],
+    );
+  }
+
+  Widget _buildActions(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: _buildActionButton(
+            context,
+            label: 'Jadwal Pembayaran',
+            icon: Icons.event_note_rounded,
+            foregroundColor: Theme.of(context).colorScheme.onSurface,
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            isOutlined: true,
+            onPressed: () => context.push(
+              Routes.contractPaymentSchedules.replaceAll(
+                ':id',
+                contract.id.toString(),
+              ),
+              extra: contract,
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _buildActionButton(
+            context,
+            label: 'Sertifikat Kontrak',
+            icon: Icons.workspace_premium_rounded,
+            foregroundColor: Colors.white,
+            backgroundColor: _green,
+            onPressed: () => context.push(
+              Routes.contractCertificate.replaceAll(
+                ':id',
+                contract.id.toString(),
+              ),
+              extra: contract,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  bool get _shouldShowContractDocumentBox {
+    if (contract.isDocumentAccepted) return false;
+    return contract.latestContractDocument?.status != _documentStatusAccepted;
+  }
+
+  bool get _isLatestContractDocumentRejected {
+    return contract.latestContractDocument?.status == _documentStatusRejected;
+  }
+
+  String _contractDocumentMessage(bool hasContractDocument) {
+    if (_isLatestContractDocumentRejected) {
+      return 'Dokumen kontrak ditolak. Silahkan lakukan perbaikan sesuai dengan catatan dari admin dan upload kembali dokumen kontrak yang sudah diperbaiki.';
+    }
+
+    if (hasContractDocument) {
+      return 'Dokumen kontrak sedang diverifikasi. Harap tunggu informasi selanjutnya dari admin.';
+    }
+
+    return 'Silahkan download dan tanda tangani dokumen kontrak kemudian upload kembali';
+  }
+
+  Future<void> _sendContractDocument(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final message = await ref
+        .read(contractDocumentControllerProvider.notifier)
+        .sendContractDocument(contractId: contract.id);
+
+    if (!context.mounted || message == null) return;
+
+    ToastUtil.showSuccess(
+      context,
+      title: 'Berhasil',
+      description: message,
+    );
+  }
+
+  Widget _buildActionButton(
+    BuildContext context, {
+    required String label,
+    required IconData icon,
+    required Color foregroundColor,
+    required Color backgroundColor,
+    required VoidCallback onPressed,
+    bool isOutlined = false,
+  }) {
+    return SizedBox(
+      height: 52,
+      child: ElevatedButton.icon(
+        onPressed: onPressed,
+        icon: Icon(icon, size: 18),
+        label: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(label),
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: backgroundColor,
+          foregroundColor: foregroundColor,
+          elevation: isOutlined ? 0 : 2,
+          shadowColor: _green.withValues(alpha: 0.18),
+          side: isOutlined
+              ? BorderSide(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .outline
+                      .withValues(alpha: 0.5),
+                )
+              : BorderSide.none,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          textStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 13,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionCard(
+    BuildContext context, {
+    required String title,
+    required List<Widget> children,
+  }) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.5),
+          width: 0.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.06),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 7,
+                height: 7,
+                decoration: const BoxDecoration(
+                  color: _gold,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                title,
+                style: AppTextStyles.body(
+                  color: _green,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Divider(
+            height: 1,
+            color: colorScheme.outline.withValues(alpha: 0.2),
+          ),
+          const SizedBox(height: 10),
+          ...children,
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSummaryRow(
+    BuildContext context,
+    String label,
+    String value,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: 3,
+            child: Text(
+              label,
+              style: AppTextStyles.body(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            flex: 4,
+            child: Text(
+              value,
+              style: AppTextStyles.body(
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+              textAlign: TextAlign.end,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatDate(DateTime? date) {
+    if (date == null) return '-';
+    return _dateFormat.format(date);
+  }
+}

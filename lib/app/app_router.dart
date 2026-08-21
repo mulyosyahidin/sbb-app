@@ -1,0 +1,406 @@
+import 'dart:async';
+
+import 'package:app/app/navigation_keys.dart';
+import 'package:app/app/presentation/navigation_layout.dart';
+import 'package:app/core/auth/application/auth_session_controller.dart';
+import 'package:app/core/utils/logger_util.dart';
+import 'package:app/features/account/summary/presentation/screens/account_page.dart';
+import 'package:app/features/account/edit_profile/presentation/screens/edit_profile_page.dart';
+import 'package:app/features/auth/login/presentation/screens/login_page.dart';
+import 'package:app/features/auth/register/presentation/screens/register_page.dart';
+import 'package:app/features/contract/domain/entities/contract.dart';
+import 'package:app/features/contract/presentation/screens/contract_certificate_page.dart';
+import 'package:app/features/contract/presentation/screens/contract_create_page.dart';
+import 'package:app/features/contract/presentation/screens/contract_document_upload_page.dart';
+import 'package:app/features/contract/presentation/screens/contract_payment_page.dart';
+import 'package:app/features/contract/presentation/screens/contract_payment_schedules_page.dart';
+import 'package:app/features/contract/presentation/screens/contract_preview_page.dart';
+import 'package:app/features/contract/presentation/screens/cow_catalog_page.dart';
+import 'package:app/features/contract/presentation/screens/contract_page.dart';
+import 'package:app/features/contract/presentation/screens/contracts_page.dart';
+import 'package:app/features/gallery/presentation/screens/galleries_page.dart';
+import 'package:app/features/gallery/presentation/screens/gallery_page.dart';
+import 'package:app/features/calculator/presentation/screens/calculator_page.dart';
+import 'package:app/features/company_profile/presentation/screens/company_profile_page.dart';
+import 'package:app/features/reward/presentation/screens/reward_page.dart';
+import 'package:app/features/home/presentation/screens/home_page.dart';
+import 'package:app/features/home_guest/presentation/screens/home_guest_page.dart';
+import 'package:app/features/partnership/domain/entities/partnership_application.dart';
+import 'package:app/features/profit/presentation/screens/payment_detail_page.dart';
+import 'package:app/features/profit/presentation/screens/profit_page.dart';
+import 'package:app/features/partnership/presentation/screens/partnership_register_page.dart';
+import 'package:app/features/partnership/presentation/screens/partnership_page.dart';
+import 'package:app/features/account/edit_password/presentation/screens/edit_password_page.dart';
+import 'package:app/features/account/bank_accounts/presentation/screens/bank_accounts_page.dart';
+import 'package:app/features/account/bank_accounts/presentation/screens/bank_account_create_page.dart';
+import 'package:app/features/account/bank_accounts/presentation/screens/bank_account_edit_page.dart';
+import 'package:app/features/account/bank_accounts/domain/entities/bank_account.dart';
+import 'package:app/features/splash/presentation/screens/splash_page.dart';
+import 'package:app/features/welcome/presentation/screens/welcome_page.dart';
+import 'package:app/features/auth/referral/application/pending_referral_code_provider.dart';
+import 'package:app/features/auth/referral/presentation/screens/referral_code_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'app_router.g.dart';
+
+class Routes {
+  static const splash = "/";
+  static const welcome = "/welcome";
+  static const login = "/login";
+  static const register = "/register";
+  static const referralCode = "/referral-code";
+  static const homeGate = "/home-gate";
+  static const home = "/home";
+  static const contract = "/contract";
+  static const contractCreate = "/contract/create";
+  static const cowCatalog = "/contract/catalog";
+  static const contractDetail = "/contract/:id";
+  static const contractPayment = "/contract/:id/payment";
+  static const contractDocumentUpload = "/contract/:id/document-upload";
+  static const contractPaymentSchedules = "/contract/:id/payment-schedules";
+  static const contractCertificate = "/contract/:id/certificate";
+  static const profit = "/profit";
+  static const paymentDetail = "/profit/:id";
+  static const gallery = "/gallery";
+  static const galleryDetail = "/gallery/:id";
+  static const account = "/account";
+  static const editProfile = "/edit-profile";
+  static const editPassword = "/edit-password";
+  static const bankAccounts = "/bank-accounts";
+  static const bankAccountCreate = "/bank-accounts/create";
+  static const bankAccountEdit = "/bank-accounts/edit";
+  static const partner = "/partner";
+  static const openPartner = "$partner/register";
+  static const calculator = "/calculator";
+  static const companyProfile = "/company-profile";
+  static const reward = "/reward";
+  static const homeGuest = "/home-guest";
+  static const contractPreview = "/contract/preview";
+
+  static const authenticatedRoutes = [
+    home,
+    referralCode,
+    contract,
+    contractCreate,
+    cowCatalog,
+    contractDetail,
+    contractPayment,
+    contractDocumentUpload,
+    contractPaymentSchedules,
+    contractCertificate,
+    profit,
+    paymentDetail,
+    gallery,
+    galleryDetail,
+    account,
+    editProfile,
+    editPassword,
+    bankAccounts,
+    bankAccountCreate,
+    bankAccountEdit,
+    openPartner,
+    partner,
+    calculator,
+    companyProfile,
+    reward,
+    contractPreview,
+  ];
+}
+
+@riverpod
+GoRouter router(Ref ref) {
+  final notifier = RouterNotifier(ref);
+
+  return GoRouter(
+    initialLocation: Routes.splash,
+    navigatorKey: rootNavigatorKey,
+    refreshListenable: notifier,
+    routes: [
+      GoRoute(
+        path: Routes.splash,
+        builder: (context, state) => const SplashPage(),
+      ),
+      GoRoute(
+        path: Routes.welcome,
+        builder: (context, state) => const WelcomePage(),
+      ),
+      GoRoute(
+        path: Routes.login,
+        builder: (context, state) => const LoginPage(),
+      ),
+      GoRoute(
+        path: Routes.register,
+        builder: (context, state) => const RegisterPage(),
+      ),
+      GoRoute(
+        path: Routes.referralCode,
+        builder: (context, state) => const ReferralCodePage(),
+      ),
+      GoRoute(
+        path: Routes.homeGuest,
+        builder: (context, state) => const HomeGuestPage(),
+      ),
+      GoRoute(
+        path: Routes.editProfile,
+        builder: (context, state) => const EditProfilePage(),
+      ),
+      GoRoute(
+        path: Routes.editPassword,
+        builder: (context, state) => const EditPasswordPage(),
+      ),
+      GoRoute(
+        path: Routes.bankAccounts,
+        builder: (context, state) => const BankAccountsPage(),
+      ),
+      GoRoute(
+        path: Routes.bankAccountCreate,
+        builder: (context, state) => const BankAccountCreatePage(),
+      ),
+      GoRoute(
+        path: Routes.bankAccountEdit,
+        builder: (context, state) {
+          final account = state.extra as BankAccount;
+          return BankAccountEditPage(account: account);
+        },
+      ),
+
+      GoRoute(
+        path: Routes.partner,
+        builder: (context, state) => const PartnershipPage(),
+        routes: [
+          GoRoute(
+            path: 'register',
+            builder: (context, state) => PartnershipRegisterPage(
+              initialApplication: state.extra is PartnershipApplication
+                  ? state.extra as PartnershipApplication
+                  : null,
+            ),
+          ),
+        ],
+      ),
+      GoRoute(
+        path: Routes.gallery,
+        builder: (context, state) => const GalleriesPage(),
+      ),
+      GoRoute(
+        path: Routes.galleryDetail,
+        builder: (context, state) {
+          final id = int.parse(state.pathParameters['id']!);
+          return GalleryPage(id: id);
+        },
+      ),
+      GoRoute(
+        path: Routes.calculator,
+        builder: (context, state) => const CalculatorPage(),
+      ),
+      GoRoute(
+        path: Routes.companyProfile,
+        builder: (context, state) => const CompanyProfilePage(),
+      ),
+      GoRoute(
+        path: Routes.reward,
+        builder: (context, state) => const RewardPage(),
+      ),
+      GoRoute(
+        path: Routes.contractPreview,
+        builder: (context, state) => const ContractPreviewPage(),
+      ),
+
+      // AUTHENTICATED TABS
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return NavigationLayout(navigationShell: navigationShell);
+        },
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.home,
+                builder: (context, state) => const HomePage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.contract,
+                builder: (context, state) => const ContractsPage(),
+                routes: [
+                  GoRoute(
+                    path: 'create',
+                    builder: (context, state) => const ContractCreatePage(),
+                  ),
+                  GoRoute(
+                    path: 'catalog',
+                    builder: (context, state) => const CowCatalogPage(),
+                  ),
+                  GoRoute(
+                    path: ':id/payment',
+                    builder: (context, state) => ContractPaymentPage(
+                      contractId: state.pathParameters['id'] ?? '',
+                    ),
+                  ),
+                  GoRoute(
+                    path: ':id/document-upload',
+                    builder: (context, state) => ContractDocumentUploadPage(
+                      contractId: state.pathParameters['id'] ?? '',
+                    ),
+                  ),
+                  GoRoute(
+                    path: ':id/payment-schedules',
+                    builder: (context, state) => ContractPaymentSchedulesPage(
+                      contractId: state.pathParameters['id'] ?? '',
+                      initialContract: state.extra is Contract
+                          ? state.extra as Contract
+                          : null,
+                    ),
+                  ),
+                  GoRoute(
+                    path: ':id/certificate',
+                    builder: (context, state) => ContractCertificatePage(
+                      contractId: state.pathParameters['id'] ?? '',
+                      initialContract: state.extra is Contract
+                          ? state.extra as Contract
+                          : null,
+                    ),
+                  ),
+                  GoRoute(
+                    path: ':id',
+                    builder: (context, state) => ContractPage(
+                      contractId: state.pathParameters['id'] ?? '',
+                      initialContract: state.extra is Contract
+                          ? state.extra as Contract
+                          : null,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.profit,
+                builder: (context, state) => const ProfitPage(),
+                routes: [
+                  GoRoute(
+                    path: ':id',
+                    builder: (context, state) => PaymentDetailPage(
+                      paymentId: state.pathParameters['id'] ?? '',
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.account,
+                builder: (context, state) => const AccountPage(),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ],
+    redirect: notifier.redirect,
+  );
+}
+
+class RouterNotifier extends ChangeNotifier {
+  final Ref _ref;
+  final DateTime _splashStartedAt = DateTime.now();
+  Timer? _splashDelayTimer;
+
+  RouterNotifier(this._ref) {
+    _ref.listen(
+      authSessionControllerProvider,
+      (_, __) => notifyListeners(),
+      fireImmediately: true,
+    );
+  }
+
+  String? redirect(BuildContext context, GoRouterState state) {
+    final session = _ref.read(authSessionControllerProvider);
+    final location = state.matchedLocation;
+
+    final isOnSplashPage = location == Routes.splash;
+
+    if (session.isLoading) {
+      return null;
+    }
+
+    if (isOnSplashPage && _shouldHoldSplash) {
+      _scheduleSplashRelease();
+      return null;
+    }
+
+    final isAuthenticated = session.maybeWhen(
+      data: (auth) => auth.isAuthenticated,
+      orElse: () => false,
+    );
+
+    LoggerUtil.info(
+        "Redirect Check: location=$location, authenticated=$isAuthenticated");
+
+    if (isAuthenticated) {
+      if (isOnSplashPage ||
+          location == Routes.welcome ||
+          location == Routes.login ||
+          location == Routes.register ||
+          location == Routes.homeGuest) {
+            
+        final isPendingReferral = _ref.read(pendingReferralCodeProvider);
+        if (isPendingReferral) {
+          return Routes.referralCode;
+        }
+        
+        return Routes.home;
+      }
+    }
+
+    if (!isAuthenticated) {
+      if (isOnSplashPage) {
+        return Routes.welcome;
+      }
+
+      if (Routes.authenticatedRoutes.contains(location)) {
+        return Routes.welcome;
+      }
+    }
+
+    return null;
+  }
+
+  bool get _shouldHoldSplash {
+    if (kSplashDisplayDelay == Duration.zero) {
+      return false;
+    }
+
+    final elapsed = DateTime.now().difference(_splashStartedAt);
+    return elapsed < kSplashDisplayDelay;
+  }
+
+  void _scheduleSplashRelease() {
+    if (_splashDelayTimer?.isActive ?? false) {
+      return;
+    }
+
+    final elapsed = DateTime.now().difference(_splashStartedAt);
+    final remaining = kSplashDisplayDelay - elapsed;
+    _splashDelayTimer = Timer(
+      remaining.isNegative ? Duration.zero : remaining,
+      notifyListeners,
+    );
+  }
+
+  @override
+  void dispose() {
+    _splashDelayTimer?.cancel();
+    super.dispose();
+  }
+}

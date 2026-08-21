@@ -1,0 +1,22 @@
+{
+    "flutter": {
+        "platforms": {
+            "android": {
+                "default": {
+                    "projectId": "sarana-bahagia-berkah",
+                    "appId": "1:532302998895:android:f196220c968daa8a688c9a",
+                    "fileOutput": "android/app/google-services.json"
+                }
+            },
+            "dart": {
+                "lib/firebase_options.dart": {
+                    "projectId": "sarana-bahagia-berkah",
+                    "configurations": {
+                        "android": "1:532302998895:android:f196220c968daa8a688c9a",
+                        "ios": "1:532302998895:ios:b4383a80d4a2fc1d688c9a"
+                    }
+                }
+            }
+        }
+    }
+}
